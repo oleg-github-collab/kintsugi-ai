@@ -156,9 +156,9 @@ export default function HomePage() {
       </nav>
 
       {/* Main Content */}
-      <main className="relative z-10 pt-16">
+      <main>
         {/* Top Marquee Banner */}
-        <div className="w-full overflow-hidden border-b-3 border-kintsugi-gold py-4 bg-gradient-to-r from-cyber-pink via-cyber-cyan to-kintsugi-gold mt-0">
+        <div className="w-full overflow-hidden border-b-3 border-kintsugi-gold py-4 bg-gradient-to-r from-cyber-pink via-cyber-cyan to-kintsugi-gold">
           <div className="animate-marquee whitespace-nowrap will-change-transform">
             <span className="text-xl uppercase font-bold text-digital-black px-6">🚀 BORN IN SIMULATION</span>
             <span className="text-xl uppercase font-bold text-digital-black px-6">⚡ EVOLVING ON ANOMALIES</span>
