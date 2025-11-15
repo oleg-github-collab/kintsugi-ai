@@ -68,13 +68,13 @@
 
                 <!-- Chat Main -->
                 <div class="chat-main scanlines">
-                    <div class="chat-header" id="chat-header">
+                    <div class="chat-header" id="chat-header" style="display: flex; align-items: center; gap: 1rem; padding: 1rem; border-bottom: 3px solid var(--kintsugi-gold);">
                         <div class="conversation-avatar">?</div>
                         <div style="flex: 1;">
                             <div class="conversation-name text-gold" style="font-size: 1.25rem;">Select a conversation</div>
                             <div class="conversation-time">No conversation selected</div>
                         </div>
-                        <div id="call-buttons" style="display: none; gap: 0.5rem;">
+                        <div id="call-buttons" style="display: flex; gap: 0.5rem;">
                             <button onclick="startCall('audio')" class="btn btn-secondary interactive" style="padding: 0.5rem 1rem; font-size: 0.85rem;">📞 AUDIO</button>
                             <button onclick="startCall('video')" class="btn btn-primary interactive" style="padding: 0.5rem 1rem; font-size: 0.85rem;">📹 VIDEO</button>
                         </div>
