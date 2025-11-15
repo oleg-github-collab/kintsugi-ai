@@ -112,12 +112,12 @@ export default function ChatPage() {
             <div className="mt-6 p-4 border-3 border-neutral-700 bg-neutral-900/50">
               <div className="text-sm font-mono text-neutral-500 mb-2">TOKEN USAGE</div>
               <div className="text-lg font-bold text-kintsugi-gold">
-                {user.tokensUsed?.toLocaleString() || 0} / {user.tokensLimit?.toLocaleString() || 100000}
+                {user.tokens_used?.toLocaleString() || 0} / {user.tokens_limit?.toLocaleString() || 100000}
               </div>
               <div className="mt-2 w-full h-2 bg-neutral-800 border-2 border-neutral-700">
                 <div
                   className="h-full bg-gradient-to-r from-kintsugi-gold to-cyber-pink transition-all"
-                  style={{ width: `${((user.tokensUsed || 0) / (user.tokensLimit || 100000)) * 100}%` }}
+                  style={{ width: `${((user.tokens_used || 0) / (user.tokens_limit || 100000)) * 100}%` }}
                 ></div>
               </div>
             </div>
