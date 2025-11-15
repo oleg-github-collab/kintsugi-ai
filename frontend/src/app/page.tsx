@@ -125,7 +125,7 @@ export default function HomePage() {
   return (
     <>
       {/* Matrix background canvas */}
-      <canvas id="matrix-canvas" className="fixed top-0 left-0 w-full h-full pointer-events-none z-0 opacity-5"></canvas>
+      <canvas id="matrix-canvas" className="matrix-bg"></canvas>
 
       {/* Custom Cursor */}
       <div className="cursor-invert"></div>

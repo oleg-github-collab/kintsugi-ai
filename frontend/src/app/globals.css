@@ -29,6 +29,17 @@
   }
 }
 
+/* Matrix rain effect container */
+.matrix-bg {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.05;
+}
 /* Custom Cursor */
 .cursor-cross {
   position: fixed;
