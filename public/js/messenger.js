@@ -26,7 +26,6 @@ function connectWebSocket() {
         console.log('WebSocket connected');
         loadConversations();
         loadStories();
-        addAIContact(); // Add Kintsugi AI as default contact
     };
 
     ws.onmessage = (event) => {
@@ -870,5 +869,7 @@ async function loadCurrentUser() {
 
 // Initialize
 loadCurrentUser().then(() => {
+    // Add AI contact immediately (before WebSocket)
+    addAIContact();
     connectWebSocket();
 });

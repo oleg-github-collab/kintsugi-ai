@@ -116,7 +116,7 @@ func main() {
 		if path == "/health" {
 			return c.Next()
 		}
-		return c.SendFile("./static/index.html")
+		return c.SendFile("./public/index.html")
 	})
 
 	// Start server
