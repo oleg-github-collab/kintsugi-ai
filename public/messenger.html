@@ -289,53 +289,99 @@
     </div>
 
     <!-- Create Group Modal -->
-    <div id="create-group-modal" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.95); z-index: 11000; align-items: center; justify-content: center;">
-        <div style="background: var(--digital-black); border: 3px solid var(--electric-purple); padding: 2rem; max-width: 600px; width: 90%; max-height: 85vh; overflow-y: auto; box-shadow: 0 0 40px rgba(157, 0, 255, 0.6);">
-            <h3 class="text-neon" style="font-size: 1.5rem; margin-bottom: 1.5rem; color: var(--electric-purple); text-transform: uppercase;">
-                👥 CREATE GROUP CHAT
-            </h3>
-
-            <div style="margin-bottom: 1.5rem;">
-                <label style="display: block; color: var(--cyber-cyan); margin-bottom: 0.5rem; font-weight: bold;">GROUP NAME:</label>
-                <input type="text" id="group-name-input" placeholder="Enter group name..." class="form-input interactive" style="width: 100%; padding: 1rem; border: 2px solid var(--electric-purple);">
+    <div id="create-group-modal" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.95); z-index: 11000; align-items: center; justify-content: center; padding: 1rem;">
+        <div class="scanlines" style="background: var(--digital-black); border: 4px solid var(--electric-purple); padding: 2.5rem; max-width: 700px; width: 95%; max-height: 90vh; overflow-y: auto; box-shadow: 0 0 50px rgba(157, 0, 255, 0.7);">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; padding-bottom: 1rem; border-bottom: 3px solid var(--electric-purple);">
+                <h3 class="text-neon" style="font-size: 2rem; margin: 0; color: var(--electric-purple); text-transform: uppercase; text-shadow: 0 0 15px rgba(157, 0, 255, 0.8);">
+                    👥 CREATE GROUP
+                </h3>
+                <button onclick="closeCreateGroup()" class="btn btn-secondary interactive" style="padding: 0.5rem 1rem; font-size: 1.5rem;">×</button>
             </div>
 
-            <div style="margin-bottom: 1.5rem;">
-                <label style="display: block; color: var(--cyber-cyan); margin-bottom: 0.5rem; font-weight: bold;">GROUP DESCRIPTION (OPTIONAL):</label>
-                <textarea id="group-description-input" placeholder="Enter group description..." class="form-input interactive" style="width: 100%; padding: 1rem; border: 2px solid var(--electric-purple); min-height: 80px; resize: vertical;"></textarea>
+            <!-- Step Indicator -->
+            <div style="display: flex; justify-content: space-around; margin-bottom: 2rem; padding: 1rem; background: rgba(157, 0, 255, 0.05); border: 2px solid var(--electric-purple);">
+                <div style="text-align: center; flex: 1;">
+                    <div style="width: 40px; height: 40px; margin: 0 auto 0.5rem; border-radius: 50%; border: 3px solid var(--kintsugi-gold); background: rgba(240, 255, 0, 0.2); display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 1.2rem; color: var(--kintsugi-gold);">1</div>
+                    <div style="color: var(--cyber-cyan); font-size: 0.75rem; font-weight: bold;">DETAILS</div>
+                </div>
+                <div style="display: flex; align-items: center; color: var(--electric-purple);">→</div>
+                <div style="text-align: center; flex: 1;">
+                    <div style="width: 40px; height: 40px; margin: 0 auto 0.5rem; border-radius: 50%; border: 3px solid var(--electric-purple); background: rgba(157, 0, 255, 0.1); display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 1.2rem; color: var(--electric-purple);">2</div>
+                    <div style="color: var(--cyber-cyan); font-size: 0.75rem; font-weight: bold;">MEMBERS</div>
+                </div>
+                <div style="display: flex; align-items: center; color: var(--electric-purple);">→</div>
+                <div style="text-align: center; flex: 1;">
+                    <div style="width: 40px; height: 40px; margin: 0 auto 0.5rem; border-radius: 50%; border: 3px solid var(--electric-purple); background: rgba(157, 0, 255, 0.1); display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 1.2rem; color: var(--electric-purple);">3</div>
+                    <div style="color: var(--cyber-cyan); font-size: 0.75rem; font-weight: bold;">SETTINGS</div>
+                </div>
             </div>
 
-            <div style="margin-bottom: 1.5rem;">
-                <label style="display: block; color: var(--cyber-cyan); margin-bottom: 0.75rem; font-weight: bold;">SELECT MEMBERS:</label>
-                <input type="text" id="group-member-search" placeholder="🔍 Search users..." class="form-input interactive" style="width: 100%; padding: 0.75rem; border: 2px solid var(--cyber-cyan); margin-bottom: 1rem;">
+            <!-- Group Details Section -->
+            <div style="margin-bottom: 2rem; padding: 1.5rem; background: rgba(0, 255, 255, 0.03); border: 3px solid var(--cyber-cyan);">
+                <h4 style="color: var(--cyber-cyan); font-size: 1.2rem; margin-bottom: 1rem; text-transform: uppercase;">📝 Group Details</h4>
 
-                <div id="group-member-list" style="max-height: 200px; overflow-y: auto; border: 2px solid var(--electric-purple); padding: 0.5rem;">
+                <div style="margin-bottom: 1.25rem;">
+                    <label style="display: block; color: var(--kintsugi-gold); margin-bottom: 0.5rem; font-weight: bold; font-size: 0.95rem;">GROUP NAME*</label>
+                    <input type="text" id="group-name-input" placeholder="e.g., Team Project, Study Group..." class="form-input interactive" style="width: 100%; padding: 1.1rem; border: 3px solid var(--electric-purple); font-size: 1.05rem; background: rgba(0,0,0,0.3);" maxlength="100">
+                    <div style="color: #666; font-size: 0.8rem; margin-top: 0.3rem;">Max 100 characters</div>
+                </div>
+
+                <div style="margin-bottom: 1rem;">
+                    <label style="display: block; color: var(--kintsugi-gold); margin-bottom: 0.5rem; font-weight: bold; font-size: 0.95rem;">DESCRIPTION (OPTIONAL)</label>
+                    <textarea id="group-description-input" placeholder="Describe the purpose of this group..." class="form-input interactive" style="width: 100%; padding: 1.1rem; border: 3px solid var(--electric-purple); min-height: 100px; resize: vertical; font-size: 1rem; background: rgba(0,0,0,0.3);" maxlength="500"></textarea>
+                    <div style="color: #666; font-size: 0.8rem; margin-top: 0.3rem;">Max 500 characters</div>
+                </div>
+            </div>
+
+            <!-- Members Section -->
+            <div style="margin-bottom: 2rem; padding: 1.5rem; background: rgba(157, 0, 255, 0.03); border: 3px solid var(--electric-purple);">
+                <h4 style="color: var(--electric-purple); font-size: 1.2rem; margin-bottom: 1rem; text-transform: uppercase;">👥 Add Members</h4>
+
+                <input type="text" id="group-member-search" placeholder="🔍 Search users by name or email..." class="form-input interactive" style="width: 100%; padding: 1rem; border: 3px solid var(--cyber-cyan); margin-bottom: 1rem; font-size: 1rem; background: rgba(0,0,0,0.3);">
+
+                <div id="group-member-list" style="max-height: 250px; overflow-y: auto; border: 3px solid var(--electric-purple); padding: 1rem; margin-bottom: 1rem; background: rgba(0,0,0,0.2);">
                     <!-- Member checkboxes will be populated here -->
                 </div>
 
-                <div id="selected-members" style="margin-top: 1rem; padding: 1rem; background: rgba(157, 0, 255, 0.1); border: 2px solid var(--electric-purple); min-height: 60px;">
-                    <div style="color: var(--cyber-cyan); font-size: 0.9rem; margin-bottom: 0.5rem; font-weight: bold;">SELECTED (<span id="selected-count">0</span>):</div>
-                    <div id="selected-members-chips" style="display: flex; flex-wrap: wrap; gap: 0.5rem;">
+                <div id="selected-members" style="padding: 1.25rem; background: linear-gradient(135deg, rgba(157, 0, 255, 0.15), rgba(157, 0, 255, 0.05)); border: 3px solid var(--kintsugi-gold); min-height: 80px; box-shadow: 0 0 20px rgba(240, 255, 0, 0.3);">
+                    <div style="color: var(--kintsugi-gold); font-size: 1rem; margin-bottom: 0.75rem; font-weight: bold; text-shadow: 0 0 10px rgba(240, 255, 0, 0.5);">✓ SELECTED MEMBERS (<span id="selected-count">0</span>)</div>
+                    <div id="selected-members-chips" style="display: flex; flex-wrap: wrap; gap: 0.6rem;">
                         <!-- Selected member chips will appear here -->
                     </div>
+                    <div id="no-members-msg" style="color: #999; font-style: italic; font-size: 0.9rem;">No members selected yet. Click on users above to add them.</div>
                 </div>
             </div>
 
-            <div style="margin-bottom: 1.5rem; padding: 1rem; background: rgba(0, 255, 255, 0.05); border: 2px solid var(--cyber-cyan);">
-                <label style="display: flex; align-items: center; gap: 1rem; cursor: pointer;">
-                    <input type="checkbox" id="enable-video-conference" style="width: 20px; height: 20px;">
+            <!-- Video Settings Section -->
+            <div style="margin-bottom: 2rem; padding: 1.5rem; background: linear-gradient(135deg, rgba(240, 255, 0, 0.1), rgba(240, 255, 0, 0.03)); border: 3px solid var(--kintsugi-gold); box-shadow: 0 0 25px rgba(240, 255, 0, 0.3);">
+                <h4 style="color: var(--kintsugi-gold); font-size: 1.2rem; margin-bottom: 1rem; text-transform: uppercase; text-shadow: 0 0 10px rgba(240, 255, 0, 0.5);">⚙️ Group Settings</h4>
+
+                <label style="display: flex; align-items: start; gap: 1.25rem; cursor: pointer; padding: 1rem; background: rgba(0,0,0,0.3); border: 2px solid var(--cyber-cyan); transition: all 0.3s ease;">
+                    <input type="checkbox" id="enable-video-conference" checked style="width: 24px; height: 24px; margin-top: 4px; cursor: pointer; flex-shrink: 0;">
                     <div>
-                        <div style="color: var(--kintsugi-gold); font-weight: bold; margin-bottom: 0.25rem;">📹 ENABLE VIDEO CONFERENCES</div>
-                        <div style="color: #999; font-size: 0.85rem;">Allow group video calls with 100ms integration</div>
+                        <div style="color: var(--kintsugi-gold); font-weight: bold; margin-bottom: 0.5rem; font-size: 1.1rem; display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;">
+                            📹 Enable Video Conferences
+                            <span style="padding: 0.2rem 0.6rem; background: var(--electric-purple); color: white; font-size: 0.7rem; border-radius: 3px;">RECOMMENDED</span>
+                        </div>
+                        <div style="color: #ccc; font-size: 0.95rem; line-height: 1.5;">
+                            Allow group members to start video calls powered by 100ms. Perfect for meetings, study sessions, and team collaboration.
+                        </div>
+                        <div style="margin-top: 0.75rem; padding: 0.75rem; background: rgba(0, 255, 255, 0.1); border-left: 3px solid var(--cyber-cyan);">
+                            <div style="color: var(--cyber-cyan); font-size: 0.85rem; font-weight: bold; margin-bottom: 0.3rem;">✨ Features:</div>
+                            <div style="color: #aaa; font-size: 0.85rem;">• HD video & audio quality</div>
+                            <div style="color: #aaa; font-size: 0.85rem;">• Screen sharing</div>
+                            <div style="color: #aaa; font-size: 0.85rem;">• Up to 50 participants</div>
+                        </div>
                     </div>
                 </label>
             </div>
 
-            <div style="display: flex; gap: 1rem;">
-                <button onclick="createGroup()" class="btn btn-primary interactive" style="flex: 1; padding: 1rem; text-transform: uppercase; background: linear-gradient(135deg, var(--electric-purple), var(--cyber-pink));">
+            <!-- Action Buttons -->
+            <div style="display: flex; gap: 1rem; padding-top: 1rem; border-top: 3px solid var(--electric-purple);">
+                <button onclick="createGroup()" class="btn btn-primary interactive" style="flex: 1; padding: 1.25rem; text-transform: uppercase; font-size: 1.1rem; font-weight: bold; background: linear-gradient(135deg, var(--electric-purple), var(--cyber-pink)); box-shadow: 0 0 30px rgba(157, 0, 255, 0.5);">
                     ✓ CREATE GROUP
                 </button>
-                <button onclick="closeCreateGroup()" class="btn btn-secondary interactive" style="padding: 1rem; text-transform: uppercase;">
+                <button onclick="closeCreateGroup()" class="btn btn-secondary interactive" style="padding: 1.25rem 2rem; text-transform: uppercase; font-size: 1.1rem;">
                     CANCEL
                 </button>
             </div>

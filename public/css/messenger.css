@@ -2,10 +2,10 @@
 
 .messenger-container {
     display: grid;
-    grid-template-columns: 350px 1fr;
+    grid-template-columns: 380px 1fr;
     gap: 0;
     height: calc(100vh - 80px);
-    max-width: 1600px;
+    max-width: 100%;
     margin: 0 auto;
 }
 
@@ -185,7 +185,7 @@
 .message-group {
     display: flex;
     gap: 1rem;
-    max-width: 70%;
+    max-width: 80%;
 }
 
 .message-group.own {

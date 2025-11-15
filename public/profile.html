@@ -27,29 +27,61 @@
 
     <main style="padding-top: 100px;">
         <div class="container">
-            <div style="max-width: 1000px; margin: 0 auto;">
+            <div style="max-width: 1200px; margin: 0 auto;">
                 <!-- Profile Header -->
                 <div class="border-3 border-gold scanlines" style="padding: 3rem; margin-bottom: 2rem; background: linear-gradient(135deg, rgba(240,255,0,0.1), rgba(240,255,0,0.05));">
-                    <div style="display: flex; gap: 2rem; align-items: center;">
+                    <div style="display: flex; gap: 2rem; align-items: center; flex-wrap: wrap;">
                         <div style="position: relative;">
-                            <div id="profile-photo" style="width: 150px; height: 150px; border: 4px solid var(--kintsugi-gold); border-radius: 50%; overflow: hidden; background: var(--digital-black); display: flex; align-items: center; justify-content: center; font-size: 4rem; color: var(--kintsugi-gold);">
+                            <div id="profile-photo" style="width: 180px; height: 180px; border: 5px solid var(--kintsugi-gold); border-radius: 50%; overflow: hidden; background: var(--digital-black); display: flex; align-items: center; justify-content: center; font-size: 5rem; color: var(--kintsugi-gold); box-shadow: 0 0 30px rgba(240,255,0,0.3);">
                                 👤
                             </div>
-                            <button onclick="changeProfilePhoto()" class="btn btn-secondary interactive" style="position: absolute; bottom: 0; right: 0; padding: 0.5rem; border-radius: 50%;">📷</button>
+                            <button onclick="changeProfilePhoto()" class="btn btn-secondary interactive" style="position: absolute; bottom: 5px; right: 5px; padding: 0.8rem; border-radius: 50%; font-size: 1.2rem;">📷</button>
                         </div>
-                        <div style="flex: 1;">
-                            <h1 id="profile-username" class="text-gold" style="font-size: 2.5rem; margin-bottom: 0.5rem;">USERNAME</h1>
-                            <p id="profile-email" style="color: var(--cyber-cyan); font-size: 1.2rem; margin-bottom: 1rem;">email@example.com</p>
-                            <div style="display: flex; gap: 1rem;">
-                                <div class="border-3 border-cyan" style="padding: 1rem; background: rgba(0,255,255,0.05);">
-                                    <div class="text-cyan" style="font-size: 0.9rem;">SUBSCRIPTION</div>
+                        <div style="flex: 1; min-width: 300px;">
+                            <h1 id="profile-username" class="text-gold" style="font-size: 3rem; margin-bottom: 0.5rem; text-shadow: 0 0 10px rgba(240,255,0,0.5);">USERNAME</h1>
+                            <p id="profile-email" style="color: var(--cyber-cyan); font-size: 1.3rem; margin-bottom: 0.5rem;">email@example.com</p>
+                            <p id="profile-bio-display" style="color: #aaa; font-size: 1.1rem; margin-bottom: 1.5rem; font-style: italic;">No bio yet...</p>
+                            <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+                                <div class="border-3 border-cyan" style="padding: 1.2rem; background: rgba(0,255,255,0.05); min-width: 150px;">
+                                    <div class="text-cyan" style="font-size: 0.9rem; margin-bottom: 0.3rem;">SUBSCRIPTION</div>
                                     <div id="profile-tier" class="text-gold" style="font-size: 1.5rem; font-weight: bold;">BASIC</div>
                                 </div>
-                                <div class="border-3 border-cyan" style="padding: 1rem; background: rgba(0,255,255,0.05);">
-                                    <div class="text-cyan" style="font-size: 0.9rem;">TOKENS</div>
+                                <div class="border-3 border-cyan" style="padding: 1.2rem; background: rgba(0,255,255,0.05); min-width: 150px;">
+                                    <div class="text-cyan" style="font-size: 0.9rem; margin-bottom: 0.3rem;">TOKENS</div>
                                     <div id="profile-tokens" class="text-gold" style="font-size: 1.5rem; font-weight: bold;">0 / 50000</div>
                                 </div>
+                                <div class="border-3 border-pink" style="padding: 1.2rem; background: rgba(255,0,255,0.05); min-width: 150px;">
+                                    <div class="text-pink" style="font-size: 0.9rem; margin-bottom: 0.3rem;">JOINED</div>
+                                    <div id="profile-joined" class="text-gold" style="font-size: 1.2rem; font-weight: bold;">2025-01-01</div>
+                                </div>
                             </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Stats Section -->
+                <div class="border-3 border-purple scanlines" style="padding: 2rem; margin-bottom: 2rem; background: rgba(128,0,255,0.05);">
+                    <h2 class="text-purple text-neon" style="font-size: 2rem; margin-bottom: 1.5rem;">[ USAGE_STATISTICS ]</h2>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem;">
+                        <div class="border-3 border-cyan" style="padding: 1.5rem; background: rgba(0,255,255,0.05); text-align: center;">
+                            <div style="font-size: 3rem; margin-bottom: 0.5rem;">💬</div>
+                            <div class="text-cyan" style="font-size: 0.9rem;">MESSAGES SENT</div>
+                            <div id="stat-messages" class="text-gold" style="font-size: 2rem; font-weight: bold;">0</div>
+                        </div>
+                        <div class="border-3 border-cyan" style="padding: 1.5rem; background: rgba(0,255,255,0.05); text-align: center;">
+                            <div style="font-size: 3rem; margin-bottom: 0.5rem;">🌐</div>
+                            <div class="text-cyan" style="font-size: 0.9rem;">TRANSLATIONS</div>
+                            <div id="stat-translations" class="text-gold" style="font-size: 2rem; font-weight: bold;">0</div>
+                        </div>
+                        <div class="border-3 border-cyan" style="padding: 1.5rem; background: rgba(0,255,255,0.05); text-align: center;">
+                            <div style="font-size: 3rem; margin-bottom: 0.5rem;">🤖</div>
+                            <div class="text-cyan" style="font-size: 0.9rem;">AI CHATS</div>
+                            <div id="stat-ai-chats" class="text-gold" style="font-size: 2rem; font-weight: bold;">0</div>
+                        </div>
+                        <div class="border-3 border-cyan" style="padding: 1.5rem; background: rgba(0,255,255,0.05); text-align: center;">
+                            <div style="font-size: 3rem; margin-bottom: 0.5rem;">👥</div>
+                            <div class="text-cyan" style="font-size: 0.9rem;">GROUPS</div>
+                            <div id="stat-groups" class="text-gold" style="font-size: 2rem; font-weight: bold;">0</div>
                         </div>
                     </div>
                 </div>
@@ -156,11 +188,41 @@
                     document.getElementById('edit-username').value = user.username;
                     document.getElementById('edit-email').value = user.email;
                     document.getElementById('edit-bio').value = user.bio || '';
+                    document.getElementById('profile-bio-display').textContent = user.bio || 'No bio yet...';
+
+                    // Set joined date
+                    const joinedDate = new Date(user.created_at).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+                    document.getElementById('profile-joined').textContent = joinedDate;
 
                     // Set profile photo if exists
                     if (user.avatar_url) {
                         document.getElementById('profile-photo').innerHTML = `<img src="${user.avatar_url}" style="width: 100%; height: 100%; object-fit: cover;">`;
                     }
+
+                    // Load usage stats
+                    loadUsageStats();
+                }
+            } catch (error) {
+                console.error('Failed to load profile:', error);
+            }
+        }
+
+        async function loadUsageStats() {
+            try {
+                const response = await fetch(`${API_URL}/auth/usage-stats`, {
+                    headers: {
+                        'Authorization': `Bearer ${getToken()}`
+                    }
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    const stats = data.stats;
+
+                    document.getElementById('stat-messages').textContent = stats.total_messages || 0;
+                    document.getElementById('stat-translations').textContent = stats.total_translations || 0;
+                    document.getElementById('stat-ai-chats').textContent = stats.total_ai_chats || 0;
+                    document.getElementById('stat-groups').textContent = stats.total_groups || 0;
                 }
             } catch (error) {
                 console.error('Failed to load profile:', error);

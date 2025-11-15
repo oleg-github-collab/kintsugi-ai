@@ -116,9 +116,16 @@ const GroupChat = {
     updateSelectedMembers: function() {
         const container = document.getElementById('selected-members-chips');
         const countSpan = document.getElementById('selected-count');
+        const noMembersMsg = document.getElementById('no-members-msg');
 
         countSpan.textContent = this.selectedMembers.size;
         container.innerHTML = '';
+
+        if (this.selectedMembers.size === 0) {
+            if (noMembersMsg) noMembersMsg.style.display = 'block';
+        } else {
+            if (noMembersMsg) noMembersMsg.style.display = 'none';
+        }
 
         this.selectedMembers.forEach(userId => {
             const user = this.availableUsers.find(u => u.id === userId);
@@ -129,20 +136,31 @@ const GroupChat = {
                 display: inline-flex;
                 align-items: center;
                 gap: 0.5rem;
-                padding: 0.4rem 0.75rem;
+                padding: 0.5rem 0.85rem;
                 background: var(--kintsugi-gold);
                 color: var(--digital-black);
                 border: 2px solid var(--digital-black);
                 font-weight: bold;
-                font-size: 0.85rem;
+                font-size: 0.9rem;
                 cursor: pointer;
-                box-shadow: 2px 2px 0px rgba(0, 0, 0, 0.3);
+                box-shadow: 3px 3px 0px rgba(0, 0, 0, 0.4);
+                transition: all 0.2s ease;
             `;
 
             chip.innerHTML = `
                 ${user.username}
-                <span style="font-size: 1.2rem; line-height: 1;">×</span>
+                <span style="font-size: 1.3rem; line-height: 1;">×</span>
             `;
+
+            chip.onmouseenter = () => {
+                chip.style.transform = 'translate(-2px, -2px)';
+                chip.style.boxShadow = '5px 5px 0px rgba(0, 0, 0, 0.5)';
+            };
+
+            chip.onmouseleave = () => {
+                chip.style.transform = '';
+                chip.style.boxShadow = '3px 3px 0px rgba(0, 0, 0, 0.4)';
+            };
 
             chip.onclick = () => this.toggleMember(userId);
             container.appendChild(chip);
