@@ -83,6 +83,17 @@ type StoryView struct {
 	ViewedAt  time.Time `gorm:"default:CURRENT_TIMESTAMP" json:"viewed_at"`
 }
 
+type InviteCode struct {
+	ID        uuid.UUID      `gorm:"type:uuid;primary_key;default:gen_random_uuid()" json:"id"`
+	Code      string         `gorm:"type:varchar(50);unique;not null;index" json:"code"`
+	CreatedBy uuid.UUID      `gorm:"type:uuid;not null" json:"created_by"`
+	UsedBy    *uuid.UUID     `gorm:"type:uuid" json:"used_by,omitempty"`
+	UsedAt    *time.Time     `json:"used_at,omitempty"`
+	ExpiresAt time.Time      `gorm:"not null;index" json:"expires_at"`
+	CreatedAt time.Time      `gorm:"default:CURRENT_TIMESTAMP" json:"created_at"`
+	DeletedAt gorm.DeletedAt `gorm:"index" json:"-"`
+}
+
 // DTOs and Requests
 
 type CreateConversationRequest struct {

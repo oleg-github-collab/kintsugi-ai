@@ -182,6 +182,7 @@ func migrateDatabase(db *gorm.DB) error {
 		&messenger.ReadReceipt{},
 		&messenger.Story{},
 		&messenger.StoryView{},
+		&messenger.InviteCode{},
 
 		// Translation
 		&translation.Translation{},
@@ -201,6 +202,8 @@ func migrateDatabase(db *gorm.DB) error {
 	db.Exec("CREATE INDEX IF NOT EXISTS idx_conversations_type ON conversations(type)")
 	db.Exec("CREATE INDEX IF NOT EXISTS idx_conversation_messages_created_at ON conversation_messages(created_at)")
 	db.Exec("CREATE INDEX IF NOT EXISTS idx_stories_expires_at ON stories(expires_at)")
+	db.Exec("CREATE INDEX IF NOT EXISTS idx_invite_codes_code ON invite_codes(code)")
+	db.Exec("CREATE INDEX IF NOT EXISTS idx_invite_codes_expires_at ON invite_codes(expires_at)")
 
 	log.Println("Database migrations completed")
 	return nil

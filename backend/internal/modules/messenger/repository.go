@@ -264,10 +264,10 @@ func (r *Repository) SearchUsers(query string) ([]map[string]interface{}, error)
 
 // Create invite
 func (r *Repository) CreateInvite(userID uuid.UUID, inviteCode string) error {
-	return r.db.Exec(
-		"INSERT INTO invite_codes (code, created_by, expires_at) VALUES (?, ?, ?)",
-		inviteCode,
-		userID,
-		time.Now().Add(7*24*time.Hour), // 7 days expiry
-	).Error
+	invite := &InviteCode{
+		Code:      inviteCode,
+		CreatedBy: userID,
+		ExpiresAt: time.Now().Add(7 * 24 * time.Hour), // 7 days expiry
+	}
+	return r.db.Create(invite).Error
 }
