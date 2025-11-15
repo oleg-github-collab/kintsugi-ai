@@ -12,11 +12,14 @@ type User struct {
 	Username         string         `gorm:"type:varchar(50);uniqueIndex;not null" json:"username"`
 	Email            string         `gorm:"type:varchar(255);uniqueIndex;not null" json:"email"`
 	PasswordHash     string         `gorm:"type:varchar(255);not null" json:"-"`
+	Bio              string         `gorm:"type:text" json:"bio"`
+	AvatarURL        string         `gorm:"type:varchar(500)" json:"avatar_url"`
 	SubscriptionTier string         `gorm:"type:varchar(20);default:'basic'" json:"subscription_tier"`
 	TokensUsed       int64          `gorm:"default:0" json:"tokens_used"`
 	TokensLimit      int64          `gorm:"default:100000" json:"tokens_limit"`
 	ResetAt          time.Time      `gorm:"default:CURRENT_TIMESTAMP" json:"reset_at"`
 	StripeCustomerID string         `gorm:"type:varchar(255)" json:"stripe_customer_id,omitempty"`
+	Preferences      string         `gorm:"type:jsonb" json:"preferences"`
 	CreatedAt        time.Time      `gorm:"default:CURRENT_TIMESTAMP" json:"created_at"`
 	UpdatedAt        time.Time      `gorm:"default:CURRENT_TIMESTAMP" json:"updated_at"`
 	DeletedAt        gorm.DeletedAt `gorm:"index" json:"-"`
@@ -57,6 +60,8 @@ type UserDTO struct {
 	ID               uuid.UUID `json:"id"`
 	Username         string    `json:"username"`
 	Email            string    `json:"email"`
+	Bio              string    `json:"bio,omitempty"`
+	AvatarURL        string    `json:"avatar_url,omitempty"`
 	SubscriptionTier string    `json:"subscription_tier"`
 	TokensUsed       int64     `json:"tokens_used"`
 	TokensLimit      int64     `json:"tokens_limit"`
@@ -69,10 +74,30 @@ func (u *User) ToDTO() *UserDTO {
 		ID:               u.ID,
 		Username:         u.Username,
 		Email:            u.Email,
+		Bio:              u.Bio,
+		AvatarURL:        u.AvatarURL,
 		SubscriptionTier: u.SubscriptionTier,
 		TokensUsed:       u.TokensUsed,
 		TokensLimit:      u.TokensLimit,
 		ResetAt:          u.ResetAt,
 		CreatedAt:        u.CreatedAt,
 	}
+}
+
+// Profile update requests
+type UpdateProfileRequest struct {
+	Username string `json:"username" validate:"required,min=3,max=50"`
+	Bio      string `json:"bio" validate:"max=500"`
+}
+
+type UpdateAvatarRequest struct {
+	AvatarURL string `json:"avatar_url" validate:"required,url"`
+}
+
+type ChangePasswordRequest struct {
+	NewPassword string `json:"new_password" validate:"required,min=8"`
+}
+
+type PreferencesRequest struct {
+	Preferences map[string]interface{} `json:"preferences" validate:"required"`
 }

@@ -44,4 +44,22 @@ func RegisterRoutes(app *fiber.App, handler *Handler, authMiddleware fiber.Handl
 
 	// Invite links
 	messenger.Post("/create-invite", handler.CreateInvite)
+
+	// Group chat endpoints
+	messenger.Post("/groups", handler.CreateGroup)
+	messenger.Get("/groups/:id", handler.GetGroup)
+	messenger.Put("/groups/:id", handler.UpdateGroup)
+	messenger.Delete("/groups/:id", handler.DeleteGroup)
+	messenger.Get("/groups/:id/members", handler.GetGroupMembers)
+	messenger.Post("/groups/:id/members", handler.AddGroupMembers)
+	messenger.Delete("/groups/:id/members/:userId", handler.RemoveGroupMember)
+	messenger.Post("/groups/:id/invite", handler.GenerateGroupInvite)
+	messenger.Post("/groups/:id/leave", handler.LeaveGroup)
+
+	// 100ms Video integration
+	messenger.Post("/groups/:id/video/token", handler.Generate100msToken)
+	messenger.Post("/groups/:id/video/guest-token", handler.Generate100msGuestToken)
+
+	// Get all users for group creation
+	messenger.Get("/users", handler.GetAllUsers)
 }

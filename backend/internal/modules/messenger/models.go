@@ -8,17 +8,20 @@ import (
 )
 
 type Conversation struct {
-	ID           uuid.UUID          `gorm:"type:uuid;primary_key;default:gen_random_uuid()" json:"id"`
-	Type         string             `gorm:"type:varchar(20);not null" json:"type"` // direct, group
-	Name         string             `gorm:"type:varchar(255)" json:"name,omitempty"`
-	Avatar       string             `gorm:"type:text" json:"avatar,omitempty"`
-	IsAIAgent    bool               `gorm:"default:false" json:"is_ai_agent"`
-	CreatedBy    uuid.UUID          `gorm:"type:uuid" json:"created_by"`
-	CreatedAt    time.Time          `gorm:"default:CURRENT_TIMESTAMP" json:"created_at"`
-	UpdatedAt    time.Time          `gorm:"default:CURRENT_TIMESTAMP" json:"updated_at"`
-	DeletedAt    gorm.DeletedAt     `gorm:"index" json:"-"`
-	Participants []Participant      `gorm:"foreignKey:ConversationID;constraint:OnDelete:CASCADE" json:"participants,omitempty"`
-	Messages     []ConversationMessage `gorm:"foreignKey:ConversationID;constraint:OnDelete:CASCADE" json:"messages,omitempty"`
+	ID            uuid.UUID             `gorm:"type:uuid;primary_key;default:gen_random_uuid()" json:"id"`
+	Type          string                `gorm:"type:varchar(20);not null" json:"type"` // direct, group
+	Name          string                `gorm:"type:varchar(255)" json:"name,omitempty"`
+	Description   string                `gorm:"type:text" json:"description,omitempty"`
+	Avatar        string                `gorm:"type:text" json:"avatar,omitempty"`
+	IsAIAgent     bool                  `gorm:"default:false" json:"is_ai_agent"`
+	EnableVideo   bool                  `gorm:"default:false" json:"enable_video"`
+	CreatedBy     uuid.UUID             `gorm:"type:uuid" json:"created_by"`
+	CreatedAt     time.Time             `gorm:"default:CURRENT_TIMESTAMP" json:"created_at"`
+	UpdatedAt     time.Time             `gorm:"default:CURRENT_TIMESTAMP" json:"updated_at"`
+	DeletedAt     gorm.DeletedAt        `gorm:"index" json:"-"`
+	Participants  []Participant         `gorm:"foreignKey:ConversationID;constraint:OnDelete:CASCADE" json:"participants,omitempty"`
+	Messages      []ConversationMessage `gorm:"foreignKey:ConversationID;constraint:OnDelete:CASCADE" json:"messages,omitempty"`
+	InviteCodes   []GroupInvite         `gorm:"foreignKey:GroupID;constraint:OnDelete:CASCADE" json:"invite_codes,omitempty"`
 }
 
 type Participant struct {
@@ -94,12 +97,46 @@ type InviteCode struct {
 	DeletedAt gorm.DeletedAt `gorm:"index" json:"-"`
 }
 
+type GroupInvite struct {
+	ID        uuid.UUID      `gorm:"type:uuid;primary_key;default:gen_random_uuid()" json:"id"`
+	GroupID   uuid.UUID      `gorm:"type:uuid;not null;index" json:"group_id"`
+	Code      string         `gorm:"type:varchar(50);unique;not null;index" json:"code"`
+	CreatedBy uuid.UUID      `gorm:"type:uuid;not null" json:"created_by"`
+	MaxUses   int            `gorm:"default:0" json:"max_uses"` // 0 = unlimited
+	UsedCount int            `gorm:"default:0" json:"used_count"`
+	ExpiresAt *time.Time     `json:"expires_at,omitempty"`
+	CreatedAt time.Time      `gorm:"default:CURRENT_TIMESTAMP" json:"created_at"`
+	DeletedAt gorm.DeletedAt `gorm:"index" json:"-"`
+}
+
 // DTOs and Requests
 
 type CreateConversationRequest struct {
-	Type          string      `json:"type" validate:"required,oneof=direct group"`
-	Name          string      `json:"name,omitempty"`
+	Type           string      `json:"type" validate:"required,oneof=direct group"`
+	Name           string      `json:"name,omitempty"`
+	Description    string      `json:"description,omitempty"`
 	ParticipantIDs []uuid.UUID `json:"participant_ids" validate:"required,min=1"`
+	EnableVideo    bool        `json:"enable_video"`
+}
+
+type CreateGroupRequest struct {
+	Name           string      `json:"name" validate:"required,min=3,max=255"`
+	Description    string      `json:"description,omitempty" validate:"max=1000"`
+	ParticipantIDs []uuid.UUID `json:"participant_ids" validate:"required,min=1"`
+	EnableVideo    bool        `json:"enable_video"`
+}
+
+type UpdateGroupRequest struct {
+	Name        string `json:"name" validate:"required,min=3,max=255"`
+	Description string `json:"description,omitempty" validate:"max=1000"`
+}
+
+type AddGroupMembersRequest struct {
+	UserIDs []uuid.UUID `json:"user_ids" validate:"required,min=1"`
+}
+
+type VideoTokenRequest struct {
+	UserName string `json:"userName" validate:"required"`
 }
 
 type SendMessageRequest struct {

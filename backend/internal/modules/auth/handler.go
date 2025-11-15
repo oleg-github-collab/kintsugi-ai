@@ -113,3 +113,147 @@ func (h *Handler) Me(c *fiber.Ctx) error {
 		"user": user.ToDTO(),
 	})
 }
+
+// Profile management handlers
+
+func (h *Handler) UpdateProfile(c *fiber.Ctx) error {
+	userID := c.Locals("user_id").(uuid.UUID)
+
+	var req UpdateProfileRequest
+	if err := c.BodyParser(&req); err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error": "Invalid request body",
+		})
+	}
+
+	if len(req.Username) < 3 || len(req.Username) > 50 {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error": "Username must be between 3 and 50 characters",
+		})
+	}
+
+	if len(req.Bio) > 500 {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error": "Bio must be less than 500 characters",
+		})
+	}
+
+	user, err := h.service.UpdateProfile(userID, req.Username, req.Bio)
+	if err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error": err.Error(),
+		})
+	}
+
+	return c.JSON(fiber.Map{
+		"user": user.ToDTO(),
+	})
+}
+
+func (h *Handler) UpdateAvatar(c *fiber.Ctx) error {
+	userID := c.Locals("user_id").(uuid.UUID)
+
+	var req UpdateAvatarRequest
+	if err := c.BodyParser(&req); err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error": "Invalid request body",
+		})
+	}
+
+	if req.AvatarURL == "" {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error": "Avatar URL is required",
+		})
+	}
+
+	user, err := h.service.UpdateAvatar(userID, req.AvatarURL)
+	if err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error": err.Error(),
+		})
+	}
+
+	return c.JSON(fiber.Map{
+		"user": user.ToDTO(),
+	})
+}
+
+func (h *Handler) ChangePassword(c *fiber.Ctx) error {
+	userID := c.Locals("user_id").(uuid.UUID)
+
+	var req ChangePasswordRequest
+	if err := c.BodyParser(&req); err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error": "Invalid request body",
+		})
+	}
+
+	if len(req.NewPassword) < 8 {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error": "Password must be at least 8 characters",
+		})
+	}
+
+	err := h.service.ChangePassword(userID, req.NewPassword)
+	if err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error": err.Error(),
+		})
+	}
+
+	return c.JSON(fiber.Map{
+		"message": "Password changed successfully",
+	})
+}
+
+func (h *Handler) GetPreferences(c *fiber.Ctx) error {
+	userID := c.Locals("user_id").(uuid.UUID)
+
+	preferences, err := h.service.GetPreferences(userID)
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"error": "Failed to get preferences",
+		})
+	}
+
+	return c.JSON(fiber.Map{
+		"preferences": preferences,
+	})
+}
+
+func (h *Handler) UpdatePreferences(c *fiber.Ctx) error {
+	userID := c.Locals("user_id").(uuid.UUID)
+
+	var req PreferencesRequest
+	if err := c.BodyParser(&req); err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error": "Invalid request body",
+		})
+	}
+
+	err := h.service.UpdatePreferences(userID, req.Preferences)
+	if err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error": err.Error(),
+		})
+	}
+
+	return c.JSON(fiber.Map{
+		"preferences": req.Preferences,
+	})
+}
+
+func (h *Handler) GetUsageStats(c *fiber.Ctx) error {
+	userID := c.Locals("user_id").(uuid.UUID)
+
+	stats, err := h.service.GetUsageStats(userID)
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"error": "Failed to get usage stats",
+		})
+	}
+
+	return c.JSON(fiber.Map{
+		"stats": stats,
+	})
+}
