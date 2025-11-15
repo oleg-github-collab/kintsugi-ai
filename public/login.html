@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login // Kintsugi AI</title>
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body class="crt-effect">
+
+    <!-- Matrix background canvas -->
+    <canvas id="matrix-canvas" class="matrix-bg"></canvas>
+
+    <!-- Custom Cursor -->
+    <div class="cursor-invert"></div>
+    <div class="cursor-cross"></div>
+
+    <!-- Navigation -->
+    <nav class="scanlines">
+        <div class="nav-container">
+            <a href="/" class="nav-logo text-rainbow">⟡ KINTSUGI AI ⟡</a>
+            <div class="nav-links">
+                <a href="/" class="nav-link">HOME</a>
+                <a href="/register.html" class="nav-link text-gold">SIGN_UP</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main>
+        <section style="min-height: 100vh; display: flex; align-items: center; justify-content: center;">
+            <div class="form-container scanlines">
+                <h2 class="text-cyan text-neon" style="font-size: 2.5rem; font-weight: bold; text-transform: uppercase; text-align: center; margin-bottom: 1rem;">
+                    [ USER_AUTH:LOGIN ]
+                </h2>
+                <div class="loading-bar" style="margin-bottom: 2rem;"></div>
+
+                <form id="loginForm">
+                    <div class="form-group">
+                        <input type="email" id="email" name="email" class="form-input" placeholder=" " required>
+                        <label for="email" class="form-label">Email</label>
+                    </div>
+
+                    <div class="form-group">
+                        <input type="password" id="password" name="password" class="form-input" placeholder=" " required>
+                        <label for="password" class="form-label">Password</label>
+                    </div>
+
+                    <div id="error-message" style="color: var(--cyber-pink); margin-top: 1rem; display: none;"></div>
+
+                    <div style="margin-top: 2rem;">
+                        <button type="submit" class="btn btn-secondary" style="width: 100%; font-size: 1.1rem;">
+                            ▶ AUTHENTICATE
+                        </button>
+                    </div>
+
+                    <p style="text-align: center; color: #999; margin-top: 1.5rem;">
+                        No account?
+                        <a href="/register.html" class="text-gold" style="font-weight: bold; text-decoration: none;">Create one</a>
+                    </p>
+                </form>
+            </div>
+        </section>
+    </main>
+
+    <script src="/js/main.js"></script>
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const errorDiv = document.getElementById('error-message');
+
+            try {
+                const response = await fetch(`${API_URL}/auth/login`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ email, password })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    setToken(data.access_token);
+                    window.location.href = '/chat.html';
+                } else {
+                    errorDiv.textContent = data.error || 'Login failed';
+                    errorDiv.style.display = 'block';
+                }
+            } catch (error) {
+                errorDiv.textContent = 'Network error. Please try again.';
+                errorDiv.style.display = 'block';
+            }
+        });
+    </script>
+</body>
+</html>

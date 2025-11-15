@@ -97,8 +97,8 @@ func main() {
 		})
 	})
 
-	// Serve static files from Next.js build
-	app.Static("/", "./static", fiber.Static{
+	// Serve static files from public directory
+	app.Static("/", "./public", fiber.Static{
 		Compress:      true,
 		ByteRange:     true,
 		Browse:        false,

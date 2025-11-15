@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Messenger // Kintsugi AI</title>
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body class="crt-effect">
+
+    <canvas id="matrix-canvas" class="matrix-bg"></canvas>
+    <div class="cursor-invert"></div>
+    <div class="cursor-cross"></div>
+
+    <nav class="scanlines">
+        <div class="nav-container">
+            <a href="/" class="nav-logo text-rainbow">⟡ KINTSUGI AI ⟡</a>
+            <div class="nav-links">
+                <a href="/chat.html" class="nav-link">CHAT</a>
+                <a href="/messenger.html" class="nav-link text-cyan">MESSENGER</a>
+                <a href="/translation.html" class="nav-link">TRANSLATION</a>
+                <a href="#" onclick="logout()" class="nav-link text-pink">LOGOUT</a>
+            </div>
+        </div>
+    </nav>
+
+    <main>
+        <section style="padding-top: 100px; min-height: calc(100vh - 100px); display: flex; align-items: center; justify-content: center;">
+            <div class="container" style="text-align: center;">
+                <div class="border-3 border-cyan bg-cyan-10 shadow-neo-cyan scanlines" style="padding: 4rem; max-width: 600px; margin: 0 auto;">
+                    <h1 class="text-cyan text-neon" style="font-size: 3rem; font-weight: bold; text-transform: uppercase; margin-bottom: 1.5rem;">
+                        [ MESSENGER ]
+                    </h1>
+                    <div class="loading-bar" style="margin-bottom: 2rem;"></div>
+                    <p style="font-size: 1.25rem; color: #ccc; line-height: 1.8;">
+                        Real-time WebSocket messenger with group conversations, reactions, and ephemeral stories.
+                    </p>
+                    <p style="font-size: 1.1rem; color: #999; margin-top: 2rem;">
+                        <span class="text-orange" style="font-weight: bold;">Coming Soon</span>
+                    </p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script src="/js/main.js"></script>
+    <script>
+        if (!isAuthenticated()) {
+            window.location.href = '/login.html';
+        }
+    </script>
+</body>
+</html>

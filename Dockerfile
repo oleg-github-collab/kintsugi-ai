@@ -1,34 +1,36 @@
-# Multi-stage Dockerfile for Railway - Next.js standalone mode
-FROM node:20-alpine AS frontend-builder
+# Multi-stage Dockerfile for Kintsugi AI Platform
+# Stage 1: Build Go backend
+FROM golang:1.21-alpine AS backend-builder
 
 WORKDIR /build
 
-# Copy frontend package files
-COPY frontend/package*.json ./
-RUN npm install
+# Copy go mod files
+COPY backend/go.mod backend/go.sum ./
+RUN go mod download
 
-# Copy frontend source
-COPY frontend/ ./
+# Copy backend source
+COPY backend/cmd/ ./cmd/
+COPY backend/internal/ ./internal/
 
-# Build Next.js in standalone mode
-RUN npm run build
+# Build backend
+RUN CGO_ENABLED=0 GOOS=linux go build -o kintsugi-backend ./cmd/main.go
 
-# Final stage - run Next.js server
-FROM node:20-alpine
+# Stage 2: Final image with backend + static frontend
+FROM alpine:latest
 
 WORKDIR /app
 
-# Copy Next.js standalone build
-COPY --from=frontend-builder /build/.next/standalone ./
-COPY --from=frontend-builder /build/.next/static ./.next/static
+# Install ca-certificates for HTTPS
+RUN apk --no-cache add ca-certificates
+
+# Copy backend binary
+COPY --from=backend-builder /build/kintsugi-backend ./
+
+# Copy static frontend files
+COPY public/ ./public/
 
 # Expose port
-EXPOSE 3000
+EXPOSE 8080
 
-# Set environment
-ENV NODE_ENV=production
-ENV PORT=3000
-ENV HOSTNAME=0.0.0.0
-
-# Run Next.js server
-CMD ["node", "server.js"]
+# Run backend (which serves static files from /public)
+CMD ["./kintsugi-backend"]

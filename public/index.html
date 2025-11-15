@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kintsugi AI // All-in-One AI Platform</title>
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body class="crt-effect">
+
+    <!-- Matrix background canvas -->
+    <canvas id="matrix-canvas" class="matrix-bg"></canvas>
+
+    <!-- Custom Cursor -->
+    <div class="cursor-invert"></div>
+    <div class="cursor-cross"></div>
+
+    <!-- Floating Particles -->
+    <div class="particle" style="left: 10%; animation-delay: 0s;"></div>
+    <div class="particle" style="left: 25%; animation-delay: 2s; background: #00FFFF;"></div>
+    <div class="particle" style="left: 40%; animation-delay: 4s; background: #FF00FF;"></div>
+    <div class="particle" style="left: 60%; animation-delay: 1s;"></div>
+    <div class="particle" style="left: 75%; animation-delay: 3s; background: #FF6B00;"></div>
+    <div class="particle" style="left: 90%; animation-delay: 5s; background: #00FFFF;"></div>
+
+    <!-- Navigation -->
+    <nav class="scanlines">
+        <div class="nav-container">
+            <a href="/" class="nav-logo text-rainbow">⟡ KINTSUGI AI ⟡</a>
+            <div class="nav-links">
+                <a href="/" class="nav-link">HOME</a>
+                <a href="/login.html" class="btn btn-secondary" style="margin: 0; padding: 0.5rem 1rem;">LOG_IN</a>
+                <a href="/register.html" class="btn btn-primary" style="margin: 0; padding: 0.5rem 1rem;">SIGN_UP</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main>
+        <!-- Hero Section -->
+        <section style="background: linear-gradient(135deg, transparent 24%, rgba(240, 255, 0, 0.03) 25%, rgba(240, 255, 0, 0.03) 26%, transparent 27%, transparent 74%, rgba(240, 255, 0, 0.03) 75%, rgba(240, 255, 0, 0.03) 76%, transparent 77%, transparent), linear-gradient(45deg, transparent 24%, rgba(240, 255, 0, 0.03) 25%, rgba(240, 255, 0, 0.03) 26%, transparent 27%, transparent 74%, rgba(240, 255, 0, 0.03) 75%, rgba(240, 255, 0, 0.03) 76%, transparent 77%, transparent); background-size: 50px 50px;">
+            <div class="container" style="position: relative; z-index: 10;">
+                <div style="max-width: 800px;">
+                    <div style="margin-bottom: 2rem;">
+                        <span class="border-3 border-gold bg-gold-10 text-gold" style="display: inline-block; padding: 0.75rem 1.5rem; font-weight: bold; text-transform: uppercase; font-size: 0.9rem;">
+                            ◆ ALL-IN-ONE AI PLATFORM ◆
+                        </span>
+                    </div>
+
+                    <h1 style="font-size: 6rem; font-weight: 900; text-transform: uppercase; line-height: 1; margin-bottom: 2rem;">
+                        <span class="text-gold text-neon" style="display: block;">KINTSUGI</span>
+                        <span class="text-rainbow" style="display: block; -webkit-text-stroke: 2px #000;">AI</span>
+                    </h1>
+
+                    <div class="border-3 border-cyan bg-black shadow-neo-cyan" style="display: inline-block; padding: 1.5rem 2rem; margin-bottom: 2rem;">
+                        <p class="text-cyan" style="font-size: 1.75rem; font-weight: bold; text-transform: uppercase; letter-spacing: 0.05em;">
+                            Chat • Messenger • Translation
+                        </p>
+                    </div>
+
+                    <p style="font-size: 1.25rem; line-height: 1.8; margin-bottom: 3rem; border-left: 4px solid var(--cyber-pink); padding-left: 1.5rem;">
+                        Unified AI platform combining <span class="text-gold" style="font-weight: bold;">advanced chat models</span> (GPT-4o, Claude-3, o1), <span class="text-cyan" style="font-weight: bold;">real-time messenger</span> with WebSocket, and <span class="text-orange" style="font-weight: bold;">professional translation</span> powered by DeepL.
+                    </p>
+
+                    <div style="display: flex; gap: 1rem; margin-bottom: 3rem;">
+                        <a href="/register.html" class="btn btn-primary" style="font-size: 1.1rem;">▶ START_FREE</a>
+                        <a href="#features" class="btn btn-secondary" style="font-size: 1.1rem;">⚡ VIEW_FEATURES</a>
+                    </div>
+
+                    <div class="loading-bar"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Features Section -->
+        <section id="features" style="background: linear-gradient(180deg, #0A0A0A 0%, #1A0A1A 50%, #0A0A0A 100%); position: relative;">
+            <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(255, 0, 255, 0.03) 2px, rgba(255, 0, 255, 0.03) 4px); pointer-events: none;"></div>
+
+            <div class="container" style="position: relative; z-index: 10;">
+                <div style="text-align: center; margin-bottom: 4rem;">
+                    <div style="margin-bottom: 1.5rem;">
+                        <span class="border-3 border-pink bg-pink-10 text-pink" style="display: inline-block; padding: 0.75rem 1.5rem; font-weight: bold; text-transform: uppercase; font-size: 0.9rem;">
+                            ◈ PLATFORM FEATURES ◈
+                        </span>
+                    </div>
+                    <h2 class="text-rainbow" style="font-size: 4rem; font-weight: bold; text-transform: uppercase;">
+                        [ THREE_PLATFORMS_IN_ONE ]
+                    </h2>
+                </div>
+
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; max-width: 1200px; margin: 0 auto;">
+                    <!-- Feature 1: AI Chat -->
+                    <div class="border-3 border-gold bg-gold-10 shadow-neo scanlines" style="padding: 2.5rem; transition: all 0.3s;">
+                        <div style="font-size: 4rem; margin-bottom: 1.5rem;">💬</div>
+                        <h3 class="text-gold" style="font-size: 2rem; font-weight: bold; text-transform: uppercase; margin-bottom: 1rem;">AI CHAT</h3>
+                        <p style="font-size: 1.1rem; color: #ccc; margin-bottom: 1.5rem;">
+                            Access <span class="text-gold" style="font-weight: bold;">GPT-4o</span>, <span class="text-cyan" style="font-weight: bold;">Claude-3</span>, and <span class="text-pink" style="font-weight: bold;">o1-preview</span> models with real-time streaming responses.
+                        </p>
+                        <ul style="list-style: none; color: #999;">
+                            <li style="margin-bottom: 0.5rem;"><span class="text-gold">▸</span> Server-Sent Events (SSE) streaming</li>
+                            <li style="margin-bottom: 0.5rem;"><span class="text-gold">▸</span> Token usage tracking</li>
+                            <li style="margin-bottom: 0.5rem;"><span class="text-gold">▸</span> 6-hour token reset cycles</li>
+                        </ul>
+                    </div>
+
+                    <!-- Feature 2: Messenger -->
+                    <div class="border-3 border-cyan bg-cyan-10 shadow-neo-cyan scanlines" style="padding: 2.5rem; transition: all 0.3s;">
+                        <div style="font-size: 4rem; margin-bottom: 1.5rem;">🔄</div>
+                        <h3 class="text-cyan" style="font-size: 2rem; font-weight: bold; text-transform: uppercase; margin-bottom: 1rem;">MESSENGER</h3>
+                        <p style="font-size: 1.1rem; color: #ccc; margin-bottom: 1.5rem;">
+                            Real-time chat with <span class="text-cyan" style="font-weight: bold;">WebSocket Hub</span> for instant messaging, reactions, and stories.
+                        </p>
+                        <ul style="list-style: none; color: #999;">
+                            <li style="margin-bottom: 0.5rem;"><span class="text-cyan">▸</span> Group conversations</li>
+                            <li style="margin-bottom: 0.5rem;"><span class="text-cyan">▸</span> Message reactions & replies</li>
+                            <li style="margin-bottom: 0.5rem;"><span class="text-cyan">▸</span> Ephemeral stories (24h)</li>
+                        </ul>
+                    </div>
+
+                    <!-- Feature 3: Translation -->
+                    <div class="border-3 border-pink bg-pink-10 shadow-neo-pink scanlines" style="padding: 2.5rem; transition: all 0.3s;">
+                        <div style="font-size: 4rem; margin-bottom: 1.5rem;">🌐</div>
+                        <h3 class="text-pink" style="font-size: 2rem; font-weight: bold; text-transform: uppercase; margin-bottom: 1rem;">TRANSLATION</h3>
+                        <p style="font-size: 1.1rem; color: #ccc; margin-bottom: 1.5rem;">
+                            Professional book translation powered by <span class="text-pink" style="font-weight: bold;">DeepL</span> and <span class="text-orange" style="font-weight: bold;">o.translator</span>.
+                        </p>
+                        <ul style="list-style: none; color: #999;">
+                            <li style="margin-bottom: 0.5rem;"><span class="text-pink">▸</span> Per-1800-character pricing</li>
+                            <li style="margin-bottom: 0.5rem;"><span class="text-pink">▸</span> Kintsugi Basic & Epic tiers</li>
+                            <li style="margin-bottom: 0.5rem;"><span class="text-pink">▸</span> Context-aware translations</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Pricing Section -->
+        <section id="pricing" style="background: radial-gradient(circle at 20% 50%, rgba(0, 255, 255, 0.05) 0%, transparent 50%), radial-gradient(circle at 80% 50%, rgba(240, 255, 0, 0.05) 0%, transparent 50%), #0A0A0A;">
+            <div class="container" style="position: relative; z-index: 10;">
+                <div style="text-align: center; margin-bottom: 4rem;">
+                    <div style="margin-bottom: 1.5rem;">
+                        <span class="border-3 border-cyan bg-cyan-10 text-cyan" style="display: inline-block; padding: 0.75rem 1.5rem; font-weight: bold; text-transform: uppercase; font-size: 0.9rem;">
+                            ◆ SUBSCRIPTION PLANS ◆
+                        </span>
+                    </div>
+                    <h2 class="text-rainbow" style="font-size: 4rem; font-weight: bold; text-transform: uppercase;">
+                        [ CHOOSE_YOUR_TIER ]
+                    </h2>
+                    <p style="font-size: 1.25rem; color: #999; margin-top: 1.5rem;">
+                        All plans include <span class="text-gold" style="font-weight: bold;">6-hour token resets</span> and access to <span class="text-cyan" style="font-weight: bold;">all three platforms</span>
+                    </p>
+                </div>
+
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 2rem; max-width: 900px; margin: 0 auto;">
+                    <!-- Basic Tier -->
+                    <div class="border-3 border-cyan bg-cyan-10 shadow-neo-cyan scanlines" style="padding: 3rem; text-align: center;">
+                        <h3 class="text-cyan" style="font-size: 2.5rem; font-weight: bold; text-transform: uppercase; margin-bottom: 1rem;">KINTSUGI BASIC</h3>
+                        <div class="text-cyan" style="font-size: 4rem; font-weight: 900; margin: 2rem 0;">
+                            $9.99<span style="font-size: 1.5rem; color: #999;">/mo</span>
+                        </div>
+                        <ul style="list-style: none; text-align: left; color: #ccc; font-size: 1.1rem; margin: 2rem 0;">
+                            <li style="margin-bottom: 1rem;"><span class="text-cyan">✓</span> 50,000 tokens / 6 hours</li>
+                            <li style="margin-bottom: 1rem;"><span class="text-cyan">✓</span> All AI models access</li>
+                            <li style="margin-bottom: 1rem;"><span class="text-cyan">✓</span> Real-time messenger</li>
+                            <li style="margin-bottom: 1rem;"><span class="text-cyan">✓</span> Translation (per 1800 chars)</li>
+                        </ul>
+                        <a href="/register.html" class="btn btn-secondary" style="width: 100%; display: block; text-align: center;">GET STARTED</a>
+                    </div>
+
+                    <!-- Epic Tier -->
+                    <div class="border-3 border-gold bg-gold-10 shadow-neo scanlines" style="padding: 3rem; text-align: center;">
+                        <h3 class="text-gold" style="font-size: 2.5rem; font-weight: bold; text-transform: uppercase; margin-bottom: 1rem;">KINTSUGI EPIC</h3>
+                        <div class="text-gold" style="font-size: 4rem; font-weight: 900; margin: 2rem 0;">
+                            $29.99<span style="font-size: 1.5rem; color: #999;">/mo</span>
+                        </div>
+                        <ul style="list-style: none; text-align: left; color: #ccc; font-size: 1.1rem; margin: 2rem 0;">
+                            <li style="margin-bottom: 1rem;"><span class="text-gold">✓</span> 200,000 tokens / 6 hours</li>
+                            <li style="margin-bottom: 1rem;"><span class="text-gold">✓</span> All AI models access</li>
+                            <li style="margin-bottom: 1rem;"><span class="text-gold">✓</span> Real-time messenger</li>
+                            <li style="margin-bottom: 1rem;"><span class="text-gold">✓</span> Priority translation</li>
+                        </ul>
+                        <a href="/register.html" class="btn btn-primary" style="width: 100%; display: block; text-align: center;">GET STARTED</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer style="padding: 4rem 0; border-top: 3px solid var(--kintsugi-gold); background: linear-gradient(to bottom, var(--digital-black), #1A1A1A);">
+            <div class="container">
+                <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 2rem;">
+                    <div>
+                        <div class="text-rainbow" style="font-size: 2rem; font-weight: bold; text-transform: uppercase; margin-bottom: 0.5rem;">⟡ KINTSUGI AI ⟡</div>
+                        <div style="color: #999; font-size: 1.1rem;">All-in-One AI Platform</div>
+                        <div class="loading-bar" style="margin-top: 1rem;"></div>
+                    </div>
+                    <div style="text-align: right;">
+                        <p style="margin-bottom: 0.5rem; color: #999;">Created & Developed by</p>
+                        <p class="text-gold text-neon" style="font-size: 1.5rem; font-weight: bold;">
+                            OLEH KAMINSKYI
+                        </p>
+                        <p class="text-cyan" style="font-size: 0.9rem; margin-top: 0.5rem;">Algorithmic Evolution Architect</p>
+                    </div>
+                </div>
+
+                <div style="text-align: center; margin-top: 3rem; color: #666; font-size: 0.9rem;">
+                    © 2024 // KINTSUGI AI // ALL RIGHTS RESERVED
+                </div>
+            </div>
+        </footer>
+    </main>
+
+    <script src="/js/main.js"></script>
+</body>
+</html>
