@@ -190,6 +190,9 @@ async function selectConversation(convId) {
     document.getElementById('message-input').disabled = false;
     document.querySelector('#message-form button').disabled = false;
 
+    // Trigger mobile event
+    window.dispatchEvent(new Event('conversationSelected'));
+
     // Load messages
     if (isAIChat) {
         loadAIMessages();
@@ -298,11 +301,17 @@ function renderMessages() {
         div.className = `message-group ${isOwn ? 'own' : ''}`;
 
         // Check if message contains code or image
-        let messageContent = escapeHtml(msg.content);
+        let messageContent;
 
-        // Detect code blocks
-        if (msg.content.includes('```')) {
-            messageContent = formatCodeBlocks(msg.content);
+        // Use SyntaxHighlighter for AI messages
+        if (msg.sender_id === 'ai' && typeof SyntaxHighlighter !== 'undefined') {
+            messageContent = SyntaxHighlighter.formatMarkdown(msg.content);
+        } else {
+            messageContent = escapeHtml(msg.content);
+            // Detect code blocks
+            if (msg.content.includes('```')) {
+                messageContent = formatCodeBlocks(msg.content);
+            }
         }
 
         // Detect image URLs

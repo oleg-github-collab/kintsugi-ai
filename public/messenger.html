@@ -2,10 +2,12 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Messenger // Kintsugi AI</title>
     <link rel="stylesheet" href="/css/styles.css">
     <link rel="stylesheet" href="/css/messenger.css">
+    <link rel="stylesheet" href="/css/syntax.css">
+    <link rel="stylesheet" href="/css/mobile.css">
 </head>
 <body class="crt-effect">
 
@@ -27,16 +29,24 @@
 
     <main style="padding-top: 80px;">
         <div class="container" style="padding: 0;">
+            <!-- Mobile Conversations Toggle -->
+            <button class="mobile-conversations-toggle mobile-only" onclick="toggleConversations()" style="display: none;">
+                ≡ CONVERSATIONS
+            </button>
+
             <div class="messenger-container">
                 <!-- Conversations Sidebar -->
-                <div class="conversations-sidebar scanlines">
+                <div class="conversations-sidebar scanlines" id="conversations-sidebar">
                     <div class="sidebar-header">
                         <h2 class="text-cyan text-neon" style="font-size: 1.5rem; font-weight: bold; text-transform: uppercase; margin-bottom: 1rem;">
                             [ MESSENGER ]
                         </h2>
-                        <div style="display: flex; gap: 0.5rem;">
-                            <button onclick="showUserSearch()" class="btn btn-primary interactive" style="flex: 1; padding: 0.5rem; font-size: 0.85rem;">👤 FIND USERS</button>
-                            <button onclick="generateInviteLink()" class="btn btn-secondary interactive" style="flex: 1; padding: 0.5rem; font-size: 0.85rem;">🔗 INVITE</button>
+                        <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                            <div style="display: flex; gap: 0.5rem;">
+                                <button onclick="showUserSearch()" class="btn btn-primary interactive" style="flex: 1; padding: 0.5rem; font-size: 0.85rem;">👤 FIND</button>
+                                <button onclick="generateInviteLink()" class="btn btn-secondary interactive" style="flex: 1; padding: 0.5rem; font-size: 0.85rem;">🔗 INVITE</button>
+                            </div>
+                            <button onclick="showCreateGroup()" class="btn btn-primary interactive" style="width: 100%; padding: 0.5rem; font-size: 0.85rem; background: linear-gradient(135deg, var(--electric-purple), var(--cyber-pink));">👥 CREATE GROUP</button>
                         </div>
                     </div>
 
@@ -278,9 +288,79 @@
         </div>
     </div>
 
+    <!-- Create Group Modal -->
+    <div id="create-group-modal" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.95); z-index: 11000; align-items: center; justify-content: center;">
+        <div style="background: var(--digital-black); border: 3px solid var(--electric-purple); padding: 2rem; max-width: 600px; width: 90%; max-height: 85vh; overflow-y: auto; box-shadow: 0 0 40px rgba(157, 0, 255, 0.6);">
+            <h3 class="text-neon" style="font-size: 1.5rem; margin-bottom: 1.5rem; color: var(--electric-purple); text-transform: uppercase;">
+                👥 CREATE GROUP CHAT
+            </h3>
+
+            <div style="margin-bottom: 1.5rem;">
+                <label style="display: block; color: var(--cyber-cyan); margin-bottom: 0.5rem; font-weight: bold;">GROUP NAME:</label>
+                <input type="text" id="group-name-input" placeholder="Enter group name..." class="form-input interactive" style="width: 100%; padding: 1rem; border: 2px solid var(--electric-purple);">
+            </div>
+
+            <div style="margin-bottom: 1.5rem;">
+                <label style="display: block; color: var(--cyber-cyan); margin-bottom: 0.5rem; font-weight: bold;">GROUP DESCRIPTION (OPTIONAL):</label>
+                <textarea id="group-description-input" placeholder="Enter group description..." class="form-input interactive" style="width: 100%; padding: 1rem; border: 2px solid var(--electric-purple); min-height: 80px; resize: vertical;"></textarea>
+            </div>
+
+            <div style="margin-bottom: 1.5rem;">
+                <label style="display: block; color: var(--cyber-cyan); margin-bottom: 0.75rem; font-weight: bold;">SELECT MEMBERS:</label>
+                <input type="text" id="group-member-search" placeholder="🔍 Search users..." class="form-input interactive" style="width: 100%; padding: 0.75rem; border: 2px solid var(--cyber-cyan); margin-bottom: 1rem;">
+
+                <div id="group-member-list" style="max-height: 200px; overflow-y: auto; border: 2px solid var(--electric-purple); padding: 0.5rem;">
+                    <!-- Member checkboxes will be populated here -->
+                </div>
+
+                <div id="selected-members" style="margin-top: 1rem; padding: 1rem; background: rgba(157, 0, 255, 0.1); border: 2px solid var(--electric-purple); min-height: 60px;">
+                    <div style="color: var(--cyber-cyan); font-size: 0.9rem; margin-bottom: 0.5rem; font-weight: bold;">SELECTED (<span id="selected-count">0</span>):</div>
+                    <div id="selected-members-chips" style="display: flex; flex-wrap: wrap; gap: 0.5rem;">
+                        <!-- Selected member chips will appear here -->
+                    </div>
+                </div>
+            </div>
+
+            <div style="margin-bottom: 1.5rem; padding: 1rem; background: rgba(0, 255, 255, 0.05); border: 2px solid var(--cyber-cyan);">
+                <label style="display: flex; align-items: center; gap: 1rem; cursor: pointer;">
+                    <input type="checkbox" id="enable-video-conference" style="width: 20px; height: 20px;">
+                    <div>
+                        <div style="color: var(--kintsugi-gold); font-weight: bold; margin-bottom: 0.25rem;">📹 ENABLE VIDEO CONFERENCES</div>
+                        <div style="color: #999; font-size: 0.85rem;">Allow group video calls with 100ms integration</div>
+                    </div>
+                </label>
+            </div>
+
+            <div style="display: flex; gap: 1rem;">
+                <button onclick="createGroup()" class="btn btn-primary interactive" style="flex: 1; padding: 1rem; text-transform: uppercase; background: linear-gradient(135deg, var(--electric-purple), var(--cyber-pink));">
+                    ✓ CREATE GROUP
+                </button>
+                <button onclick="closeCreateGroup()" class="btn btn-secondary interactive" style="padding: 1rem; text-transform: uppercase;">
+                    CANCEL
+                </button>
+            </div>
+        </div>
+    </div>
+
     <script src="/js/main.js"></script>
+    <script src="/js/syntax-highlighter.js"></script>
     <script src="/js/messenger.js"></script>
     <script src="/js/webrtc.js"></script>
     <script src="/js/media-upload.js"></script>
+    <script src="/js/cookie-consent.js"></script>
+    <script>
+        // Mobile conversations toggle
+        function toggleConversations() {
+            const sidebar = document.getElementById('conversations-sidebar');
+            sidebar.classList.toggle('mobile-show');
+        }
+
+        // Hide sidebar when conversation is selected on mobile
+        window.addEventListener('conversationSelected', () => {
+            if (window.innerWidth <= 768) {
+                document.getElementById('conversations-sidebar').classList.remove('mobile-show');
+            }
+        });
+    </script>
 </body>
 </html>

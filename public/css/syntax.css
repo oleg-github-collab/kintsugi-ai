@@ -1,0 +1,290 @@
+/* Syntax Highlighting Styles - Kintsugi AI */
+
+/* Code Block Enhanced */
+.code-block-enhanced {
+    margin: 1.5rem 0;
+    border: 3px solid var(--cyber-cyan);
+    background: #0D0D0D;
+    box-shadow: 6px 6px 0px rgba(0, 255, 255, 0.3);
+    animation: slideInCode 0.4s ease-out;
+}
+
+@keyframes slideInCode {
+    from {
+        opacity: 0;
+        transform: translateX(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.code-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem 1rem;
+    background: linear-gradient(90deg, rgba(0, 255, 255, 0.15), rgba(0, 255, 255, 0.05));
+    border-bottom: 2px solid var(--cyber-cyan);
+}
+
+.code-language {
+    font-weight: bold;
+    color: var(--kintsugi-gold);
+    font-size: 0.9rem;
+    letter-spacing: 1px;
+    text-shadow: 0 0 10px rgba(240, 255, 0, 0.5);
+}
+
+.code-actions {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.code-btn {
+    padding: 0.4rem 0.75rem;
+    border: 2px solid var(--cyber-cyan);
+    background: rgba(0, 255, 255, 0.1);
+    color: var(--cyber-cyan);
+    font-size: 0.75rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-family: 'Courier New', monospace;
+    box-shadow: 2px 2px 0px rgba(0, 255, 255, 0.3);
+}
+
+.code-btn:hover {
+    background: rgba(0, 255, 255, 0.25);
+    box-shadow: 4px 4px 0px rgba(0, 255, 255, 0.5);
+    transform: translate(-2px, -2px);
+}
+
+.code-btn:active {
+    transform: translate(0, 0);
+    box-shadow: 2px 2px 0px rgba(0, 255, 255, 0.3);
+}
+
+.code-content {
+    padding: 1.5rem;
+    overflow-x: auto;
+    background: #0A0A0A;
+    margin: 0;
+    font-family: 'Courier New', monospace;
+    font-size: 0.95rem;
+    line-height: 1.6;
+    color: var(--digital-white);
+}
+
+.code-content code {
+    display: block;
+    white-space: pre;
+}
+
+/* Syntax Highlighting Colors */
+.hl-keyword {
+    color: #FF6B9D; /* Cyber Pink */
+    font-weight: bold;
+}
+
+.hl-string {
+    color: #A6F77B; /* Matrix Green */
+}
+
+.hl-comment {
+    color: #6C7A89; /* Gray */
+    font-style: italic;
+}
+
+.hl-number {
+    color: #FFA500; /* Orange */
+}
+
+.hl-function {
+    color: #00D9FF; /* Cyber Cyan */
+    font-weight: bold;
+}
+
+/* Inline Code */
+.inline-code {
+    padding: 0.2rem 0.5rem;
+    background: rgba(0, 255, 255, 0.15);
+    border: 1px solid var(--cyber-cyan);
+    color: var(--cyber-cyan);
+    font-family: 'Courier New', monospace;
+    font-size: 0.9em;
+    border-radius: 3px;
+}
+
+/* Code Output */
+.code-output {
+    border-top: 2px solid var(--kintsugi-gold);
+    background: rgba(240, 255, 0, 0.05);
+}
+
+.code-output-header {
+    padding: 0.5rem 1rem;
+    background: rgba(240, 255, 0, 0.15);
+    color: var(--kintsugi-gold);
+    font-weight: bold;
+    font-size: 0.85rem;
+    letter-spacing: 1px;
+}
+
+.code-output-content {
+    padding: 1rem 1.5rem;
+    margin: 0;
+    font-family: 'Courier New', monospace;
+    font-size: 0.9rem;
+    line-height: 1.6;
+    color: var(--matrix-green);
+    background: #0A0A0A;
+    overflow-x: auto;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+}
+
+/* Scrollbar for code blocks */
+.code-content::-webkit-scrollbar,
+.code-output-content::-webkit-scrollbar {
+    height: 8px;
+    width: 8px;
+}
+
+.code-content::-webkit-scrollbar-track,
+.code-output-content::-webkit-scrollbar-track {
+    background: #1a1a1a;
+}
+
+.code-content::-webkit-scrollbar-thumb,
+.code-output-content::-webkit-scrollbar-thumb {
+    background: var(--cyber-cyan);
+    border: 1px solid #1a1a1a;
+}
+
+.code-content::-webkit-scrollbar-thumb:hover,
+.code-output-content::-webkit-scrollbar-thumb:hover {
+    background: var(--kintsugi-gold);
+}
+
+/* Line numbers (optional) */
+.code-content.line-numbers {
+    counter-reset: line;
+}
+
+.code-content.line-numbers code {
+    counter-increment: line;
+}
+
+.code-content.line-numbers code::before {
+    content: counter(line);
+    display: inline-block;
+    width: 3em;
+    margin-right: 1em;
+    color: #666;
+    text-align: right;
+    user-select: none;
+}
+
+/* AI Message with Code */
+.ai-message-enhanced {
+    background: linear-gradient(135deg, rgba(0, 255, 255, 0.05), rgba(0, 255, 255, 0.02));
+    border: 3px solid var(--cyber-cyan);
+    padding: 1.5rem;
+    margin: 1rem 0;
+    box-shadow: 4px 4px 0px rgba(0, 255, 255, 0.2);
+    animation: slideInMessage 0.3s ease-out;
+}
+
+.ai-message-enhanced p {
+    margin: 0.75rem 0;
+    line-height: 1.7;
+}
+
+.ai-message-enhanced ul,
+.ai-message-enhanced ol {
+    margin: 1rem 0;
+    padding-left: 0;
+    list-style-position: inside;
+}
+
+.ai-message-enhanced li {
+    margin: 0.5rem 0;
+    padding-left: 1rem;
+    line-height: 1.6;
+}
+
+.ai-message-enhanced h1,
+.ai-message-enhanced h2,
+.ai-message-enhanced h3 {
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.ai-message-enhanced a {
+    text-decoration: none;
+    border-bottom: 2px solid var(--cyber-cyan);
+    transition: all 0.2s ease;
+}
+
+.ai-message-enhanced a:hover {
+    color: var(--kintsugi-gold);
+    border-color: var(--kintsugi-gold);
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+    .code-header {
+        flex-direction: column;
+        gap: 0.75rem;
+        align-items: flex-start;
+    }
+
+    .code-actions {
+        width: 100%;
+        justify-content: space-between;
+    }
+
+    .code-btn {
+        flex: 1;
+        padding: 0.5rem;
+        font-size: 0.7rem;
+    }
+
+    .code-content {
+        padding: 1rem;
+        font-size: 0.85rem;
+    }
+
+    .code-output-content {
+        padding: 0.75rem 1rem;
+        font-size: 0.85rem;
+    }
+}
+
+/* Syntax Theme Variations */
+.code-theme-dark .code-block-enhanced {
+    border-color: var(--electric-purple);
+    box-shadow: 6px 6px 0px rgba(157, 0, 255, 0.3);
+}
+
+.code-theme-gold .code-block-enhanced {
+    border-color: var(--kintsugi-gold);
+    box-shadow: 6px 6px 0px rgba(240, 255, 0, 0.3);
+}
+
+/* Loading animation for code execution */
+@keyframes codeExecuting {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.5;
+    }
+}
+
+.code-executing {
+    animation: codeExecuting 1s infinite;
+}
