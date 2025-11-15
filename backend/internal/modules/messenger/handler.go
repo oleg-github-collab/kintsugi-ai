@@ -9,12 +9,14 @@ import (
 type Handler struct {
 	service *Service
 	hub     *Hub
+	repo    *Repository
 }
 
 func NewHandler(service *Service, hub *Hub) *Handler {
 	return &Handler{
 		service: service,
 		hub:     hub,
+		repo:    service.repo,
 	}
 }
 
