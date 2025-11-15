@@ -435,20 +435,55 @@ section {
 
 .message {
     margin-bottom: 1.5rem;
-    padding: 1rem;
-    border: 2px solid;
+    padding: 1.25rem;
+    border: 3px solid;
+    position: relative;
+    font-family: 'Courier New', monospace;
+    animation: slideIn 0.3s ease-out;
 }
 
 .message-user {
     border-color: var(--kintsugi-gold);
-    background-color: rgba(240, 255, 0, 0.05);
+    background: linear-gradient(135deg, rgba(240, 255, 0, 0.1), rgba(240, 255, 0, 0.05));
     margin-left: 20%;
+    box-shadow: 4px 4px 0px rgba(240, 255, 0, 0.3);
+}
+
+.message-user::before {
+    content: '▶';
+    position: absolute;
+    left: -15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--kintsugi-gold);
+    font-size: 1.5rem;
 }
 
 .message-assistant {
     border-color: var(--cyber-cyan);
-    background-color: rgba(0, 255, 255, 0.05);
+    background: linear-gradient(135deg, rgba(0, 255, 255, 0.1), rgba(0, 255, 255, 0.05));
     margin-right: 20%;
+    box-shadow: 4px 4px 0px rgba(0, 255, 255, 0.3);
+}
+
+.message-assistant::before {
+    content: '🤖';
+    position: absolute;
+    left: -30px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 1.5rem;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 /* Responsive */

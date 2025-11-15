@@ -169,11 +169,25 @@ async function selectConversation(convId) {
     } else {
         document.getElementById('chat-header').innerHTML = `
             <div class="conversation-avatar">${getInitials(conv.name)}</div>
-            <div>
+            <div style="flex: 1;">
                 <div class="conversation-name text-gold" style="font-size: 1.25rem;">${conv.name}</div>
                 <div class="conversation-time">${conv.participants_count} participants</div>
             </div>
         `;
+
+        // Show call buttons for non-AI chats
+        const callButtons = document.getElementById('call-buttons');
+        if (callButtons) {
+            callButtons.style.display = 'flex';
+        }
+    }
+
+    // Hide call buttons for AI chat
+    if (isAIChat) {
+        const callButtons = document.getElementById('call-buttons');
+        if (callButtons) {
+            callButtons.style.display = 'none';
+        }
     }
 
     // Enable input

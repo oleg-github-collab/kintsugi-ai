@@ -40,11 +40,11 @@
                         </h3>
 
                         <div style="display: flex; flex-direction: column; gap: 1rem; margin-bottom: 2rem;">
-                            <button class="model-btn btn btn-secondary" data-model="gpt-3.5-turbo" style="text-align: left;">
-                                🔹 BASIC (GPT-3.5)
+                            <button class="model-btn btn btn-primary" data-model="gpt-4o" data-multiplier="1" style="text-align: left;">
+                                🔹 BASIC
                             </button>
-                            <button class="model-btn btn btn-primary" data-model="gpt-4" style="text-align: left;">
-                                💎 EPIC (GPT-4)
+                            <button class="model-btn btn btn-secondary" data-model="gpt-4o" data-multiplier="3.5" style="text-align: left;">
+                                💎 EPIC (Image/Code)
                             </button>
                         </div>
 
@@ -52,12 +52,14 @@
                             <h4 class="text-cyan" style="font-size: 1.1rem; font-weight: bold; text-transform: uppercase; margin-bottom: 1rem;">
                                 TOKEN_USAGE
                             </h4>
-                            <div style="margin-bottom: 0.5rem; color: #ccc;">
+                            <div style="margin-bottom: 0.5rem; color: #ccc; font-size: 1.1rem;">
                                 <span id="tokens-used">0</span> / <span id="tokens-limit">50000</span>
                             </div>
-                            <div class="loading-bar"></div>
-                            <p style="font-size: 0.85rem; color: #999; margin-top: 0.5rem;">
-                                Resets every 6 hours
+                            <div style="width: 100%; height: 20px; border: 2px solid var(--cyber-cyan); background: var(--digital-black); position: relative; margin-bottom: 0.5rem;">
+                                <div id="token-progress" style="height: 100%; background: linear-gradient(90deg, var(--cyber-cyan), var(--kintsugi-gold)); width: 0%; transition: width 0.3s;"></div>
+                            </div>
+                            <p style="font-size: 0.85rem; color: #999;">
+                                <span id="model-info">BASIC: 1x tokens</span> • Resets every 6 hours
                             </p>
                         </div>
                     </div>
@@ -100,7 +102,8 @@
             window.location.href = '/login.html';
         }
 
-        let currentModel = 'gpt-4';
+        let currentModel = 'gpt-4o';
+        let currentMultiplier = 1;
         let currentChatId = null;
         const messages = [];
 
@@ -108,10 +111,16 @@
         document.querySelectorAll('.model-btn').forEach(btn => {
             btn.addEventListener('click', () => {
                 currentModel = btn.dataset.model;
+                currentMultiplier = parseFloat(btn.dataset.multiplier);
+
                 document.querySelectorAll('.model-btn').forEach(b => {
                     b.className = 'model-btn btn btn-secondary';
                 });
                 btn.className = 'model-btn btn btn-primary';
+
+                // Update model info
+                const modelInfo = currentMultiplier === 1 ? 'BASIC: 1x tokens' : 'EPIC: 3.5x tokens (Image/Code)';
+                document.getElementById('model-info').textContent = modelInfo;
             });
         });
 
@@ -239,7 +248,7 @@
             }
         }
 
-        // Load user info
+        // Load user info and update token display
         async function loadUserInfo() {
             try {
                 const response = await fetch(`${API_URL}/auth/me`, {
@@ -250,15 +259,44 @@
 
                 if (response.ok) {
                     const data = await response.json();
-                    document.getElementById('tokens-used').textContent = data.user.tokens_used || 0;
-                    document.getElementById('tokens-limit').textContent = data.user.tokens_limit || 50000;
+                    const tokensUsed = data.user.tokens_used || 0;
+                    const tokensLimit = data.user.tokens_limit || 50000;
+
+                    document.getElementById('tokens-used').textContent = tokensUsed;
+                    document.getElementById('tokens-limit').textContent = tokensLimit;
+
+                    // Update progress bar
+                    const percentage = (tokensUsed / tokensLimit) * 100;
+                    document.getElementById('token-progress').style.width = percentage + '%';
+
+                    // Change color based on usage
+                    const progressBar = document.getElementById('token-progress');
+                    if (percentage > 80) {
+                        progressBar.style.background = 'linear-gradient(90deg, var(--neon-pink), var(--neon-orange))';
+                    } else if (percentage > 50) {
+                        progressBar.style.background = 'linear-gradient(90deg, var(--kintsugi-gold), var(--neon-orange))';
+                    } else {
+                        progressBar.style.background = 'linear-gradient(90deg, var(--cyber-cyan), var(--kintsugi-gold))';
+                    }
                 }
             } catch (error) {
                 console.error('Failed to load user info');
             }
         }
 
+        // Token counting function with multiplier
+        function countTokens(text) {
+            // Approximate: 1 token ≈ 4 characters for English
+            // More accurate: count words, punctuation, special chars
+            const chars = text.length;
+            const words = text.split(/\s+/).length;
+            const tokens = Math.ceil((chars / 4 + words) / 2);
+            return Math.ceil(tokens * currentMultiplier);
+        }
+
         loadUserInfo();
+        // Refresh token display every 30 seconds
+        setInterval(loadUserInfo, 30000);
     </script>
 </body>
 </html>
