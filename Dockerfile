@@ -21,7 +21,6 @@ WORKDIR /app
 # Copy Next.js standalone build
 COPY --from=frontend-builder /build/.next/standalone ./
 COPY --from=frontend-builder /build/.next/static ./.next/static
-COPY --from=frontend-builder /build/public ./public
 
 # Expose port
 EXPOSE 3000
@@ -29,6 +28,7 @@ EXPOSE 3000
 # Set environment
 ENV NODE_ENV=production
 ENV PORT=3000
+ENV HOSTNAME=0.0.0.0
 
 # Run Next.js server
 CMD ["node", "server.js"]
