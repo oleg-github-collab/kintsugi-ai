@@ -5,15 +5,27 @@
 @layer base {
   * {
     @apply border-digital-black;
-  }
-
-  body {
-    @apply bg-digital-black text-digital-white antialiased font-mono overflow-x-hidden;
-    cursor: none;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
   }
 
   html {
     scroll-behavior: smooth;
+    overflow-x: hidden;
+  }
+
+  body {
+    @apply bg-digital-black text-digital-white antialiased font-mono;
+    cursor: none;
+    overflow-x: hidden;
+    min-height: 100vh;
+    margin: 0;
+    padding: 0;
+  }
+
+  #__next {
+    min-height: 100vh;
   }
 }
 
