@@ -60,8 +60,8 @@ document.addEventListener("DOMContentLoaded", function() {
             cursorCross.style.left = mouseX + 'px';
             cursorCross.style.top = mouseY + 'px';
 
-            cursorInvert.style.left = (mouseX - 60) + 'px';
-            cursorInvert.style.top = (mouseY - 60) + 'px';
+            cursorInvert.style.left = (mouseX - 40) + 'px';
+            cursorInvert.style.top = (mouseY - 40) + 'px';
         }
     });
 

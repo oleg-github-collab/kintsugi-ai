@@ -5,6 +5,261 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Messenger // Kintsugi AI</title>
     <link rel="stylesheet" href="/css/styles.css">
+    <style>
+        /* Messenger-specific styles */
+        .messenger-container {
+            display: grid;
+            grid-template-columns: 350px 1fr;
+            gap: 0;
+            height: calc(100vh - 80px);
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+
+        .conversations-sidebar {
+            border: 3px solid var(--cyber-cyan);
+            background-color: var(--digital-black);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .sidebar-header {
+            padding: 1.5rem;
+            border-bottom: 3px solid var(--cyber-cyan);
+        }
+
+        .stories-container {
+            display: flex;
+            gap: 1rem;
+            padding: 1rem;
+            overflow-x: auto;
+            border-bottom: 2px solid var(--cyber-cyan);
+        }
+
+        .story-item {
+            flex-shrink: 0;
+            width: 60px;
+            text-align: center;
+            cursor: pointer;
+        }
+
+        .story-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            border: 3px solid var(--kintsugi-gold);
+            background: linear-gradient(135deg, var(--cyber-pink), var(--cyber-cyan));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .story-name {
+            font-size: 0.75rem;
+            color: #ccc;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .search-box {
+            padding: 1rem;
+            border-bottom: 2px solid var(--cyber-cyan);
+        }
+
+        .conversation-list {
+            flex: 1;
+            overflow-y: auto;
+        }
+
+        .conversation-item {
+            padding: 1rem;
+            border-bottom: 2px solid #1a1a1a;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .conversation-item:hover {
+            background-color: rgba(0, 255, 255, 0.1);
+            border-left: 4px solid var(--cyber-cyan);
+        }
+
+        .conversation-item.active {
+            background-color: rgba(0, 255, 255, 0.15);
+            border-left: 4px solid var(--kintsugi-gold);
+        }
+
+        .conversation-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--cyber-pink), var(--kintsugi-gold));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.25rem;
+            margin-right: 1rem;
+            flex-shrink: 0;
+        }
+
+        .conversation-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .conversation-name {
+            font-weight: bold;
+            font-size: 1rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .conversation-preview {
+            font-size: 0.9rem;
+            color: #999;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .conversation-time {
+            font-size: 0.75rem;
+            color: #666;
+        }
+
+        .chat-main {
+            border: 3px solid var(--kintsugi-gold);
+            background-color: var(--digital-black);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .chat-header {
+            padding: 1.5rem;
+            border-bottom: 3px solid var(--kintsugi-gold);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .chat-messages {
+            flex: 1;
+            padding: 2rem;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .message-group {
+            display: flex;
+            gap: 1rem;
+            max-width: 70%;
+        }
+
+        .message-group.own {
+            align-self: flex-end;
+            flex-direction: row-reverse;
+        }
+
+        .message-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--cyber-cyan), var(--cyber-pink));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+
+        .message-content-wrapper {
+            flex: 1;
+        }
+
+        .message-bubble {
+            padding: 0.75rem 1rem;
+            border: 2px solid var(--cyber-cyan);
+            background-color: rgba(0, 255, 255, 0.05);
+            margin-bottom: 0.25rem;
+            position: relative;
+        }
+
+        .message-group.own .message-bubble {
+            border-color: var(--kintsugi-gold);
+            background-color: rgba(240, 255, 0, 0.05);
+        }
+
+        .message-text {
+            word-wrap: break-word;
+        }
+
+        .message-meta {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.75rem;
+            color: #666;
+        }
+
+        .message-reactions {
+            display: flex;
+            gap: 0.25rem;
+            margin-top: 0.5rem;
+        }
+
+        .reaction-btn {
+            padding: 0.25rem 0.5rem;
+            border: 2px solid var(--cyber-pink);
+            background-color: rgba(255, 0, 255, 0.1);
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .reaction-btn:hover {
+            background-color: rgba(255, 0, 255, 0.3);
+        }
+
+        .add-reaction {
+            padding: 0.25rem 0.5rem;
+            border: 2px dashed #666;
+            background-color: transparent;
+            color: #666;
+            cursor: pointer;
+        }
+
+        .add-reaction:hover {
+            border-color: var(--cyber-pink);
+            color: var(--cyber-pink);
+        }
+
+        .chat-input-container {
+            padding: 1.5rem;
+            border-top: 3px solid var(--kintsugi-gold);
+        }
+
+        .typing-indicator {
+            padding: 0.5rem 1rem;
+            color: var(--cyber-cyan);
+            font-size: 0.9rem;
+            font-style: italic;
+        }
+
+        @media (max-width: 768px) {
+            .messenger-container {
+                grid-template-columns: 1fr;
+            }
+            .conversations-sidebar {
+                display: none;
+            }
+        }
+    </style>
 </head>
 <body class="crt-effect">
 
@@ -24,23 +279,83 @@
         </div>
     </nav>
 
-    <main>
-        <section style="padding-top: 100px; min-height: calc(100vh - 100px); display: flex; align-items: center; justify-content: center;">
-            <div class="container" style="text-align: center;">
-                <div class="border-3 border-cyan bg-cyan-10 shadow-neo-cyan scanlines" style="padding: 4rem; max-width: 600px; margin: 0 auto;">
-                    <h1 class="text-cyan text-neon" style="font-size: 3rem; font-weight: bold; text-transform: uppercase; margin-bottom: 1.5rem;">
-                        [ MESSENGER ]
-                    </h1>
-                    <div class="loading-bar" style="margin-bottom: 2rem;"></div>
-                    <p style="font-size: 1.25rem; color: #ccc; line-height: 1.8;">
-                        Real-time WebSocket messenger with group conversations, reactions, and ephemeral stories.
-                    </p>
-                    <p style="font-size: 1.1rem; color: #999; margin-top: 2rem;">
-                        <span class="text-orange" style="font-weight: bold;">Coming Soon</span>
-                    </p>
+    <main style="padding-top: 80px;">
+        <div class="container" style="padding: 0;">
+            <div class="messenger-container">
+                <!-- Conversations Sidebar -->
+                <div class="conversations-sidebar scanlines">
+                    <div class="sidebar-header">
+                        <h2 class="text-cyan text-neon" style="font-size: 1.5rem; font-weight: bold; text-transform: uppercase;">
+                            [ MESSENGER ]
+                        </h2>
+                    </div>
+
+                    <!-- Stories -->
+                    <div class="stories-container">
+                        <div class="story-item" onclick="viewStory('your-story')">
+                            <div class="story-avatar">+</div>
+                            <div class="story-name">Add Story</div>
+                        </div>
+                        <div id="stories-list"></div>
+                    </div>
+
+                    <!-- Search -->
+                    <div class="search-box">
+                        <input
+                            type="text"
+                            id="search-conversations"
+                            placeholder="Search conversations..."
+                            class="form-input interactive"
+                            style="width: 100%; padding: 0.75rem; border: 2px solid var(--cyber-cyan);"
+                        >
+                    </div>
+
+                    <!-- Conversations List -->
+                    <div class="conversation-list" id="conversations-list">
+                        <!-- Conversations will be loaded here -->
+                    </div>
+                </div>
+
+                <!-- Chat Main -->
+                <div class="chat-main scanlines">
+                    <div class="chat-header" id="chat-header">
+                        <div class="conversation-avatar">?</div>
+                        <div>
+                            <div class="conversation-name text-gold" style="font-size: 1.25rem;">Select a conversation</div>
+                            <div class="conversation-time">No conversation selected</div>
+                        </div>
+                    </div>
+
+                    <div class="chat-messages" id="chat-messages">
+                        <div style="text-align: center; color: #666; margin-top: 3rem;">
+                            <p style="font-size: 1.25rem; font-weight: bold; text-transform: uppercase;">
+                                [ SELECT_CONVERSATION_TO_START ]
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="typing-indicator" id="typing-indicator" style="display: none;">
+                        Someone is typing...
+                    </div>
+
+                    <div class="chat-input-container">
+                        <form id="message-form" style="display: flex; gap: 1rem;">
+                            <input
+                                type="text"
+                                id="message-input"
+                                placeholder="Type a message..."
+                                class="form-input interactive"
+                                style="flex: 1; border: 2px solid var(--kintsugi-gold); padding: 1rem;"
+                                disabled
+                            >
+                            <button type="submit" class="btn btn-primary interactive" style="padding: 1rem 2rem;" disabled>
+                                SEND ▶
+                            </button>
+                        </form>
+                    </div>
                 </div>
             </div>
-        </section>
+        </div>
     </main>
 
     <script src="/js/main.js"></script>
@@ -48,6 +363,387 @@
         if (!isAuthenticated()) {
             window.location.href = '/login.html';
         }
+
+        // WebSocket connection
+        let ws = null;
+        let currentConversationId = null;
+        let currentUser = null;
+        const conversations = {};
+        const messages = {};
+
+        // Initialize WebSocket
+        function connectWebSocket() {
+            const wsUrl = window.location.hostname === 'localhost'
+                ? `ws://localhost:8080/api/messenger/ws?token=${getToken()}`
+                : `wss://${window.location.host}/api/messenger/ws?token=${getToken()}`;
+
+            ws = new WebSocket(wsUrl);
+
+            ws.onopen = () => {
+                console.log('WebSocket connected');
+                loadConversations();
+                loadStories();
+            };
+
+            ws.onmessage = (event) => {
+                const data = JSON.parse(event.data);
+                handleWebSocketMessage(data);
+            };
+
+            ws.onclose = () => {
+                console.log('WebSocket disconnected. Reconnecting...');
+                setTimeout(connectWebSocket, 3000);
+            };
+
+            ws.onerror = (error) => {
+                console.error('WebSocket error:', error);
+            };
+        }
+
+        function handleWebSocketMessage(data) {
+            switch (data.type) {
+                case 'new_message':
+                    handleNewMessage(data.payload);
+                    break;
+                case 'message_reaction':
+                    handleMessageReaction(data.payload);
+                    break;
+                case 'typing':
+                    handleTyping(data.payload);
+                    break;
+                case 'read_receipt':
+                    handleReadReceipt(data.payload);
+                    break;
+            }
+        }
+
+        // Load conversations
+        async function loadConversations() {
+            try {
+                const response = await fetch(`${API_URL}/messenger/conversations`, {
+                    headers: {
+                        'Authorization': `Bearer ${getToken()}`
+                    }
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    renderConversations(data.conversations || []);
+                }
+            } catch (error) {
+                console.error('Failed to load conversations:', error);
+            }
+        }
+
+        function renderConversations(convs) {
+            const list = document.getElementById('conversations-list');
+            list.innerHTML = '';
+
+            convs.forEach(conv => {
+                conversations[conv.id] = conv;
+                const div = document.createElement('div');
+                div.className = 'conversation-item interactive';
+                div.onclick = () => selectConversation(conv.id);
+                div.innerHTML = `
+                    <div style="display: flex; align-items: center;">
+                        <div class="conversation-avatar">${getInitials(conv.name)}</div>
+                        <div class="conversation-info">
+                            <div class="conversation-name">${conv.name}</div>
+                            <div class="conversation-preview">${conv.last_message || 'No messages yet'}</div>
+                        </div>
+                        <div class="conversation-time">${formatTime(conv.updated_at)}</div>
+                    </div>
+                `;
+                list.appendChild(div);
+            });
+        }
+
+        // Select conversation
+        async function selectConversation(convId) {
+            currentConversationId = convId;
+            const conv = conversations[convId];
+
+            // Update active state
+            document.querySelectorAll('.conversation-item').forEach(el => {
+                el.classList.remove('active');
+            });
+            event.currentTarget.classList.add('active');
+
+            // Update header
+            document.getElementById('chat-header').innerHTML = `
+                <div class="conversation-avatar">${getInitials(conv.name)}</div>
+                <div>
+                    <div class="conversation-name text-gold" style="font-size: 1.25rem;">${conv.name}</div>
+                    <div class="conversation-time">${conv.participants_count} participants</div>
+                </div>
+            `;
+
+            // Enable input
+            document.getElementById('message-input').disabled = false;
+            document.querySelector('#message-form button').disabled = false;
+
+            // Load messages
+            await loadMessages(convId);
+        }
+
+        async function loadMessages(convId) {
+            try {
+                const response = await fetch(`${API_URL}/messenger/conversations/${convId}/messages`, {
+                    headers: {
+                        'Authorization': `Bearer ${getToken()}`
+                    }
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    messages[convId] = data.messages || [];
+                    renderMessages();
+                }
+            } catch (error) {
+                console.error('Failed to load messages:', error);
+            }
+        }
+
+        function renderMessages() {
+            const container = document.getElementById('chat-messages');
+            container.innerHTML = '';
+
+            const msgs = messages[currentConversationId] || [];
+
+            msgs.forEach(msg => {
+                const isOwn = msg.sender_id === currentUser?.id;
+                const div = document.createElement('div');
+                div.className = `message-group ${isOwn ? 'own' : ''}`;
+                div.innerHTML = `
+                    <div class="message-avatar">${getInitials(msg.sender_name || 'U')}</div>
+                    <div class="message-content-wrapper">
+                        <div class="message-bubble">
+                            ${msg.reply_to ? `<div style="font-size: 0.85rem; color: var(--cyber-cyan); margin-bottom: 0.5rem; border-left: 2px solid var(--cyber-cyan); padding-left: 0.5rem;">↩ Replying to message</div>` : ''}
+                            <div class="message-text">${escapeHtml(msg.content)}</div>
+                        </div>
+                        <div class="message-meta">
+                            <span>${formatTime(msg.created_at)}</span>
+                            ${msg.read_at ? '<span class="text-cyan">✓✓</span>' : '<span>✓</span>'}
+                        </div>
+                        <div class="message-reactions">
+                            ${renderReactions(msg.reactions || [])}
+                            <button class="add-reaction interactive" onclick="addReaction(${msg.id})">+</button>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(div);
+            });
+
+            container.scrollTop = container.scrollHeight;
+        }
+
+        function renderReactions(reactions) {
+            const grouped = {};
+            reactions.forEach(r => {
+                grouped[r.emoji] = (grouped[r.emoji] || 0) + 1;
+            });
+
+            return Object.entries(grouped).map(([emoji, count]) =>
+                `<span class="reaction-btn interactive">${emoji} ${count}</span>`
+            ).join('');
+        }
+
+        // Send message
+        document.getElementById('message-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const input = document.getElementById('message-input');
+            const content = input.value.trim();
+            if (!content || !currentConversationId) return;
+
+            try {
+                const response = await fetch(`${API_URL}/messenger/conversations/${currentConversationId}/messages`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${getToken()}`
+                    },
+                    body: JSON.stringify({ content })
+                });
+
+                if (response.ok) {
+                    input.value = '';
+                    // Message will be added via WebSocket
+                }
+            } catch (error) {
+                console.error('Failed to send message:', error);
+            }
+        });
+
+        function handleNewMessage(message) {
+            if (message.conversation_id === currentConversationId) {
+                if (!messages[currentConversationId]) {
+                    messages[currentConversationId] = [];
+                }
+                messages[currentConversationId].push(message);
+                renderMessages();
+            }
+
+            // Update conversation preview
+            if (conversations[message.conversation_id]) {
+                conversations[message.conversation_id].last_message = message.content;
+                conversations[message.conversation_id].updated_at = message.created_at;
+                loadConversations();
+            }
+        }
+
+        function handleMessageReaction(data) {
+            const msg = messages[currentConversationId]?.find(m => m.id === data.message_id);
+            if (msg) {
+                if (!msg.reactions) msg.reactions = [];
+                msg.reactions.push(data);
+                renderMessages();
+            }
+        }
+
+        function handleTyping(data) {
+            if (data.conversation_id === currentConversationId) {
+                const indicator = document.getElementById('typing-indicator');
+                indicator.style.display = 'block';
+                setTimeout(() => {
+                    indicator.style.display = 'none';
+                }, 3000);
+            }
+        }
+
+        function handleReadReceipt(data) {
+            // Update read status
+            const msg = messages[currentConversationId]?.find(m => m.id === data.message_id);
+            if (msg) {
+                msg.read_at = data.read_at;
+                renderMessages();
+            }
+        }
+
+        async function addReaction(messageId) {
+            const emoji = prompt('Enter reaction emoji (e.g., 👍, ❤️, 😂):');
+            if (!emoji) return;
+
+            try {
+                await fetch(`${API_URL}/messenger/messages/${messageId}/reactions`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${getToken()}`
+                    },
+                    body: JSON.stringify({ emoji })
+                });
+            } catch (error) {
+                console.error('Failed to add reaction:', error);
+            }
+        }
+
+        // Stories
+        async function loadStories() {
+            try {
+                const response = await fetch(`${API_URL}/messenger/stories`, {
+                    headers: {
+                        'Authorization': `Bearer ${getToken()}`
+                    }
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    renderStories(data.stories || []);
+                }
+            } catch (error) {
+                console.error('Failed to load stories:', error);
+            }
+        }
+
+        function renderStories(stories) {
+            const list = document.getElementById('stories-list');
+            list.innerHTML = '';
+
+            stories.forEach(story => {
+                const div = document.createElement('div');
+                div.className = 'story-item interactive';
+                div.onclick = () => viewStory(story.id);
+                div.innerHTML = `
+                    <div class="story-avatar">${getInitials(story.user_name)}</div>
+                    <div class="story-name">${story.user_name}</div>
+                `;
+                list.appendChild(div);
+            });
+        }
+
+        function viewStory(storyId) {
+            if (storyId === 'your-story') {
+                const content = prompt('Enter story text:');
+                if (!content) return;
+
+                fetch(`${API_URL}/messenger/stories`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${getToken()}`
+                    },
+                    body: JSON.stringify({ content })
+                }).then(() => loadStories());
+            } else {
+                alert('Story viewer coming soon!');
+            }
+        }
+
+        // Search
+        document.getElementById('search-conversations').addEventListener('input', (e) => {
+            const query = e.target.value.toLowerCase();
+            document.querySelectorAll('.conversation-item').forEach(item => {
+                const name = item.querySelector('.conversation-name').textContent.toLowerCase();
+                item.style.display = name.includes(query) ? 'block' : 'none';
+            });
+        });
+
+        // Helpers
+        function getInitials(name) {
+            return name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
+        }
+
+        function formatTime(timestamp) {
+            if (!timestamp) return '';
+            const date = new Date(timestamp);
+            const now = new Date();
+            const diff = now - date;
+
+            if (diff < 60000) return 'Just now';
+            if (diff < 3600000) return Math.floor(diff / 60000) + 'm ago';
+            if (diff < 86400000) return Math.floor(diff / 3600000) + 'h ago';
+            return date.toLocaleDateString();
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // Load current user
+        async function loadCurrentUser() {
+            try {
+                const response = await fetch(`${API_URL}/auth/me`, {
+                    headers: {
+                        'Authorization': `Bearer ${getToken()}`
+                    }
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    currentUser = data.user;
+                }
+            } catch (error) {
+                console.error('Failed to load user:', error);
+            }
+        }
+
+        // Initialize
+        loadCurrentUser().then(() => {
+            connectWebSocket();
+        });
     </script>
 </body>
 </html>
