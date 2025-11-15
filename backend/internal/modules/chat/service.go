@@ -1,0 +1,384 @@
+package chat
+
+import (
+	"context"
+	"errors"
+	"fmt"
+	"io"
+	"os"
+	"time"
+
+	"github.com/google/uuid"
+	openai "github.com/sashabaranov/go-openai"
+	"gorm.io/gorm"
+)
+
+type Service struct {
+	repo         *Repository
+	openaiClient *openai.Client
+	db           *gorm.DB
+}
+
+func NewService(repo *Repository, db *gorm.DB) *Service {
+	apiKey := os.Getenv("OPENAI_API_KEY")
+	if apiKey == "" {
+		panic("OPENAI_API_KEY environment variable is required")
+	}
+
+	return &Service{
+		repo:         repo,
+		openaiClient: openai.NewClient(apiKey),
+		db:           db,
+	}
+}
+
+func (s *Service) CreateChat(userID uuid.UUID, req *CreateChatRequest) (*Chat, error) {
+	if req.Model == "" {
+		req.Model = "gpt-4o"
+	}
+
+	chat := &Chat{
+		UserID: userID,
+		Title:  req.Title,
+		Model:  req.Model,
+	}
+
+	if chat.Title == "" {
+		chat.Title = "New Chat"
+	}
+
+	if err := s.repo.CreateChat(chat); err != nil {
+		return nil, err
+	}
+
+	return chat, nil
+}
+
+func (s *Service) GetChat(chatID, userID uuid.UUID) (*Chat, error) {
+	return s.repo.GetChatByID(chatID, userID)
+}
+
+func (s *Service) GetUserChats(userID uuid.UUID, limit, offset int) ([]Chat, error) {
+	if limit <= 0 || limit > 100 {
+		limit = 50
+	}
+	return s.repo.GetUserChats(userID, limit, offset)
+}
+
+func (s *Service) UpdateChat(chatID, userID uuid.UUID, req *UpdateChatRequest) (*Chat, error) {
+	chat, err := s.repo.GetChatByID(chatID, userID)
+	if err != nil {
+		return nil, err
+	}
+
+	if req.Title != "" {
+		chat.Title = req.Title
+	}
+	if req.Model != "" {
+		chat.Model = req.Model
+	}
+
+	if err := s.repo.UpdateChat(chat); err != nil {
+		return nil, err
+	}
+
+	return chat, nil
+}
+
+func (s *Service) DeleteChat(chatID, userID uuid.UUID) error {
+	return s.repo.DeleteChat(chatID, userID)
+}
+
+func (s *Service) CheckTokenLimit(userID uuid.UUID) (bool, int64, int64, error) {
+	var user struct {
+		SubscriptionTier string
+		TokensUsed       int64
+		TokensLimit      int64
+		ResetAt          time.Time
+	}
+
+	err := s.db.Table("users").
+		Where("id = ?", userID).
+		Select("subscription_tier, tokens_used, tokens_limit, reset_at").
+		Scan(&user).Error
+
+	if err != nil {
+		return false, 0, 0, err
+	}
+
+	// Check if reset period has passed
+	if time.Now().After(user.ResetAt) {
+		// Reset tokens
+		s.db.Table("users").
+			Where("id = ?", userID).
+			Updates(map[string]interface{}{
+				"tokens_used": 0,
+				"reset_at":    time.Now().Add(6 * time.Hour),
+			})
+		user.TokensUsed = 0
+		user.ResetAt = time.Now().Add(6 * time.Hour)
+	}
+
+	// -1 means unlimited
+	if user.TokensLimit == -1 {
+		return true, user.TokensUsed, user.TokensLimit, nil
+	}
+
+	hasCapacity := user.TokensUsed < user.TokensLimit
+	return hasCapacity, user.TokensUsed, user.TokensLimit, nil
+}
+
+func (s *Service) SendMessage(chatID, userID uuid.UUID, req *SendMessageRequest) (<-chan StreamChunk, error) {
+	// Get chat and verify ownership
+	chat, err := s.repo.GetChatByID(chatID, userID)
+	if err != nil {
+		return nil, err
+	}
+
+	// Check token limit
+	hasCapacity, tokensUsed, tokensLimit, err := s.CheckTokenLimit(userID)
+	if err != nil {
+		return nil, err
+	}
+	if !hasCapacity {
+		return nil, fmt.Errorf("token limit exceeded: %d/%d tokens used", tokensUsed, tokensLimit)
+	}
+
+	// Save user message
+	userMessage := &Message{
+		ChatID:  chatID,
+		Role:    "user",
+		Content: req.Content,
+		Tokens:  countTokens(req.Content),
+	}
+
+	if err := s.repo.CreateMessage(userMessage); err != nil {
+		return nil, err
+	}
+
+	// Build conversation history
+	messages, err := s.repo.GetChatMessages(chatID)
+	if err != nil {
+		return nil, err
+	}
+
+	openaiMessages := make([]openai.ChatCompletionMessage, 0, len(messages)+1)
+
+	// Add system prompt if provided
+	if req.SystemPrompt != "" {
+		openaiMessages = append(openaiMessages, openai.ChatCompletionMessage{
+			Role:    openai.ChatMessageRoleSystem,
+			Content: req.SystemPrompt,
+		})
+	}
+
+	// Add conversation history
+	for _, msg := range messages {
+		role := openai.ChatMessageRoleUser
+		if msg.Role == "assistant" {
+			role = openai.ChatMessageRoleAssistant
+		} else if msg.Role == "system" {
+			role = openai.ChatMessageRoleSystem
+		}
+
+		openaiMessages = append(openaiMessages, openai.ChatCompletionMessage{
+			Role:    role,
+			Content: msg.Content,
+		})
+	}
+
+	// Create streaming request
+	streamReq := openai.ChatCompletionRequest{
+		Model:    chat.Model,
+		Messages: openaiMessages,
+		Stream:   true,
+	}
+
+	stream, err := s.openaiClient.CreateChatCompletionStream(context.Background(), streamReq)
+	if err != nil {
+		return nil, err
+	}
+
+	// Create channel for streaming chunks
+	chunkChan := make(chan StreamChunk)
+	assistantMessageID := uuid.New()
+
+	go func() {
+		defer close(chunkChan)
+		defer stream.Close()
+
+		var fullContent string
+		var totalTokens int
+
+		for {
+			response, err := stream.Recv()
+			if errors.Is(err, io.EOF) {
+				// Stream finished - save assistant message
+				assistantMessage := &Message{
+					ID:      assistantMessageID,
+					ChatID:  chatID,
+					Role:    "assistant",
+					Content: fullContent,
+					Tokens:  totalTokens,
+					Model:   chat.Model,
+				}
+
+				s.repo.CreateMessage(assistantMessage)
+
+				// Update user's token usage
+				s.db.Table("users").
+					Where("id = ?", userID).
+					UpdateColumn("tokens_used", gorm.Expr("tokens_used + ?", totalTokens+userMessage.Tokens))
+
+				// Update chat timestamp
+				chat.UpdatedAt = time.Now()
+				s.repo.UpdateChat(chat)
+
+				// Send final chunk
+				chunkChan <- StreamChunk{
+					Delta:       "",
+					MessageID:   assistantMessageID.String(),
+					Done:        true,
+					TotalTokens: totalTokens,
+				}
+				return
+			}
+
+			if err != nil {
+				chunkChan <- StreamChunk{
+					Delta:     fmt.Sprintf("Error: %v", err),
+					MessageID: assistantMessageID.String(),
+					Done:      true,
+				}
+				return
+			}
+
+			if len(response.Choices) > 0 {
+				delta := response.Choices[0].Delta.Content
+				fullContent += delta
+				totalTokens = countTokens(fullContent)
+
+				chunkChan <- StreamChunk{
+					Delta:     delta,
+					MessageID: assistantMessageID.String(),
+					Done:      false,
+				}
+			}
+		}
+	}()
+
+	return chunkChan, nil
+}
+
+func (s *Service) RegenerateMessage(chatID, messageID, userID uuid.UUID) (<-chan StreamChunk, error) {
+	// Get chat and verify ownership
+	chat, err := s.repo.GetChatByID(chatID, userID)
+	if err != nil {
+		return nil, err
+	}
+
+	// Get all messages up to the one being regenerated
+	messages, err := s.repo.GetChatMessages(chatID)
+	if err != nil {
+		return nil, err
+	}
+
+	// Find the message index
+	messageIndex := -1
+	for i, msg := range messages {
+		if msg.ID == messageID {
+			messageIndex = i
+			break
+		}
+	}
+
+	if messageIndex == -1 || messages[messageIndex].Role != "assistant" {
+		return nil, errors.New("message not found or not an assistant message")
+	}
+
+	// Build conversation up to the previous user message
+	openaiMessages := make([]openai.ChatCompletionMessage, 0)
+	for i := 0; i < messageIndex; i++ {
+		msg := messages[i]
+		role := openai.ChatMessageRoleUser
+		if msg.Role == "assistant" {
+			role = openai.ChatMessageRoleAssistant
+		} else if msg.Role == "system" {
+			role = openai.ChatMessageRoleSystem
+		}
+
+		openaiMessages = append(openaiMessages, openai.ChatCompletionMessage{
+			Role:    role,
+			Content: msg.Content,
+		})
+	}
+
+	// Create streaming request
+	streamReq := openai.ChatCompletionRequest{
+		Model:    chat.Model,
+		Messages: openaiMessages,
+		Stream:   true,
+	}
+
+	stream, err := s.openaiClient.CreateChatCompletionStream(context.Background(), streamReq)
+	if err != nil {
+		return nil, err
+	}
+
+	chunkChan := make(chan StreamChunk)
+
+	go func() {
+		defer close(chunkChan)
+		defer stream.Close()
+
+		var fullContent string
+		var totalTokens int
+
+		for {
+			response, err := stream.Recv()
+			if errors.Is(err, io.EOF) {
+				// Update existing message
+				messages[messageIndex].Content = fullContent
+				messages[messageIndex].Tokens = totalTokens
+				s.repo.UpdateMessage(&messages[messageIndex])
+
+				chunkChan <- StreamChunk{
+					Delta:       "",
+					MessageID:   messageID.String(),
+					Done:        true,
+					TotalTokens: totalTokens,
+				}
+				return
+			}
+
+			if err != nil {
+				chunkChan <- StreamChunk{
+					Delta:     fmt.Sprintf("Error: %v", err),
+					MessageID: messageID.String(),
+					Done:      true,
+				}
+				return
+			}
+
+			if len(response.Choices) > 0 {
+				delta := response.Choices[0].Delta.Content
+				fullContent += delta
+				totalTokens = countTokens(fullContent)
+
+				chunkChan <- StreamChunk{
+					Delta:     delta,
+					MessageID: messageID.String(),
+					Done:      false,
+				}
+			}
+		}
+	}()
+
+	return chunkChan, nil
+}
+
+// Simple token counter (approximation: ~4 chars per token for English)
+// In production, use tiktoken-go for accurate counting
+func countTokens(text string) int {
+	return len(text) / 4
+}

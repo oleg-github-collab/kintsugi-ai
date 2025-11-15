@@ -1,0 +1,63 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: kintsugi-postgres
+    environment:
+      POSTGRES_DB: kintsugi
+      POSTGRES_USER: kintsugi
+      POSTGRES_PASSWORD: kintsugi_password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U kintsugi"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    container_name: kintsugi-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: kintsugi-backend
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    environment:
+      - PORT=8080
+      - DATABASE_URL=postgresql://kintsugi:kintsugi_password@postgres:5432/kintsugi?sslmode=disable
+      - REDIS_URL=redis://redis:6379
+      - JWT_SECRET=your-super-secret-jwt-key-change-in-production
+      - CORS_ORIGINS=http://localhost:3000
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - DEEPL_API_KEY=${DEEPL_API_KEY}
+      - OTRANSLATOR_API_KEY=${OTRANSLATOR_API_KEY}
+      - STRIPE_SECRET_KEY=${STRIPE_SECRET_KEY}
+      - STRIPE_WEBHOOK_SECRET=${STRIPE_WEBHOOK_SECRET}
+      - HMS_APP_ACCESS_KEY=${HMS_APP_ACCESS_KEY}
+      - HMS_APP_SECRET=${HMS_APP_SECRET}
+    ports:
+      - "8080:8080"
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+  redis_data:

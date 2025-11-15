@@ -1,0 +1,65 @@
+# Environment variables
+.env
+.env.local
+.env.production
+.env.development
+
+# Backend (Go)
+backend/bin/
+backend/tmp/
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+vendor/
+
+# Frontend (Next.js)
+frontend/node_modules/
+frontend/.next/
+frontend/out/
+frontend/build/
+frontend/.vercel
+frontend/.env*.local
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Logs
+*.log
+logs/
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+
+# Build artifacts
+dist/
+build/
+
+# Coverage
+coverage/
+*.cover
+*.coverage
+
+# Railway
+.railway/
+
+# Secrets
+*.pem
+*.key
+*.cert
+secrets/
