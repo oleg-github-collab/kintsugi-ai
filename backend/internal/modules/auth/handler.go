@@ -109,5 +109,7 @@ func (h *Handler) Me(c *fiber.Ctx) error {
 		})
 	}
 
-	return c.JSON(user.ToDTO())
+	return c.JSON(fiber.Map{
+		"user": user.ToDTO(),
+	})
 }
