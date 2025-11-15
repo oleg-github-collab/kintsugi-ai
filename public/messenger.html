@@ -154,6 +154,25 @@
         </div>
     </div>
 
+    <!-- Contact Selection Modal for Calls -->
+    <div id="contact-select-modal" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.95); z-index: 11000; align-items: center; justify-content: center;">
+        <div style="background: var(--digital-black); border: 3px solid var(--cyber-cyan); padding: 2rem; max-width: 500px; width: 90%; max-height: 80vh; overflow-y: auto;">
+            <h3 class="text-cyan text-neon" style="font-size: 1.5rem; margin-bottom: 1.5rem;">
+                <span id="call-type-select-icon">📞</span> SELECT CONTACT
+            </h3>
+
+            <div style="margin-bottom: 1.5rem;">
+                <input type="text" id="contact-search" placeholder="🔍 Search contacts..." class="form-input interactive" style="width: 100%; padding: 1rem; border: 2px solid var(--cyber-cyan);">
+            </div>
+
+            <div id="contact-list" style="display: flex; flex-direction: column; gap: 0.5rem;">
+                <!-- Contacts will be populated here -->
+            </div>
+
+            <button onclick="closeContactSelect()" class="btn btn-secondary interactive" style="width: 100%; padding: 1rem; margin-top: 1rem;">CANCEL</button>
+        </div>
+    </div>
+
     <!-- Call Modal -->
     <div id="call-modal" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.95); z-index: 11000; align-items: center; justify-content: center;">
         <div style="background: var(--digital-black); border: 3px solid var(--cyber-cyan); padding: 2rem; max-width: 800px; width: 90%; height: 600px; display: flex; flex-direction: column;">
@@ -163,6 +182,7 @@
                 </h3>
                 <div style="display: flex; gap: 0.5rem; align-items: center;">
                     <span id="call-timer" style="color: var(--kintsugi-gold); font-size: 1.2rem; font-weight: bold;">00:00</span>
+                    <button onclick="toggleFullscreen()" class="btn btn-secondary interactive" style="padding: 0.5rem 1rem;" title="Fullscreen">⛶</button>
                     <button onclick="endCall()" class="btn btn-secondary interactive" style="padding: 0.5rem 1rem;">✕</button>
                 </div>
             </div>

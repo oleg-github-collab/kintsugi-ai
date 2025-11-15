@@ -20,6 +20,8 @@
 .sidebar-header {
     padding: 1.5rem;
     border-bottom: 3px solid var(--cyber-cyan);
+    background: linear-gradient(135deg, rgba(0, 255, 255, 0.08), rgba(0, 255, 255, 0.02));
+    box-shadow: 0 4px 0px rgba(0, 255, 255, 0.2);
 }
 
 .stories-container {
@@ -49,6 +51,23 @@
     font-weight: bold;
     font-size: 1.5rem;
     margin-bottom: 0.5rem;
+    box-shadow: 0 0 20px rgba(240, 255, 0, 0.6);
+    transition: all 0.3s ease;
+    animation: pulse 2s infinite;
+}
+
+.story-avatar:hover {
+    transform: scale(1.1);
+    box-shadow: 0 0 30px rgba(240, 255, 0, 0.9);
+}
+
+@keyframes pulse {
+    0%, 100% {
+        box-shadow: 0 0 20px rgba(240, 255, 0, 0.6);
+    }
+    50% {
+        box-shadow: 0 0 30px rgba(240, 255, 0, 0.8);
+    }
 }
 
 .story-name {
@@ -73,17 +92,22 @@
     padding: 1rem;
     border-bottom: 2px solid #1a1a1a;
     cursor: pointer;
-    transition: all 0.2s;
+    transition: all 0.3s ease;
+    position: relative;
 }
 
 .conversation-item:hover {
     background-color: rgba(0, 255, 255, 0.1);
     border-left: 4px solid var(--cyber-cyan);
+    transform: translateX(4px);
+    box-shadow: -6px 6px 0px rgba(0, 255, 255, 0.3);
 }
 
 .conversation-item.active {
     background-color: rgba(0, 255, 255, 0.15);
     border-left: 4px solid var(--kintsugi-gold);
+    box-shadow: -8px 8px 0px rgba(240, 255, 0, 0.4);
+    transform: translateX(4px);
 }
 
 .conversation-avatar {
@@ -98,6 +122,14 @@
     font-size: 1.25rem;
     margin-right: 1rem;
     flex-shrink: 0;
+    border: 3px solid var(--cyber-cyan);
+    box-shadow: 0 0 15px rgba(0, 255, 255, 0.5);
+    transition: all 0.3s ease;
+}
+
+.conversation-avatar:hover {
+    box-shadow: 0 0 25px rgba(0, 255, 255, 0.8);
+    transform: scale(1.05);
 }
 
 .conversation-info {
@@ -137,6 +169,8 @@
     display: flex;
     align-items: center;
     gap: 1rem;
+    background: linear-gradient(90deg, rgba(240, 255, 0, 0.05), rgba(0, 255, 255, 0.05));
+    box-shadow: 0 4px 0px rgba(240, 255, 0, 0.3);
 }
 
 .chat-messages {
@@ -177,15 +211,39 @@
 
 .message-bubble {
     padding: 0.75rem 1rem;
-    border: 2px solid var(--cyber-cyan);
-    background-color: rgba(0, 255, 255, 0.05);
+    border: 3px solid var(--cyber-cyan);
+    background: linear-gradient(135deg, rgba(0, 255, 255, 0.08), rgba(0, 255, 255, 0.02));
     margin-bottom: 0.25rem;
     position: relative;
+    box-shadow: 4px 4px 0px rgba(0, 255, 255, 0.2);
+    animation: slideInMessage 0.3s ease-out;
+    transition: all 0.2s ease;
+}
+
+.message-bubble:hover {
+    box-shadow: 6px 6px 0px rgba(0, 255, 255, 0.4);
+    transform: translate(-2px, -2px);
 }
 
 .message-group.own .message-bubble {
     border-color: var(--kintsugi-gold);
-    background-color: rgba(240, 255, 0, 0.05);
+    background: linear-gradient(135deg, rgba(240, 255, 0, 0.08), rgba(240, 255, 0, 0.02));
+    box-shadow: 4px 4px 0px rgba(240, 255, 0, 0.2);
+}
+
+.message-group.own .message-bubble:hover {
+    box-shadow: 6px 6px 0px rgba(240, 255, 0, 0.4);
+}
+
+@keyframes slideInMessage {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 .message-text {
@@ -214,10 +272,13 @@
     font-size: 0.85rem;
     cursor: pointer;
     transition: all 0.2s;
+    box-shadow: 2px 2px 0px rgba(255, 0, 255, 0.3);
 }
 
 .reaction-btn:hover {
     background-color: rgba(255, 0, 255, 0.3);
+    box-shadow: 4px 4px 0px rgba(255, 0, 255, 0.5);
+    transform: translate(-2px, -2px);
 }
 
 .add-reaction {
@@ -236,6 +297,8 @@
 .chat-input-container {
     padding: 1.5rem;
     border-top: 3px solid var(--kintsugi-gold);
+    background: linear-gradient(180deg, rgba(240, 255, 0, 0.02), rgba(240, 255, 0, 0.08));
+    box-shadow: 0 -4px 0px rgba(240, 255, 0, 0.2);
 }
 
 .typing-indicator {

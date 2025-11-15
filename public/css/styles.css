@@ -27,11 +27,11 @@ body {
     min-height: 100vh;
 }
 
-/* White Cross Cursor with Invert Effect */
+/* White Cross Cursor with Invert Effect - Reduced by 1.5x */
 .cursor-cross {
     position: fixed;
-    width: 40px;
-    height: 40px;
+    width: 27px;
+    height: 27px;
     pointer-events: none;
     z-index: 10000;
     mix-blend-mode: difference;
@@ -45,23 +45,23 @@ body {
 }
 
 .cursor-cross::before {
-    width: 3px;
-    height: 40px;
+    width: 2px;
+    height: 27px;
     left: 50%;
     transform: translateX(-50%);
 }
 
 .cursor-cross::after {
-    width: 40px;
-    height: 3px;
+    width: 27px;
+    height: 2px;
     top: 50%;
     transform: translateY(-50%);
 }
 
 .cursor-invert {
     position: fixed;
-    width: 80px;
-    height: 80px;
+    width: 53px;
+    height: 53px;
     border-radius: 50%;
     pointer-events: none;
     z-index: 9999;
@@ -72,8 +72,8 @@ body {
 }
 
 .cursor-invert.hover {
-    width: 120px;
-    height: 120px;
+    width: 80px;
+    height: 80px;
 }
 
 /* Matrix rain effect container */

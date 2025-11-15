@@ -166,6 +166,11 @@ async function selectConversation(convId) {
                 <button onclick="showAITools()" class="btn btn-secondary interactive" style="padding: 0.5rem 1rem; font-size: 0.85rem;">🛠️ TOOLS</button>
             </div>
         `;
+        // Hide call buttons for AI chat
+        const callButtons = document.getElementById('call-buttons');
+        if (callButtons) {
+            callButtons.style.display = 'none';
+        }
     } else {
         document.getElementById('chat-header').innerHTML = `
             <div class="conversation-avatar">${getInitials(conv.name)}</div>
@@ -174,19 +179,10 @@ async function selectConversation(convId) {
                 <div class="conversation-time">${conv.participants_count} participants</div>
             </div>
         `;
-
         // Show call buttons for non-AI chats
         const callButtons = document.getElementById('call-buttons');
         if (callButtons) {
             callButtons.style.display = 'flex';
-        }
-    }
-
-    // Hide call buttons for AI chat
-    if (isAIChat) {
-        const callButtons = document.getElementById('call-buttons');
-        if (callButtons) {
-            callButtons.style.display = 'none';
         }
     }
 

@@ -8,6 +8,7 @@ let callStartTime = null;
 let isAudioEnabled = true;
 let isVideoEnabled = true;
 let currentCallType = null;
+let selectedContactForCall = null;
 
 const configuration = {
     iceServers: [
@@ -16,8 +17,29 @@ const configuration = {
     ]
 };
 
-// Start call
-window.startCall = async function(type) {
+// Start call to current conversation
+window.startCall = function(type) {
+    // If no conversation selected, do nothing
+    if (!currentConversationId) {
+        alert('Please select a conversation first');
+        return;
+    }
+
+    // Get current conversation
+    const contact = conversations[currentConversationId];
+
+    // Don't allow calls to AI
+    if (contact.isAI) {
+        return;
+    }
+
+    // Initiate call directly to current conversation
+    initiateCall(currentConversationId, type);
+};
+
+// Initiate call
+async function initiateCall(contactId, type) {
+    selectedContactForCall = contactId;
     currentCallType = type;
     const modal = document.getElementById('call-modal');
     const contactName = conversations[currentConversationId]?.name || 'Unknown';
@@ -277,6 +299,31 @@ function startCallTimer() {
             `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
     }, 1000);
 }
+
+// Toggle fullscreen mode
+window.toggleFullscreen = function() {
+    const callModal = document.getElementById('call-modal');
+
+    if (!document.fullscreenElement) {
+        // Enter fullscreen
+        if (callModal.requestFullscreen) {
+            callModal.requestFullscreen();
+        } else if (callModal.webkitRequestFullscreen) {
+            callModal.webkitRequestFullscreen();
+        } else if (callModal.msRequestFullscreen) {
+            callModal.msRequestFullscreen();
+        }
+    } else {
+        // Exit fullscreen
+        if (document.exitFullscreen) {
+            document.exitFullscreen();
+        } else if (document.webkitExitFullscreen) {
+            document.webkitExitFullscreen();
+        } else if (document.msExitFullscreen) {
+            document.msExitFullscreen();
+        }
+    }
+};
 
 // Handle WebSocket messages for WebRTC signaling
 if (typeof handleWebSocketMessage !== 'undefined') {
