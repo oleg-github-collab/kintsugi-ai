@@ -922,9 +922,9 @@ window.generateInviteLink = async function() {
                     <a href="${telegramLink}" target="_blank" class="btn btn-primary interactive" style="flex: 1; text-align: center;">📱 TELEGRAM</a>
                     <a href="${whatsappLink}" target="_blank" class="btn btn-primary interactive" style="flex: 1; text-align: center;">💬 WHATSAPP</a>
                 </div>
-                <button onclick="this.parentElement.remove(); this.previousElementSibling.remove();" class="btn btn-secondary interactive" style="width: 100%; margin-top: 1rem;">CLOSE</button>
+                <button onclick="closeInviteModal()" class="btn btn-secondary interactive" style="width: 100%; margin-top: 1rem;">CLOSE</button>
             </div>
-            <div onclick="this.nextElementSibling.remove(); this.remove();" style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.8); z-index: 9999;"></div>
+            <div id="invite-backdrop" onclick="closeInviteModal()" style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.8); z-index: 9999;"></div>
         `;
 
         document.body.insertAdjacentHTML('beforeend', modal);
@@ -932,6 +932,11 @@ window.generateInviteLink = async function() {
         console.error('Failed to generate invite link:', error);
         alert('Failed to generate invite link. Please try again.');
     }
+};
+
+window.closeInviteModal = function() {
+    document.getElementById('invite-backdrop')?.remove();
+    document.querySelector('[id="invite-link-input"]')?.closest('div[style*="position: fixed"]')?.remove();
 };
 
 // Message search

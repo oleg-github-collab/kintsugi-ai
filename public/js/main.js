@@ -80,19 +80,25 @@ document.addEventListener("DOMContentLoaded", function() {
 
 // Auth helpers
 function getToken() {
-    return localStorage.getItem('token');
+    const token = localStorage.getItem('token');
+    console.log('[AUTH] Getting token:', token ? 'EXISTS' : 'NULL');
+    return token;
 }
 
 function setToken(token) {
+    console.log('[AUTH] Setting token:', token);
     localStorage.setItem('token', token);
 }
 
 function removeToken() {
+    console.log('[AUTH] Removing token');
     localStorage.removeItem('token');
 }
 
 function isAuthenticated() {
-    return !!getToken();
+    const authenticated = !!getToken();
+    console.log('[AUTH] Is authenticated:', authenticated);
+    return authenticated;
 }
 
 function logout() {
