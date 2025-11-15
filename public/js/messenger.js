@@ -12,7 +12,7 @@ let currentUser = null;
 const conversations = {};
 const messages = {};
 let isAIChat = false;
-let currentAIModel = 'gpt-4o'; // GPT-4o for Kintsugi AI
+let currentAIModel = 'gpt-4o'; // AI model for assistant
 
 // Initialize WebSocket
 function connectWebSocket() {
@@ -66,8 +66,7 @@ function addAIContact() {
         id: 'ai-assistant',
         name: 'Kintsugi AI',
         isAI: true,
-        model: 'gpt-4o',
-        last_message: 'Ask me anything! Powered by GPT-4o',
+        last_message: 'Ask me anything!',
         updated_at: new Date().toISOString(),
         participants_count: 2
     };
@@ -89,7 +88,7 @@ function addAIContact() {
             <div class="conversation-avatar" style="background: linear-gradient(135deg, var(--kintsugi-gold), var(--neon-orange));">🤖</div>
             <div class="conversation-info">
                 <div class="conversation-name text-gold">Kintsugi AI</div>
-                <div class="conversation-preview">GPT-4o • Ask me anything!</div>
+                <div class="conversation-preview">AI Assistant • Always online</div>
             </div>
             <div class="conversation-time">●</div>
         </div>
@@ -160,7 +159,7 @@ async function selectConversation(convId) {
             <div style="flex: 1;">
                 <div class="conversation-name text-gold" style="font-size: 1.25rem;">Kintsugi AI</div>
                 <div class="conversation-time">
-                    GPT-4o • Always online
+                    AI Assistant • Always online
                 </div>
             </div>
             <div style="display: flex; gap: 0.5rem;">
@@ -189,7 +188,7 @@ async function selectConversation(convId) {
     }
 }
 
-// Removed switchAIModel - using GPT-4o only
+// AI model switching removed - single AI model
 
 window.showAITools = function() {
     const tools = `
@@ -298,7 +297,15 @@ function renderMessages() {
 
         // Detect image URLs
         if (msg.image_url) {
-            messageContent = `<img src="${msg.image_url}" style="max-width: 100%; border: 2px solid var(--cyber-cyan); margin-top: 0.5rem;" alt="Generated image">` + messageContent;
+            messageContent = `
+                <div class="image-container" style="position: relative; margin-top: 0.5rem;">
+                    <img src="${msg.image_url}" style="max-width: 100%; border: 2px solid var(--cyber-cyan); display: block;" alt="Generated image">
+                    <div style="display: flex; gap: 0.5rem; margin-top: 0.5rem;">
+                        <button onclick="downloadImage('${msg.image_url}', 'kintsugi-image-${msg.id}')" class="btn btn-secondary interactive" style="flex: 1; padding: 0.5rem; font-size: 0.85rem;">⬇ DOWNLOAD</button>
+                        <button onclick="forwardImage('${msg.image_url}')" class="btn btn-secondary interactive" style="flex: 1; padding: 0.5rem; font-size: 0.85rem;">↗ FORWARD</button>
+                    </div>
+                </div>
+            ` + messageContent;
         }
 
         div.innerHTML = `
@@ -326,10 +333,15 @@ function renderMessages() {
 
 function formatCodeBlocks(text) {
     return text.replace(/```(\w+)?\n([\s\S]+?)```/g, (match, lang, code) => {
-        return `<div class="code-block" style="margin: 0.5rem 0;">
-            <div style="background: var(--cyber-cyan); color: var(--digital-black); padding: 0.5rem; font-weight: bold; text-transform: uppercase; font-size: 0.85rem;">
-                ${lang || 'code'}
-                <button onclick="copyCode(this)" class="interactive" style="float: right; background: var(--digital-black); color: var(--cyber-cyan); border: 2px solid var(--digital-black); padding: 0.25rem 0.5rem; cursor: pointer;">COPY</button>
+        const codeId = 'code-' + Math.random().toString(36).substr(2, 9);
+        return `<div class="code-block" style="margin: 0.5rem 0;" data-code-id="${codeId}">
+            <div style="background: var(--cyber-cyan); color: var(--digital-black); padding: 0.5rem; font-weight: bold; text-transform: uppercase; font-size: 0.85rem; display: flex; justify-content: space-between; align-items: center;">
+                <span>${lang || 'code'}</span>
+                <div style="display: flex; gap: 0.5rem;">
+                    <button onclick="copyCode(this)" class="interactive" style="background: var(--digital-black); color: var(--cyber-cyan); border: 2px solid var(--digital-black); padding: 0.25rem 0.5rem; cursor: pointer;">📋 COPY</button>
+                    <button onclick="downloadCode('${codeId}', '${lang || 'code'}')" class="interactive" style="background: var(--digital-black); color: var(--cyber-cyan); border: 2px solid var(--digital-black); padding: 0.25rem 0.5rem; cursor: pointer;">⬇ DOWNLOAD</button>
+                    <button onclick="forwardCode('${codeId}')" class="interactive" style="background: var(--digital-black); color: var(--cyber-cyan); border: 2px solid var(--digital-black); padding: 0.25rem 0.5rem; cursor: pointer;">↗ FORWARD</button>
+                </div>
             </div>
             <pre style="background: #1a1a1a; padding: 1rem; overflow-x: auto; margin: 0; border: 2px solid var(--cyber-cyan);"><code>${escapeHtml(code.trim())}</code></pre>
         </div>`;
@@ -339,11 +351,124 @@ function formatCodeBlocks(text) {
 window.copyCode = function(btn) {
     const code = btn.closest('.code-block').querySelector('code').textContent;
     navigator.clipboard.writeText(code);
-    btn.textContent = 'COPIED!';
+    const originalText = btn.textContent;
+    btn.textContent = '✓ COPIED!';
     setTimeout(() => {
-        btn.textContent = 'COPY';
+        btn.textContent = originalText;
     }, 2000);
 };
+
+window.downloadCode = function(codeId, lang) {
+    const codeBlock = document.querySelector(`[data-code-id="${codeId}"]`);
+    const code = codeBlock.querySelector('code').textContent;
+    const blob = new Blob([code], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `kintsugi-code-${Date.now()}.${getFileExtension(lang)}`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+};
+
+window.forwardCode = function(codeId) {
+    const codeBlock = document.querySelector(`[data-code-id="${codeId}"]`);
+    const code = codeBlock.querySelector('code').textContent;
+    const lang = codeBlock.querySelector('span').textContent.toLowerCase();
+
+    // Create forward modal
+    const modal = document.createElement('div');
+    modal.style.cssText = 'position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.9); z-index: 10000; display: flex; align-items: center; justify-content: center;';
+    modal.innerHTML = `
+        <div style="background: var(--digital-black); border: 3px solid var(--cyber-cyan); padding: 2rem; max-width: 600px; width: 90%;">
+            <h3 class="text-cyan" style="margin-bottom: 1rem;">📤 FORWARD CODE</h3>
+            <p style="color: #999; margin-bottom: 1rem;">Select a contact to forward this code snippet:</p>
+            <div style="max-height: 300px; overflow-y: auto; margin-bottom: 1rem;">
+                ${Object.values(conversations).filter(c => !c.isAI).map(c => `
+                    <button onclick="doForwardCode('${c.id}', \`${code.replace(/`/g, '\\`')}\`, '${lang}')" class="btn btn-secondary interactive" style="width: 100%; margin-bottom: 0.5rem; text-align: left;">
+                        ${c.name}
+                    </button>
+                `).join('')}
+            </div>
+            <button onclick="this.closest('div[style*=fixed]').remove()" class="btn btn-primary interactive" style="width: 100%;">CANCEL</button>
+        </div>
+    `;
+    document.body.appendChild(modal);
+};
+
+window.doForwardCode = function(convId, code, lang) {
+    // Close modal
+    document.querySelector('div[style*="position: fixed"]').remove();
+
+    // In production, send the code as a message to the conversation
+    alert(`Code forwarded to ${conversations[convId].name}!\n\nIn production, this would send the ${lang} code snippet.`);
+};
+
+window.downloadImage = async function(url, filename) {
+    try {
+        const response = await fetch(url);
+        const blob = await response.blob();
+        const blobUrl = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = blobUrl;
+        a.download = `${filename}.png`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(blobUrl);
+    } catch (error) {
+        console.error('Download failed:', error);
+        alert('Failed to download image');
+    }
+};
+
+window.forwardImage = function(imageUrl) {
+    const modal = document.createElement('div');
+    modal.style.cssText = 'position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.9); z-index: 10000; display: flex; align-items: center; justify-content: center;';
+    modal.innerHTML = `
+        <div style="background: var(--digital-black); border: 3px solid var(--cyber-cyan); padding: 2rem; max-width: 600px; width: 90%;">
+            <h3 class="text-cyan" style="margin-bottom: 1rem;">📤 FORWARD IMAGE</h3>
+            <p style="color: #999; margin-bottom: 1rem;">Select a contact to forward this image:</p>
+            <div style="max-height: 300px; overflow-y: auto; margin-bottom: 1rem;">
+                ${Object.values(conversations).filter(c => !c.isAI).map(c => `
+                    <button onclick="doForwardImage('${c.id}', '${imageUrl}')" class="btn btn-secondary interactive" style="width: 100%; margin-bottom: 0.5rem; text-align: left;">
+                        ${c.name}
+                    </button>
+                `).join('')}
+            </div>
+            <button onclick="this.closest('div[style*=fixed]').remove()" class="btn btn-primary interactive" style="width: 100%;">CANCEL</button>
+        </div>
+    `;
+    document.body.appendChild(modal);
+};
+
+window.doForwardImage = function(convId, imageUrl) {
+    document.querySelector('div[style*="position: fixed"]').remove();
+    alert(`Image forwarded to ${conversations[convId].name}!\n\nIn production, this would send the image.`);
+};
+
+function getFileExtension(lang) {
+    const extensions = {
+        'javascript': 'js',
+        'typescript': 'ts',
+        'python': 'py',
+        'java': 'java',
+        'cpp': 'cpp',
+        'c': 'c',
+        'go': 'go',
+        'rust': 'rs',
+        'html': 'html',
+        'css': 'css',
+        'json': 'json',
+        'yaml': 'yaml',
+        'xml': 'xml',
+        'sql': 'sql',
+        'bash': 'sh',
+        'shell': 'sh'
+    };
+    return extensions[lang.toLowerCase()] || 'txt';
+}
 
 function renderReactions(reactions) {
     const grouped = {};
