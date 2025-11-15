@@ -108,11 +108,15 @@ func main() {
 
 	// Fallback to index.html for client-side routing
 	app.Use(func(c *fiber.Ctx) error {
+		path := c.Path()
 		// Only serve index.html for non-API routes
-		if c.Path() != "/health" && !c.Route().Path[:4] == "/api" {
-			return c.SendFile("./static/index.html")
+		if len(path) >= 4 && path[:4] == "/api" {
+			return c.Next()
 		}
-		return c.Next()
+		if path == "/health" {
+			return c.Next()
+		}
+		return c.SendFile("./static/index.html")
 	})
 
 	// Start server
