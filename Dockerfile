@@ -1,31 +1,37 @@
-# Backend Dockerfile
-FROM golang:1.21-alpine AS backend-builder
+# Multi-stage Dockerfile for Railway
+FROM golang:1.21-alpine AS builder
 
-WORKDIR /app
+WORKDIR /build
 
-# Install dependencies
-RUN apk add --no-cache git
+# Install build dependencies
+RUN apk add --no-cache git ca-certificates tzdata
 
 # Copy go mod files
 COPY backend/go.mod backend/go.sum ./
 RUN go mod download
 
-# Copy source code
-COPY backend/ .
+# Copy backend source
+COPY backend/ ./
 
-# Build
-RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o main ./cmd/main.go
+# Build the binary
+RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build \
+    -ldflags="-w -s" \
+    -o /app/main \
+    ./cmd/main.go
 
-# Final stage
+# Final stage - minimal runtime image
 FROM alpine:latest
 
-RUN apk --no-cache add ca-certificates
+# Install runtime dependencies
+RUN apk --no-cache add ca-certificates tzdata
 
-WORKDIR /root/
+WORKDIR /app
 
 # Copy binary from builder
-COPY --from=backend-builder /app/main .
+COPY --from=builder /app/main ./main
 
+# Expose port
 EXPOSE 8080
 
+# Run the application
 CMD ["./main"]
