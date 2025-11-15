@@ -9,9 +9,8 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/stripe/stripe-go/v76"
-	"github.com/stripe/stripe-go/v76/checkout/session"
+	checkoutsession "github.com/stripe/stripe-go/v76/checkout/session"
 	"github.com/stripe/stripe-go/v76/customer"
-	"github.com/stripe/stripe-go/v76/billingportal/session"
 	portalsession "github.com/stripe/stripe-go/v76/billingportal/session"
 	"gorm.io/gorm"
 )
@@ -187,7 +186,7 @@ func (s *Service) CreateCheckoutSession(userID uuid.UUID, req *CreateCheckoutSes
 		},
 	}
 
-	sess, err := session.New(params)
+	sess, err := checkoutsession.New(params)
 	if err != nil {
 		return "", fmt.Errorf("failed to create checkout session: %w", err)
 	}
