@@ -1,5 +1,20 @@
-# Multi-stage Dockerfile for Railway
-FROM golang:1.21-alpine AS builder
+# Multi-stage Dockerfile for Railway - builds both backend and frontend
+FROM node:20-alpine AS frontend-builder
+
+WORKDIR /build
+
+# Copy frontend package files
+COPY frontend/package*.json ./
+RUN npm ci --production=false
+
+# Copy frontend source
+COPY frontend/ ./
+
+# Build Next.js static export
+RUN npm run build
+
+# Backend builder stage
+FROM golang:1.21-alpine AS backend-builder
 
 WORKDIR /build
 
@@ -27,8 +42,11 @@ RUN apk --no-cache add ca-certificates tzdata
 
 WORKDIR /app
 
-# Copy binary from builder
-COPY --from=builder /app/main ./main
+# Copy backend binary from builder
+COPY --from=backend-builder /app/main ./main
+
+# Copy frontend static files from builder
+COPY --from=frontend-builder /build/out ./static
 
 # Expose port
 EXPOSE 8080

@@ -97,6 +97,24 @@ func main() {
 		})
 	})
 
+	// Serve static files from Next.js build
+	app.Static("/", "./static", fiber.Static{
+		Compress:      true,
+		ByteRange:     true,
+		Browse:        false,
+		Index:         "index.html",
+		CacheDuration: 24 * time.Hour,
+	})
+
+	// Fallback to index.html for client-side routing
+	app.Use(func(c *fiber.Ctx) error {
+		// Only serve index.html for non-API routes
+		if c.Path() != "/health" && !c.Route().Path[:4] == "/api" {
+			return c.SendFile("./static/index.html")
+		}
+		return c.Next()
+	})
+
 	// Start server
 	port := os.Getenv("PORT")
 	if port == "" {
