@@ -382,3 +382,72 @@ func (s *Service) RegenerateMessage(chatID, messageID, userID uuid.UUID) (<-chan
 func countTokens(text string) int {
 	return len(text) / 4
 }
+
+// CallOpenAI for messenger AI integration
+func (s *Service) CallOpenAI(userID uuid.UUID, model string, messages []map[string]interface{}) (map[string]interface{}, error) {
+	// Check token limit
+	hasCapacity, _, _, err := s.CheckTokenLimit(userID)
+	if err != nil {
+		return nil, err
+	}
+	if !hasCapacity {
+		return nil, errors.New("token limit exceeded")
+	}
+
+	// Convert messages to OpenAI format
+	openaiMessages := make([]openai.ChatCompletionMessage, 0)
+	for _, msg := range messages {
+		role := ""
+		if r, ok := msg["role"].(string); ok {
+			role = r
+		}
+		content := ""
+		if c, ok := msg["content"].(string); ok {
+			content = c
+		}
+
+		var chatRole string
+		switch role {
+		case "system":
+			chatRole = openai.ChatMessageRoleSystem
+		case "assistant":
+			chatRole = openai.ChatMessageRoleAssistant
+		default:
+			chatRole = openai.ChatMessageRoleUser
+		}
+
+		openaiMessages = append(openaiMessages, openai.ChatCompletionMessage{
+			Role:    chatRole,
+			Content: content,
+		})
+	}
+
+	// Use default model if not specified
+	if model == "" {
+		model = "gpt-4o"
+	}
+
+	req := openai.ChatCompletionRequest{
+		Model:    model,
+		Messages: openaiMessages,
+	}
+
+	resp, err := s.openaiClient.CreateChatCompletion(context.Background(), req)
+	if err != nil {
+		return nil, err
+	}
+
+	// Update token usage
+	tokensUsed := resp.Usage.TotalTokens
+	s.db.Table("users").
+		Where("id = ?", userID).
+		UpdateColumn("tokens_used", gorm.Expr("tokens_used + ?", tokensUsed))
+
+	// Return in OpenAI format
+	return map[string]interface{}{
+		"id":      resp.ID,
+		"model":   resp.Model,
+		"choices": resp.Choices,
+		"usage":   resp.Usage,
+	}, nil
+}

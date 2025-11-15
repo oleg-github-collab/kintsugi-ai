@@ -367,3 +367,14 @@ func (s *Service) ViewStory(storyID, viewerID uuid.UUID) error {
 func (s *Service) DeleteStory(storyID, userID uuid.UUID) error {
 	return s.repo.DeleteStory(storyID, userID)
 }
+
+// Search users
+func (s *Service) SearchUsers(query string) ([]map[string]interface{}, error) {
+	return s.repo.SearchUsers(query)
+}
+
+// Create invite
+func (s *Service) CreateInvite(userID uuid.UUID) (string, error) {
+	inviteCode := uuid.New().String()[:8]
+	return inviteCode, s.repo.CreateInvite(userID, inviteCode)
+}

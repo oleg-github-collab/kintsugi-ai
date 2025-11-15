@@ -434,3 +434,40 @@ func (h *Handler) DeleteStory(c *fiber.Ctx) error {
 		"message": "Story deleted successfully",
 	})
 }
+
+// Search users
+func (h *Handler) SearchUsers(c *fiber.Ctx) error {
+	query := c.Query("q")
+	if query == "" {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error": "Query parameter 'q' is required",
+		})
+	}
+
+	users, err := h.service.SearchUsers(query)
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"error": err.Error(),
+		})
+	}
+
+	return c.JSON(fiber.Map{
+		"users": users,
+	})
+}
+
+// Create invite link
+func (h *Handler) CreateInvite(c *fiber.Ctx) error {
+	userID := c.Locals("user_id").(uuid.UUID)
+
+	inviteCode, err := h.service.CreateInvite(userID)
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"error": err.Error(),
+		})
+	}
+
+	return c.JSON(fiber.Map{
+		"invite_code": inviteCode,
+	})
+}

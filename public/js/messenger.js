@@ -748,31 +748,51 @@ window.startConversation = async function(userId) {
 };
 
 // Invite links
-window.generateInviteLink = function() {
+window.generateInviteLink = async function() {
     const baseUrl = window.location.origin;
-    const inviteCode = Math.random().toString(36).substring(7);
-    const inviteLink = `${baseUrl}/invite/${inviteCode}`;
 
-    const telegramLink = `https://t.me/share/url?url=${encodeURIComponent(inviteLink)}&text=${encodeURIComponent('Join me on Kintsugi AI Messenger!')}`;
-    const whatsappLink = `https://wa.me/?text=${encodeURIComponent('Join me on Kintsugi AI Messenger! ' + inviteLink)}`;
+    try {
+        // Create invite code on backend
+        const response = await fetch(`${API_URL}/messenger/create-invite`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${getToken()}`
+            }
+        });
 
-    const modal = `
-        <div style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: var(--digital-black); border: 3px solid var(--kintsugi-gold); padding: 2rem; z-index: 10000; min-width: 400px;">
-            <h3 class="text-gold" style="font-size: 1.5rem; margin-bottom: 1rem;">INVITE FRIENDS</h3>
-            <div style="margin-bottom: 1rem;">
-                <label style="display: block; margin-bottom: 0.5rem;">Your Invite Link:</label>
-                <input type="text" value="${inviteLink}" readonly style="width: 100%; padding: 0.75rem; border: 2px solid var(--cyber-cyan); background: var(--digital-black); color: var(--cyber-cyan); font-family: monospace;">
+        if (!response.ok) {
+            throw new Error('Failed to create invite');
+        }
+
+        const data = await response.json();
+        const inviteLink = `${baseUrl}/register.html?invite=${data.invite_code}`;
+
+        const telegramLink = `https://t.me/share/url?url=${encodeURIComponent(inviteLink)}&text=${encodeURIComponent('Join me on Kintsugi AI Messenger!')}`;
+        const whatsappLink = `https://wa.me/?text=${encodeURIComponent('Join me on Kintsugi AI Messenger! ' + inviteLink)}`;
+
+        const modal = `
+            <div style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: var(--digital-black); border: 3px solid var(--kintsugi-gold); padding: 2rem; z-index: 10000; min-width: 400px;">
+                <h3 class="text-gold" style="font-size: 1.5rem; margin-bottom: 1rem;">INVITE FRIENDS</h3>
+                <p style="color: var(--cyber-cyan); margin-bottom: 1rem;">Share this link to invite friends to register:</p>
+                <div style="margin-bottom: 1rem;">
+                    <input type="text" id="invite-link-input" value="${inviteLink}" readonly style="width: 100%; padding: 0.75rem; border: 2px solid var(--cyber-cyan); background: var(--digital-black); color: var(--cyber-cyan); font-family: monospace;">
+                </div>
+                <button onclick="navigator.clipboard.writeText(document.getElementById('invite-link-input').value); this.textContent='✓ COPIED!'" class="btn btn-primary interactive" style="width: 100%; margin-bottom: 1rem;">📋 COPY LINK</button>
+                <div style="display: flex; gap: 1rem; margin-top: 1.5rem;">
+                    <a href="${telegramLink}" target="_blank" class="btn btn-primary interactive" style="flex: 1; text-align: center;">📱 TELEGRAM</a>
+                    <a href="${whatsappLink}" target="_blank" class="btn btn-primary interactive" style="flex: 1; text-align: center;">💬 WHATSAPP</a>
+                </div>
+                <button onclick="this.parentElement.remove(); this.previousElementSibling.remove();" class="btn btn-secondary interactive" style="width: 100%; margin-top: 1rem;">CLOSE</button>
             </div>
-            <div style="display: flex; gap: 1rem; margin-top: 1.5rem;">
-                <a href="${telegramLink}" target="_blank" class="btn btn-primary interactive" style="flex: 1; text-align: center;">📱 TELEGRAM</a>
-                <a href="${whatsappLink}" target="_blank" class="btn btn-primary interactive" style="flex: 1; text-align: center;">💬 WHATSAPP</a>
-            </div>
-            <button onclick="this.parentElement.remove()" class="btn btn-secondary interactive" style="width: 100%; margin-top: 1rem;">CLOSE</button>
-        </div>
-        <div onclick="this.nextElementSibling.remove(); this.remove();" style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.8); z-index: 9999;"></div>
-    `;
+            <div onclick="this.nextElementSibling.remove(); this.remove();" style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.8); z-index: 9999;"></div>
+        `;
 
-    document.body.insertAdjacentHTML('beforeend', modal);
+        document.body.insertAdjacentHTML('beforeend', modal);
+    } catch (error) {
+        console.error('Failed to generate invite link:', error);
+        alert('Failed to generate invite link. Please try again.');
+    }
 };
 
 // Message search

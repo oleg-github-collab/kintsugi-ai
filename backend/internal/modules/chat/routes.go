@@ -5,6 +5,10 @@ import (
 )
 
 func RegisterRoutes(app *fiber.App, handler *Handler, authMiddleware fiber.Handler) {
+	// OpenAI-compatible streaming endpoint (for both chats and messenger AI)
+	app.Post("/api/chat/stream", authMiddleware, handler.SendMessage)
+	app.Post("/api/chat/completions", authMiddleware, handler.ChatCompletions)
+
 	chats := app.Group("/api/chats", authMiddleware)
 
 	chats.Post("/", handler.CreateChat)

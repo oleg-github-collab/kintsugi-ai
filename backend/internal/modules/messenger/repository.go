@@ -248,3 +248,26 @@ func (r *Repository) DeleteStory(id, userID uuid.UUID) error {
 	return r.db.Where("id = ? AND user_id = ?", id, userID).
 		Delete(&Story{}).Error
 }
+
+// Search users by email or username
+func (r *Repository) SearchUsers(query string) ([]map[string]interface{}, error) {
+	var users []map[string]interface{}
+
+	err := r.db.Table("users").
+		Select("id, username, email").
+		Where("email ILIKE ? OR username ILIKE ?", "%"+query+"%", "%"+query+"%").
+		Limit(20).
+		Scan(&users).Error
+
+	return users, err
+}
+
+// Create invite
+func (r *Repository) CreateInvite(userID uuid.UUID, inviteCode string) error {
+	return r.db.Exec(
+		"INSERT INTO invite_codes (code, created_by, expires_at) VALUES (?, ?, ?)",
+		inviteCode,
+		userID,
+		time.Now().Add(7*24*time.Hour), // 7 days expiry
+	).Error
+}

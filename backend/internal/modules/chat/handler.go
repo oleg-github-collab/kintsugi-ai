@@ -221,3 +221,29 @@ func (h *Handler) GetTokenUsage(c *fiber.Ctx) error {
 		"is_unlimited":  tokensLimit == -1,
 	})
 }
+
+// OpenAI-compatible chat completions endpoint for messenger AI
+func (h *Handler) ChatCompletions(c *fiber.Ctx) error {
+	userID := c.Locals("user_id").(uuid.UUID)
+
+	var req struct {
+		Model    string                   `json:"model"`
+		Messages []map[string]interface{} `json:"messages"`
+	}
+
+	if err := c.BodyParser(&req); err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error": "Invalid request body",
+		})
+	}
+
+	// Call OpenAI directly for messenger AI
+	response, err := h.service.CallOpenAI(userID, req.Model, req.Messages)
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"error": err.Error(),
+		})
+	}
+
+	return c.JSON(response)
+}

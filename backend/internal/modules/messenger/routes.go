@@ -38,4 +38,10 @@ func RegisterRoutes(app *fiber.App, handler *Handler, authMiddleware fiber.Handl
 	messenger.Get("/users/:userId/stories", handler.GetUserStories)
 	messenger.Post("/stories/:id/view", handler.ViewStory)
 	messenger.Delete("/stories/:id", handler.DeleteStory)
+
+	// User search
+	messenger.Get("/search-users", handler.SearchUsers)
+
+	// Invite links
+	messenger.Post("/create-invite", handler.CreateInvite)
 }
