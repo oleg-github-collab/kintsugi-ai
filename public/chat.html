@@ -40,14 +40,11 @@
                         </h3>
 
                         <div style="display: flex; flex-direction: column; gap: 1rem; margin-bottom: 2rem;">
-                            <button class="model-btn btn btn-primary" data-model="gpt-4o" style="text-align: left;">
-                                GPT-4o
+                            <button class="model-btn btn btn-secondary" data-model="gpt-3.5-turbo" style="text-align: left;">
+                                🔹 BASIC (GPT-3.5)
                             </button>
-                            <button class="model-btn btn btn-secondary" data-model="claude-3" style="text-align: left;">
-                                Claude-3
-                            </button>
-                            <button class="model-btn btn btn-secondary" data-model="o1-preview" style="text-align: left;">
-                                o1-preview
+                            <button class="model-btn btn btn-primary" data-model="gpt-4" style="text-align: left;">
+                                💎 EPIC (GPT-4)
                             </button>
                         </div>
 
@@ -103,7 +100,8 @@
             window.location.href = '/login.html';
         }
 
-        let currentModel = 'gpt-4o';
+        let currentModel = 'gpt-4';
+        let currentChatId = null;
         const messages = [];
 
         // Model selection
@@ -125,6 +123,34 @@
             const userMessage = input.value.trim();
             if (!userMessage) return;
 
+            // Create chat if needed
+            if (!currentChatId) {
+                try {
+                    const createRes = await fetch(`${API_URL}/chats`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${getToken()}`
+                        },
+                        body: JSON.stringify({
+                            title: userMessage.substring(0, 50),
+                            model: currentModel
+                        })
+                    });
+
+                    if (createRes.ok) {
+                        const chatData = await createRes.json();
+                        currentChatId = chatData.id;
+                    } else {
+                        addMessage('assistant', 'Error: Failed to create chat', 'error-' + Date.now());
+                        return;
+                    }
+                } catch (error) {
+                    addMessage('assistant', 'Error: Network error', 'error-' + Date.now());
+                    return;
+                }
+            }
+
             // Add user message
             addMessage('user', userMessage);
             input.value = '';
@@ -134,16 +160,14 @@
             addMessage('assistant', '...', loadingId);
 
             try {
-                const response = await fetch(`${API_URL}/chat/stream`, {
+                const response = await fetch(`${API_URL}/chats/${currentChatId}/messages`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                         'Authorization': `Bearer ${getToken()}`
                     },
                     body: JSON.stringify({
-                        model: currentModel,
-                        message: userMessage,
-                        history: messages
+                        content: userMessage
                     })
                 });
 
@@ -175,8 +199,8 @@
 
                             try {
                                 const json = JSON.parse(data);
-                                if (json.content) {
-                                    assistantMessage += json.content;
+                                if (json.delta) {
+                                    assistantMessage += json.delta;
                                     updateMessage(assistantId, assistantMessage);
                                 }
                             } catch (e) {
@@ -188,6 +212,9 @@
 
                 messages.push({ role: 'user', content: userMessage });
                 messages.push({ role: 'assistant', content: assistantMessage });
+
+                // Reload token usage
+                loadUserInfo();
 
             } catch (error) {
                 document.getElementById(loadingId)?.remove();

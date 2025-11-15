@@ -12,7 +12,7 @@ let currentUser = null;
 const conversations = {};
 const messages = {};
 let isAIChat = false;
-let currentAIModel = 'gpt-3.5-turbo'; // basic or gpt-4
+let currentAIModel = 'gpt-4o'; // GPT-4o for Kintsugi AI
 
 // Initialize WebSocket
 function connectWebSocket() {
@@ -67,11 +67,17 @@ function addAIContact() {
         id: 'ai-assistant',
         name: 'Kintsugi AI',
         isAI: true,
-        last_message: 'Ask me anything!',
+        model: 'gpt-4o',
+        last_message: 'Ask me anything! Powered by GPT-4o',
         updated_at: new Date().toISOString(),
         participants_count: 2
     };
     conversations['ai-assistant'] = aiContact;
+
+    // Initialize AI messages if not exists
+    if (!messages['ai-assistant']) {
+        messages['ai-assistant'] = [];
+    }
 
     // Insert AI contact at the top
     const list = document.getElementById('conversations-list');
@@ -81,12 +87,12 @@ function addAIContact() {
     div.onclick = () => selectConversation('ai-assistant');
     div.innerHTML = `
         <div style="display: flex; align-items: center;">
-            <div class="conversation-avatar" style="background: linear-gradient(135deg, var(--kintsugi-gold), var(--neon-orange));">AI</div>
+            <div class="conversation-avatar" style="background: linear-gradient(135deg, var(--kintsugi-gold), var(--neon-orange));">🤖</div>
             <div class="conversation-info">
-                <div class="conversation-name text-gold">🤖 Kintsugi AI</div>
-                <div class="conversation-preview">Ask me anything!</div>
+                <div class="conversation-name text-gold">Kintsugi AI</div>
+                <div class="conversation-preview">GPT-4o • Ask me anything!</div>
             </div>
-            <div class="conversation-time">Always online</div>
+            <div class="conversation-time">●</div>
         </div>
     `;
     list.prepend(div);
@@ -151,16 +157,14 @@ async function selectConversation(convId) {
     // Update header
     if (isAIChat) {
         document.getElementById('chat-header').innerHTML = `
-            <div class="conversation-avatar" style="background: linear-gradient(135deg, var(--kintsugi-gold), var(--neon-orange));">AI</div>
+            <div class="conversation-avatar" style="background: linear-gradient(135deg, var(--kintsugi-gold), var(--neon-orange));">🤖</div>
             <div style="flex: 1;">
-                <div class="conversation-name text-gold" style="font-size: 1.25rem;">🤖 Kintsugi AI Assistant</div>
+                <div class="conversation-name text-gold" style="font-size: 1.25rem;">Kintsugi AI</div>
                 <div class="conversation-time">
-                    Model: <span id="ai-model-display">${currentAIModel === 'gpt-4' ? 'Epic (GPT-4)' : 'Basic (GPT-3.5)'}</span>
+                    GPT-4o • Always online
                 </div>
             </div>
             <div style="display: flex; gap: 0.5rem;">
-                <button onclick="switchAIModel('gpt-3.5-turbo')" class="btn ${currentAIModel === 'gpt-3.5-turbo' ? 'btn-primary' : 'btn-secondary'} interactive" style="padding: 0.5rem 1rem; font-size: 0.85rem;">BASIC</button>
-                <button onclick="switchAIModel('gpt-4')" class="btn ${currentAIModel === 'gpt-4' ? 'btn-primary' : 'btn-secondary'} interactive" style="padding: 0.5rem 1rem; font-size: 0.85rem;">EPIC</button>
                 <button onclick="showAITools()" class="btn btn-secondary interactive" style="padding: 0.5rem 1rem; font-size: 0.85rem;">🛠️ TOOLS</button>
             </div>
         `;
@@ -186,10 +190,7 @@ async function selectConversation(convId) {
     }
 }
 
-window.switchAIModel = function(model) {
-    currentAIModel = model;
-    selectConversation('ai-assistant');
-};
+// Removed switchAIModel - using GPT-4o only
 
 window.showAITools = function() {
     const tools = `
