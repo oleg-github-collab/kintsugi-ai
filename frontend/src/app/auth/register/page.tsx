@@ -48,93 +48,78 @@ export default function RegisterPage() {
   const displayError = localError || error;
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4 bg-digital-black">
-      <div className="w-full max-w-md">
-        <div className="text-center mb-8">
-          <h1 className="text-5xl font-mono font-bold text-kintsugi-gold mb-2">
-            KINTSUGI
-          </h1>
-          <p className="text-xl font-mono text-cyber-pink">AI PLATFORM</p>
+    <div className="min-h-screen flex items-center justify-center px-6 py-20">
+      <div className="max-w-md w-full border-3 border-kintsugi-gold p-8 md:p-12 shadow-neo bg-kintsugi-gold/5 scanlines">
+        <h2 className="text-4xl font-bold uppercase text-center text-kintsugi-gold text-neon mb-4">
+          [ USER_AUTH:SIGNUP ]
+        </h2>
+
+        <div className="w-full h-1 bg-kintsugi-gold/20 mb-8 overflow-hidden relative">
+          <div className="absolute top-0 left-0 h-full w-1/3 bg-gradient-to-r from-transparent via-kintsugi-gold to-transparent animate-marquee"></div>
         </div>
 
-        <Card variant="default">
-          <h2 className="text-2xl font-mono font-bold text-kintsugi-gold mb-6">
-            Create Account
-          </h2>
+        {displayError && (
+          <div className="mb-6 p-4 border-3 border-neon-orange bg-neon-orange/10">
+            <p className="text-sm font-mono text-neon-orange uppercase">⚠ {displayError}</p>
+          </div>
+        )}
 
-          {displayError && (
-            <div className="mb-4 p-4 border-3 border-neon-orange bg-neon-orange/10">
-              <p className="text-sm font-mono text-neon-orange">{displayError}</p>
-            </div>
-          )}
+        <form onSubmit={handleSubmit} className="mt-10 space-y-6">
+          <Input
+            label="Username"
+            type="text"
+            placeholder="Choose a username"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+            required
+          />
 
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <Input
-              label="Username"
-              type="text"
-              placeholder="username"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              required
-            />
+          <Input
+            label="Email"
+            type="email"
+            placeholder="user@kintsugi.ai"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+          />
 
-            <Input
-              label="Email"
-              type="email"
-              placeholder="your@email.com"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-            />
+          <Input
+            label="Password"
+            type="password"
+            placeholder="Min. 8 characters"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+          />
 
-            <Input
-              label="Password"
-              type="password"
-              placeholder="At least 8 characters"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-            />
+          <Input
+            label="Confirm Password"
+            type="password"
+            placeholder="Re-enter password"
+            value={confirmPassword}
+            onChange={(e) => setConfirmPassword(e.target.value)}
+            required
+          />
 
-            <Input
-              label="Confirm Password"
-              type="password"
-              placeholder="Re-enter your password"
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
-              required
-            />
-
+          <div className="pt-6">
             <Button
               type="submit"
               disabled={isLoading}
+              variant="primary"
               className="w-full"
+              glitch
             >
-              {isLoading ? 'Creating Account...' : 'Register'}
+              {isLoading ? '▶ CREATING_ACCOUNT...' : '▶ CREATE_ACCOUNT'}
             </Button>
-          </form>
-
-          <div className="mt-6 text-center">
-            <p className="text-sm font-mono text-digital-white/60">
-              Already have an account?{' '}
-              <Link
-                href="/auth/login"
-                className="text-kintsugi-gold hover:text-cyber-pink transition-colors"
-              >
-                Login
-              </Link>
-            </p>
           </div>
-        </Card>
 
-        <div className="mt-6 text-center">
-          <Link
-            href="/"
-            className="text-sm font-mono text-digital-white/60 hover:text-kintsugi-gold transition-colors"
-          >
-            ← Back to home
-          </Link>
-        </div>
+          <p className="text-center text-neutral-500 pt-4 font-mono">
+            Already have an account?{' '}
+            <Link href="/auth/login" className="text-cyber-cyan hover:underline font-bold">
+              Log In
+            </Link>
+          </p>
+        </form>
       </div>
     </div>
   );
