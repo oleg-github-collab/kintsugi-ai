@@ -220,9 +220,24 @@ func migrateDatabase(db *gorm.DB) error {
 		return fmt.Errorf("failed to ensure subscription tables: %w", err)
 	}
 
+	// Add role column if it doesn't exist
+	log.Println("Adding role column to users table...")
+	db.Exec("ALTER TABLE users ADD COLUMN IF NOT EXISTS role VARCHAR(20) DEFAULT 'user'")
+
+	// Set superadmin for specific email
+	log.Println("Setting superadmin role for work.olegkaminskyi@gmail.com...")
+	db.Exec(`
+		UPDATE users
+		SET role = 'superadmin',
+		    subscription_tier = 'unlimited',
+		    tokens_limit = -1
+		WHERE email = 'work.olegkaminskyi@gmail.com'
+	`)
+
 	// Create indexes
 	db.Exec("CREATE INDEX IF NOT EXISTS idx_users_email ON users(email)")
 	db.Exec("CREATE INDEX IF NOT EXISTS idx_users_subscription_tier ON users(subscription_tier)")
+	db.Exec("CREATE INDEX IF NOT EXISTS idx_users_role ON users(role)")
 	db.Exec("CREATE INDEX IF NOT EXISTS idx_chats_user_id ON chats(user_id)")
 	db.Exec("CREATE INDEX IF NOT EXISTS idx_messages_chat_id ON messages(chat_id)")
 	db.Exec("CREATE INDEX IF NOT EXISTS idx_conversations_type ON conversations(type)")

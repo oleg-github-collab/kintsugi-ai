@@ -98,6 +98,7 @@ func (s *Service) DeleteChat(chatID, userID uuid.UUID) error {
 func (s *Service) CheckTokenLimit(userID uuid.UUID) (bool, int64, int64, error) {
 	var user struct {
 		SubscriptionTier string
+		Role             string
 		TokensUsed       int64
 		TokensLimit      int64
 		ResetAt          time.Time
@@ -105,11 +106,16 @@ func (s *Service) CheckTokenLimit(userID uuid.UUID) (bool, int64, int64, error) 
 
 	err := s.db.Table("users").
 		Where("id = ?", userID).
-		Select("subscription_tier, tokens_used, tokens_limit, reset_at").
+		Select("subscription_tier, role, tokens_used, tokens_limit, reset_at").
 		Scan(&user).Error
 
 	if err != nil {
 		return false, 0, 0, err
+	}
+
+	// Superadmins have unlimited tokens
+	if user.Role == "superadmin" {
+		return true, 0, -1, nil
 	}
 
 	// Check if reset period has passed
@@ -471,22 +477,26 @@ func (s *Service) GenerateImage(userID uuid.UUID, prompt, size string) (string, 
 	// Check user subscription tier - only Premium+ can generate images
 	var user struct {
 		SubscriptionTier string
+		Role             string
 		TokensUsed       int64
 		TokensLimit      int64
 	}
 
 	err := s.db.Table("users").
 		Where("id = ?", userID).
-		Select("subscription_tier, tokens_used, tokens_limit").
+		Select("subscription_tier, role, tokens_used, tokens_limit").
 		Scan(&user).Error
 
 	if err != nil {
 		return "", err
 	}
 
-	// Only Premium and Unlimited tiers can generate images
-	if user.SubscriptionTier == "basic" {
-		return "", errors.New("image generation is only available for Premium and Unlimited subscribers")
+	// Superadmins can always generate images
+	if user.Role != "superadmin" {
+		// Only Premium and Unlimited tiers can generate images
+		if user.SubscriptionTier == "basic" {
+			return "", errors.New("image generation is only available for Premium and Unlimited subscribers")
+		}
 	}
 
 	hasCapacity, tokensUsed, tokensLimit, err := s.CheckTokenLimit(userID)

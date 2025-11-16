@@ -47,6 +47,7 @@ type User struct {
 	Bio              string         `gorm:"type:text" json:"bio"`
 	AvatarURL        string         `gorm:"type:varchar(500)" json:"avatar_url"`
 	SubscriptionTier string         `gorm:"type:varchar(20);default:'basic'" json:"subscription_tier"`
+	Role             string         `gorm:"type:varchar(20);default:'user'" json:"role"` // user, admin, superadmin
 	TokensUsed       int64          `gorm:"default:0" json:"tokens_used"`
 	TokensLimit      int64          `gorm:"default:20000" json:"tokens_limit"`
 	ResetAt          time.Time      `gorm:"default:CURRENT_TIMESTAMP" json:"reset_at"`
