@@ -20,7 +20,7 @@ type User struct {
 	TokensLimit      int64          `gorm:"default:100000" json:"tokens_limit"`
 	ResetAt          time.Time      `gorm:"default:CURRENT_TIMESTAMP" json:"reset_at"`
 	StripeCustomerID string         `gorm:"type:varchar(255)" json:"stripe_customer_id,omitempty"`
-	Preferences      datatypes.JSON `gorm:"type:jsonb;default:'{}'::jsonb;not null" json:"preferences"`
+	Preferences      datatypes.JSON `gorm:"type:jsonb" json:"preferences"`
 	CreatedAt        time.Time      `gorm:"default:CURRENT_TIMESTAMP" json:"created_at"`
 	UpdatedAt        time.Time      `gorm:"default:CURRENT_TIMESTAMP" json:"updated_at"`
 	DeletedAt        gorm.DeletedAt `gorm:"index" json:"-"`
@@ -68,6 +68,14 @@ type UserDTO struct {
 	TokensLimit      int64     `json:"tokens_limit"`
 	ResetAt          time.Time `json:"reset_at"`
 	CreatedAt        time.Time `json:"created_at"`
+}
+
+// BeforeCreate hook to initialize Preferences with empty JSON
+func (u *User) BeforeCreate(tx *gorm.DB) error {
+	if u.Preferences == nil || len(u.Preferences) == 0 {
+		u.Preferences = datatypes.JSON([]byte("{}"))
+	}
+	return nil
 }
 
 func (u *User) ToDTO() *UserDTO {
