@@ -667,6 +667,18 @@
             'features.stories': 'HISTORIAS',
             'features.storiesDesc': 'Comparte contenido efímero de 24 horas con tus contactos.',
 
+            // Sección de Workflow
+            'workflow.title': 'WORKFLOW',
+            'workflow.subtitle': 'Personaliza tu espacio: inicia un chat, invita colaboradores o envía un brief de traducción. Kintsugi rastrea cada token.',
+            'workflow.step1Title': '1. Inicia un chat seguro',
+            'workflow.step1Desc': 'Abre un espacio de proyecto con IA en streaming y amigos o un chat privado.',
+            'workflow.step2Title': '2. Invita y automatiza',
+            'workflow.step2Desc': 'Crea enlaces de invitación; al aceptarlos, ambos aparecen mutuamente en contactos.',
+            'workflow.step3Title': '3. Traduce con contexto',
+            'workflow.step3Desc': 'Sube documentos y recibe briefs conectados a tu historial de chat.',
+            'workflow.step4Title': '4. Controla el consumo',
+            'workflow.step4Desc': 'Paneles visuales siguen tokens, notificaciones y traducciones en todas las plataformas.',
+
             // Páginas de Autenticación
             'auth.loginTitle': 'INICIAR SESIÓN EN TU CUENTA',
             'auth.signupTitle': 'CREAR TU CUENTA',
@@ -936,6 +948,18 @@
             'features.stories': 'HISTOIRES',
             'features.storiesDesc': 'Partagez du contenu éphémère de 24 heures avec vos contacts.',
 
+            // Section Flux de travail
+            'workflow.title': 'WORKFLOW',
+            'workflow.subtitle': 'Configurez votre espace : démarrez un chat, invitez des collaborateurs ou envoyez un brief de traduction. Kintsugi suit chaque jeton.',
+            'workflow.step1Title': '1. Lancez un chat sécurisé',
+            'workflow.step1Desc': 'Créez un espace projet avec une IA en streaming et vos partenaires, ou un chat privé.',
+            'workflow.step2Title': '2. Invitez + automatisez',
+            'workflow.step2Desc': 'Générez des liens d\'invitation ; une fois acceptés, vous apparaissez dans les contacts respectifs.',
+            'workflow.step3Title': '3. Traduisez avec contexte',
+            'workflow.step3Desc': 'Déposez des documents et recevez des briefs de traduction reliés à votre historique de chat.',
+            'workflow.step4Title': '4. Surveillez l\'utilisation',
+            'workflow.step4Desc': 'Des tableaux de bord visuels suivent les jetons, les notifications et les timelines de traduction.',
+
             // Pages d'Authentification
             'auth.loginTitle': 'CONNECTEZ-VOUS À VOTRE COMPTE',
             'auth.signupTitle': 'CRÉEZ VOTRE COMPTE',
@@ -1204,6 +1228,18 @@
             'features.videoDesc': 'HD-Videokonferenzen für bis zu 50 Teilnehmer mit Bildschirmfreigabe.',
             'features.stories': 'GESCHICHTEN',
             'features.storiesDesc': 'Teilen Sie 24-Stunden-Inhalte mit Ihren Kontakten.',
+
+            // Workflow-Bereich
+            'workflow.title': 'WORKFLOW',
+            'workflow.subtitle': 'Gestalten Sie Ihren Workspace: Starten Sie einen Chat, laden Sie Mitarbeitende ein oder senden Sie einen Übersetzungsbrief. Kintsugi protokolliert jeden Token.',
+            'workflow.step1Title': '1. Starten Sie einen sicheren Chat',
+            'workflow.step1Desc': 'Öffnen Sie einen Projektbereich mit Streaming-KI und Freunden oder einem privaten Messenger.',
+            'workflow.step2Title': '2. Einladen + automatisieren',
+            'workflow.step2Desc': 'Generieren Sie Einladungslinks; nach Annahme tauchen Sie sofort in den Kontakteinstellungen auf.',
+            'workflow.step3Title': '3. Übersetzen mit Kontext',
+            'workflow.step3Desc': 'Laden Sie Dokumente hoch und erhalten Sie tiefgehende Übersetzungsbriefings mit Bezug zu Ihrem Chat-Verlauf.',
+            'workflow.step4Title': '4. Verbrauch überwachen',
+            'workflow.step4Desc': 'Visualisierte Dashboards verfolgen Token, Benachrichtigungen und Übersetzungszeitpläne.',
 
             // Authentifizierungsseiten
             'auth.loginTitle': 'IN IHR KONTO EINLOGGEN',
