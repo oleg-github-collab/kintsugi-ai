@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Kintsugi AI // All-in-One AI Platform</title>
     <link rel="stylesheet" href="/css/styles.css">
+    <link rel="stylesheet" href="/css/typography.css">
     <link rel="stylesheet" href="/css/mobile.css">
     <link rel="stylesheet" href="/css/mobile-enhanced.css">
 </head>
@@ -41,7 +42,10 @@
     <!-- Main Content -->
     <main class="mobile-shell">
         <!-- Hero Section -->
-        <section id="hero" class="hero-section" style="background: linear-gradient(135deg, transparent 24%, rgba(240, 255, 0, 0.03) 25%, rgba(240, 255, 0, 0.03) 26%, transparent 27%, transparent 74%, rgba(240, 255, 0, 0.03) 75%, rgba(240, 255, 0, 0.03) 76%, transparent 77%, transparent), linear-gradient(45deg, transparent 24%, rgba(240, 255, 0, 0.03) 25%, rgba(240, 255, 0, 0.03) 26%, transparent 27%, transparent 74%, rgba(240, 255, 0, 0.03) 75%, rgba(240, 255, 0, 0.03) 76%, transparent 77%, transparent); background-size: 50px 50px;">
+        <section id="hero" class="hero-section" style="position: relative; overflow: hidden;">
+            <!-- Matrix background for hero -->
+            <canvas id="hero-matrix-canvas" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; opacity: 0.3;"></canvas>
+
             <div class="container" style="position: relative; z-index: 10;">
                 <div class="home-hero">
                     <div class="hero-grid">
@@ -95,25 +99,25 @@
         <section class="workflow-section">
             <div class="container">
                 <div style="text-align:center; margin-bottom: 2rem;">
-                    <h2 class="text-rainbow" style="font-size: 3rem; letter-spacing: 0.2em;">Workflow</h2>
-                    <p style="color:#bbb; font-size:1.1rem;">Tailor make your workspace: start a chat, invite collaborators, or drop a translation brief. Kintsugi tracks every token.</p>
+                    <h2 class="text-rainbow" style="font-size: 3rem; letter-spacing: 0.2em;" data-i18n="workflow.title">WORKFLOW</h2>
+                    <p style="color:#bbb; font-size:1.1rem;" data-i18n="workflow.subtitle">Tailor make your workspace: start a chat, invite collaborators, or drop a translation brief. Kintsugi tracks every token.</p>
                 </div>
                 <div class="workflow-grid">
                     <article>
-                        <h3>1. Start a secure chat</h3>
-                        <p>Launch a project space with streaming AI plus friends, or open a private messenger window.</p>
+                        <h3 data-i18n="workflow.step1Title">1. Start a secure chat</h3>
+                        <p data-i18n="workflow.step1Desc">Launch a project space with streaming AI plus friends, or open a private messenger window.</p>
                     </article>
                     <article>
-                        <h3>2. Invite + automate</h3>
-                        <p>Generate link invites; once accepted, you appear in each other's contact list instantly.</p>
+                        <h3 data-i18n="workflow.step2Title">2. Invite + automate</h3>
+                        <p data-i18n="workflow.step2Desc">Generate link invites; once accepted, you appear in each other's contact list instantly.</p>
                     </article>
                     <article>
-                        <h3>3. Translate with context</h3>
-                        <p>Drop documents and get deep translation briefs tied back to your chat history.</p>
+                        <h3 data-i18n="workflow.step3Title">3. Translate with context</h3>
+                        <p data-i18n="workflow.step3Desc">Drop documents and get deep translation briefs tied back to your chat history.</p>
                     </article>
                     <article>
-                        <h3>4. Monitor usage</h3>
-                        <p>Visual dashboards track tokens, notifications, and translation timelines across platforms.</p>
+                        <h3 data-i18n="workflow.step4Title">4. Monitor usage</h3>
+                        <p data-i18n="workflow.step4Desc">Visual dashboards track tokens, notifications, and translation timelines across platforms.</p>
                     </article>
                 </div>
             </div>
@@ -122,20 +126,20 @@
         <section class="hero-stats">
             <div class="stat-grid">
                 <div>
-                    <h3>Realtime</h3>
-                    <p>Instant streaming responses across chat, messenger, and translation.</p>
+                    <h3 data-i18n="stats.realtimeTitle">Realtime</h3>
+                    <p data-i18n="stats.realtimeDesc">Instant streaming responses across chat, messenger, and translation.</p>
                 </div>
                 <div>
-                    <h3>Secure</h3>
-                    <p>Token usage tracking, refresh windows, and encrypted storage.</p>
+                    <h3 data-i18n="stats.secureTitle">Secure</h3>
+                    <p data-i18n="stats.secureDesc">Token usage tracking, refresh windows, and encrypted storage.</p>
                 </div>
                 <div>
-                    <h3>Human Support</h3>
-                    <p>Our team provides concierge assistance for creators and teams.</p>
+                    <h3 data-i18n="stats.supportTitle">Human Support</h3>
+                    <p data-i18n="stats.supportDesc">Our team provides concierge assistance for creators and teams.</p>
                 </div>
                 <div>
-                    <h3>Platform Ready</h3>
-                    <p>Works on desktop, tablet, and pocket devices with consistent controls.</p>
+                    <h3 data-i18n="stats.platformTitle">Platform Ready</h3>
+                    <p data-i18n="stats.platformDesc">Works on desktop, tablet, and pocket devices with consistent controls.</p>
                 </div>
             </div>
         </section>
@@ -211,10 +215,10 @@
                             ◆ SUBSCRIPTION PLANS ◆
                         </span>
                     </div>
-                    <h2 class="text-rainbow" style="font-size: 4rem; font-weight: bold; text-transform: uppercase;">
+                    <h2 class="text-rainbow" style="font-size: 4rem; font-weight: bold; text-transform: uppercase;" data-i18n="pricing.title">
                         [ CHOOSE_YOUR_TIER ]
                     </h2>
-                    <p style="font-size: 1.25rem; color: #999; margin-top: 1.5rem;">
+                    <p style="font-size: 1.25rem; color: #999; margin-top: 1.5rem;" data-i18n="pricing.subtitle">
                         All plans include <span class="text-gold" style="font-weight: bold;">6-hour token resets</span> and access to <span class="text-cyan" style="font-weight: bold;">all three platforms</span>
                     </p>
                 </div>
@@ -282,12 +286,12 @@
         <div class="container">
             <div class="cta-panel">
                 <div>
-                    <h3 class="text-gold">Ready to build with Kintsugi AI?</h3>
-                    <p>Sign up, import your team, and let the AI-powered platform orchestrate your conversations, translations, and automations.</p>
+                    <h3 class="text-gold" data-i18n="cta.title">Ready to build with Kintsugi AI?</h3>
+                    <p data-i18n="cta.description">Sign up, import your team, and let the AI-powered platform orchestrate your conversations, translations, and automations.</p>
                 </div>
                 <div class="cta-actions">
-                    <a href="/register.html" class="btn btn-primary">Create account</a>
-                    <a href="/chat.html" class="btn btn-secondary">Explore demos</a>
+                    <a href="/register.html" class="btn btn-primary" data-i18n="cta.createAccount">Create account</a>
+                    <a href="/chat.html" class="btn btn-secondary" data-i18n="cta.exploreDemos">Explore demos</a>
                 </div>
             </div>
         </div>
@@ -321,6 +325,49 @@
         document.addEventListener('DOMContentLoaded', () => {
             if (window.I18n) {
                 window.I18n.createLanguageSwitcher('#language-switcher-container');
+            }
+
+            // Initialize Matrix effect for hero section
+            const heroCanvas = document.getElementById('hero-matrix-canvas');
+            if (heroCanvas) {
+                const ctx = heroCanvas.getContext('2d');
+                heroCanvas.width = heroCanvas.offsetWidth;
+                heroCanvas.height = heroCanvas.offsetHeight;
+
+                const fontSize = 14;
+                const columns = Math.floor(heroCanvas.width / fontSize);
+                const drops = Array(columns).fill(1);
+
+                const matrixChars = '01アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン';
+
+                function drawMatrix() {
+                    ctx.fillStyle = 'rgba(10, 10, 10, 0.05)';
+                    ctx.fillRect(0, 0, heroCanvas.width, heroCanvas.height);
+
+                    ctx.fillStyle = '#00FF00';
+                    ctx.font = fontSize + 'px monospace';
+
+                    for (let i = 0; i < drops.length; i++) {
+                        const text = matrixChars[Math.floor(Math.random() * matrixChars.length)];
+                        ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+
+                        if (drops[i] * fontSize > heroCanvas.height && Math.random() > 0.975) {
+                            drops[i] = 0;
+                        }
+                        drops[i]++;
+                    }
+                }
+
+                setInterval(drawMatrix, 50);
+
+                // Resize handler
+                window.addEventListener('resize', () => {
+                    heroCanvas.width = heroCanvas.offsetWidth;
+                    heroCanvas.height = heroCanvas.offsetHeight;
+                    const newColumns = Math.floor(heroCanvas.width / fontSize);
+                    drops.length = newColumns;
+                    drops.fill(1);
+                });
             }
         });
     </script>

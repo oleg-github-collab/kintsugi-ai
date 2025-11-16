@@ -55,15 +55,47 @@
             'features.aichat': 'AI CHAT',
             'features.aichatDesc': 'Access powerful AI models with real-time streaming responses. Basic and Epic tiers available.',
             'features.messenger': 'MESSENGER',
-            'features.messengerDesc': 'Secure real-time messaging with group chats, video calls, and file sharing.',
+            'features.messengerDesc': 'Real-time chat for instant messaging, reactions, and ephemeral stories.',
             'features.translation': 'TRANSLATION',
-            'features.translationDesc': 'Professional-grade translation powered by DeepL and o.translator for 100+ languages.',
+            'features.translationDesc': 'Professional book translation with context-aware AI technology.',
             'features.imagegen': 'IMAGE GENERATION',
             'features.imagegenDesc': 'Create stunning AI-generated images with DALL-E integration.',
             'features.video': 'VIDEO CALLS',
             'features.videoDesc': 'HD video conferencing for up to 50 participants with screen sharing.',
             'features.stories': 'STORIES',
             'features.storiesDesc': 'Share 24-hour ephemeral content with your contacts.',
+
+            // Workflow Section
+            'workflow.title': 'WORKFLOW',
+            'workflow.subtitle': 'Tailor make your workspace: start a chat, invite collaborators, or drop a translation brief. Kintsugi tracks every token.',
+            'workflow.step1Title': '1. Start a secure chat',
+            'workflow.step1Desc': 'Launch a project space with streaming AI plus friends, or open a private messenger window.',
+            'workflow.step2Title': '2. Invite + automate',
+            'workflow.step2Desc': 'Generate link invites; once accepted, you appear in each other\'s contact list instantly.',
+            'workflow.step3Title': '3. Translate with context',
+            'workflow.step3Desc': 'Drop documents and get deep translation briefs tied back to your chat history.',
+            'workflow.step4Title': '4. Monitor usage',
+            'workflow.step4Desc': 'Visual dashboards track tokens, notifications, and translation timelines across platforms.',
+
+            // Stats Section
+            'stats.realtimeTitle': 'Realtime',
+            'stats.realtimeDesc': 'Instant streaming responses across chat, messenger, and translation.',
+            'stats.secureTitle': 'Secure',
+            'stats.secureDesc': 'Token usage tracking, refresh windows, and encrypted storage.',
+            'stats.supportTitle': 'Human Support',
+            'stats.supportDesc': 'Our team provides concierge assistance for creators and teams.',
+            'stats.platformTitle': 'Platform Ready',
+            'stats.platformDesc': 'Works on desktop, tablet, and pocket devices with consistent controls.',
+
+            // Pricing Section
+            'pricing.title': 'CHOOSE YOUR TIER',
+            'pricing.subtitle': 'All plans include 6-hour token resets and access to all three platforms',
+
+            // CTA Section
+            'cta.title': 'Ready to build with Kintsugi AI?',
+            'cta.description': 'Sign up, import your team, and let the AI-powered platform orchestrate your conversations, translations, and automations.',
+            'cta.createAccount': 'Create account',
+            'cta.exploreDemos': 'Explore demos',
 
             // Auth Pages
             'auth.loginTitle': 'LOGIN TO YOUR ACCOUNT',
@@ -326,13 +358,45 @@
             'features.messenger': 'МЕСЕНДЖЕР',
             'features.messengerDesc': 'Захищений обмін повідомленнями у реальному часі з груповими чатами, відеодзвінками та обміном файлами.',
             'features.translation': 'ПЕРЕКЛАД',
-            'features.translationDesc': 'Професійний переклад на основі DeepL та o.translator для понад 100 мов.',
+            'features.translationDesc': 'Професійний переклад книг з контекстно-усвідомленою AI технологією.',
             'features.imagegen': 'ГЕНЕРАЦІЯ ЗОБРАЖЕНЬ',
             'features.imagegenDesc': 'Створюйте приголомшливі зображення за допомогою інтеграції з DALL-E.',
             'features.video': 'ВІДЕОДЗВІНКИ',
             'features.videoDesc': 'HD відеоконференції до 50 учасників з демонстрацією екрану.',
             'features.stories': 'ІСТОРІЇ',
             'features.storiesDesc': 'Діліться 24-годинним ефемерним контентом зі своїми контактами.',
+
+            // Розділ Робочого Процесу
+            'workflow.title': 'РОБОЧИЙ ПРОЦЕС',
+            'workflow.subtitle': 'Налаштуйте свій робочий простір: розпочніть чат, запросіть співробітників або надішліть бриф на переклад. Kintsugi відстежує кожен токен.',
+            'workflow.step1Title': '1. Почніть безпечний чат',
+            'workflow.step1Desc': 'Запустіть проектний простір зі стрімінговим AI та друзями, або відкрийте приватне вікно месенджера.',
+            'workflow.step2Title': '2. Запросіть + автоматизуйте',
+            'workflow.step2Desc': 'Створюйте запрошення за посиланням; після прийняття ви з\'являєтесь у списках контактів одразу.',
+            'workflow.step3Title': '3. Перекладайте з контекстом',
+            'workflow.step3Desc': 'Завантажуйте документи та отримуйте глибокі брифи перекладів, пов\'язані з вашою історією чату.',
+            'workflow.step4Title': '4. Моніторте використання',
+            'workflow.step4Desc': 'Візуальні панелі відстежують токени, сповіщення та часові лінії перекладів на всіх платформах.',
+
+            // Розділ Статистики
+            'stats.realtimeTitle': 'Реальний час',
+            'stats.realtimeDesc': 'Миттєві потокові відповіді в чаті, месенджері та перекладі.',
+            'stats.secureTitle': 'Безпека',
+            'stats.secureDesc': 'Відстеження використання токенів, вікна оновлення та зашифроване сховище.',
+            'stats.supportTitle': 'Людська підтримка',
+            'stats.supportDesc': 'Наша команда надає консьєрж-допомогу для творців та команд.',
+            'stats.platformTitle': 'Готова платформа',
+            'stats.platformDesc': 'Працює на комп\'ютері, планшеті та кишенькових пристроях з послідовним керуванням.',
+
+            // Розділ Тарифів
+            'pricing.title': 'ОБЕРІТЬ СВІЙ ТАРИФ',
+            'pricing.subtitle': 'Усі плани включають 6-годинне оновлення токенів та доступ до всіх трьох платформ',
+
+            // Розділ CTA
+            'cta.title': 'Готові створювати з Kintsugi AI?',
+            'cta.description': 'Зареєструйтесь, імпортуйте свою команду, і нехай AI-платформа керує вашими розмовами, перекладами та автоматизаціями.',
+            'cta.createAccount': 'Створити обліковий запис',
+            'cta.exploreDemos': 'Дослідити демо',
 
             // Сторінки Автентифікації
             'auth.loginTitle': 'УВІЙТИ ДО ОБЛІКОВОГО ЗАПИСУ',
