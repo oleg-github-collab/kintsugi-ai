@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"os"
 	"time"
@@ -164,16 +165,14 @@ func initDatabase() *gorm.DB {
 func migrateDatabase(db *gorm.DB) error {
 	log.Println("Running database migrations...")
 
-	// Migrate all models
-	if err := db.AutoMigrate(
+	// Migrate models one by one for better error handling
+	models := []interface{}{
 		// Auth
 		&auth.User{},
 		&auth.RefreshToken{},
-
 		// Chat
 		&chat.Chat{},
 		&chat.Message{},
-
 		// Messenger
 		&messenger.Conversation{},
 		&messenger.Participant{},
@@ -183,15 +182,18 @@ func migrateDatabase(db *gorm.DB) error {
 		&messenger.Story{},
 		&messenger.StoryView{},
 		&messenger.InviteCode{},
-
 		// Translation
 		&translation.Translation{},
-
 		// Subscription
 		&subscription.Subscription{},
 		&subscription.Payment{},
-	); err != nil {
-		return err
+	}
+
+	for _, model := range models {
+		if err := db.AutoMigrate(model); err != nil {
+			log.Printf("Failed to migrate %T: %v\n", model, err)
+			return fmt.Errorf("failed to migrate %T: %w", model, err)
+		}
 	}
 
 	// Create indexes
