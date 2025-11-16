@@ -1,11 +1,15 @@
 # Multi-stage Dockerfile for Kintsugi AI Platform
 # Stage 1: Build Go backend
-FROM golang:1.23-alpine AS backend-builder
+FROM golang:1.23.0-alpine AS backend-builder
 
 WORKDIR /build
 
 # Copy go mod files
 COPY backend/go.mod backend/go.sum ./
+
+# Set GOTOOLCHAIN to prevent auto-upgrades
+ENV GOTOOLCHAIN=local
+
 RUN go mod download
 
 # Copy backend source
