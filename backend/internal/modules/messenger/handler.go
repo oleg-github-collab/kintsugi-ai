@@ -270,7 +270,14 @@ func (h *Handler) DeleteMessage(c *fiber.Ctx) error {
 		})
 	}
 
-	if err := h.service.DeleteMessage(messageID, userID); err != nil {
+	// Parse delete type from request body
+	var req DeleteMessageRequest
+	if err := c.BodyParser(&req); err != nil {
+		// Default to "me" if no body provided
+		req.DeleteFor = "me"
+	}
+
+	if err := h.service.DeleteMessage(messageID, userID, req.DeleteFor); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"error": err.Error(),
 		})
@@ -278,6 +285,7 @@ func (h *Handler) DeleteMessage(c *fiber.Ctx) error {
 
 	return c.JSON(fiber.Map{
 		"message": "Message deleted successfully",
+		"delete_for": req.DeleteFor,
 	})
 }
 

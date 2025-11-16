@@ -150,6 +150,10 @@ type UpdateMessageRequest struct {
 	Content string `json:"content" validate:"required"`
 }
 
+type DeleteMessageRequest struct {
+	DeleteFor string `json:"delete_for" validate:"oneof=me everyone"` // "me" or "everyone"
+}
+
 type AddReactionRequest struct {
 	Emoji string `json:"emoji" validate:"required"`
 }

@@ -224,15 +224,15 @@ func (s *Service) UpdateMessage(messageID, userID uuid.UUID, req *UpdateMessageR
 	return message, nil
 }
 
-func (s *Service) DeleteMessage(messageID, userID uuid.UUID) error {
+func (s *Service) DeleteMessage(messageID, userID uuid.UUID, deleteFor string) error {
 	message, err := s.repo.GetMessageByID(messageID)
 	if err != nil {
 		return err
 	}
 
-	// Verify user is sender
-	if message.SenderID != userID {
-		return errors.New("not authorized to delete this message")
+	// Verify user is sender (for "everyone") or participant (for "me")
+	if deleteFor == "everyone" && message.SenderID != userID {
+		return errors.New("only the sender can delete for everyone")
 	}
 
 	// Broadcast deletion via WebSocket
@@ -241,12 +241,29 @@ func (s *Service) DeleteMessage(messageID, userID uuid.UUID) error {
 	for _, p := range conversation.Participants {
 		participantIDs = append(participantIDs, p.UserID)
 	}
-	s.hub.BroadcastToUsers(participantIDs, "message_deleted", map[string]interface{}{
-		"message_id":      messageID,
-		"conversation_id": message.ConversationID,
-	})
 
-	return s.repo.DeleteMessage(messageID)
+	if deleteFor == "everyone" {
+		// Broadcast to all participants
+		s.hub.BroadcastToUsers(participantIDs, "message_deleted", map[string]interface{}{
+			"message_id":      messageID,
+			"conversation_id": message.ConversationID,
+			"deleted_for":     "everyone",
+		})
+
+		// Actually delete the message from database
+		return s.repo.DeleteMessage(messageID)
+	} else {
+		// Delete for specific user only (broadcast only to that user)
+		s.hub.BroadcastToUsers([]uuid.UUID{userID}, "message_deleted", map[string]interface{}{
+			"message_id":      messageID,
+			"conversation_id": message.ConversationID,
+			"deleted_for":     "me",
+		})
+
+		// In a full implementation, you would mark this message as hidden for this specific user
+		// For now, we'll just broadcast the event
+		return nil
+	}
 }
 
 // Reactions

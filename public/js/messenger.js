@@ -327,6 +327,32 @@ function renderMessages() {
             ` + messageContent;
         }
 
+        // Add right-click context menu
+        div.oncontextmenu = (e) => {
+            if (typeof MessageActions !== 'undefined') {
+                MessageActions.showContextMenu(msg.id, div, e);
+            }
+            return false;
+        };
+
+        // Add long-press for mobile
+        let pressTimer;
+        div.ontouchstart = (e) => {
+            pressTimer = setTimeout(() => {
+                if (typeof MessageActions !== 'undefined') {
+                    const touch = e.touches[0];
+                    MessageActions.showContextMenu(msg.id, div, {
+                        preventDefault: () => {},
+                        stopPropagation: () => {},
+                        clientX: touch.clientX,
+                        clientY: touch.clientY
+                    });
+                }
+            }, 500);
+        };
+        div.ontouchend = () => clearTimeout(pressTimer);
+        div.ontouchmove = () => clearTimeout(pressTimer);
+
         div.innerHTML = `
             <div class="message-avatar">${getInitials(msg.sender_name || 'U')}</div>
             <div class="message-content-wrapper">
@@ -340,7 +366,7 @@ function renderMessages() {
                 </div>
                 <div class="message-reactions">
                     ${renderReactions(msg.reactions || [])}
-                    ${!isAIChat ? `<button class="add-reaction interactive" onclick="addReaction(${msg.id})">+</button>` : ''}
+                    ${!isAIChat ? `<button class="add-reaction interactive" onclick="MessageActions.showReactionPicker(${msg.id})">+</button>` : ''}
                 </div>
             </div>
         `;
@@ -511,7 +537,14 @@ document.getElementById('message-form').addEventListener('submit', async (e) => 
     if (isAIChat) {
         await handleAIMessage(content);
     } else {
-        await sendRegularMessage(content);
+        // Check if replying to a message
+        const replyTo = typeof MessageActions !== 'undefined' ? MessageActions.currentReplyTo : null;
+        await sendRegularMessage(content, replyTo);
+
+        // Cancel reply after sending
+        if (replyTo && typeof MessageActions !== 'undefined') {
+            MessageActions.cancelReply();
+        }
     }
 
     input.value = '';
@@ -680,15 +713,20 @@ function handleShareToMessenger(contactName) {
     alert(`Chat shared with ${contactName}!\n\nIn production, this would send:\n\n${chatHistory}`);
 }
 
-async function sendRegularMessage(content) {
+async function sendRegularMessage(content, replyTo = null) {
     try {
+        const payload = { content };
+        if (replyTo) {
+            payload.reply_to = replyTo;
+        }
+
         const response = await fetch(`${API_URL}/messenger/conversations/${currentConversationId}/messages`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${getToken()}`
             },
-            body: JSON.stringify({ content })
+            body: JSON.stringify(payload)
         });
 
         if (response.ok) {
