@@ -8,7 +8,6 @@ import (
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/google/uuid"
 	"golang.org/x/crypto/bcrypt"
-	"gorm.io/datatypes"
 )
 
 type Service struct {
@@ -61,7 +60,7 @@ func (s *Service) Register(req *RegisterRequest) (*AuthResponse, error) {
 		TokensLimit:      100000,
 		TokensUsed:       0,
 		ResetAt:          time.Now().Add(6 * time.Hour),
-		Preferences:      datatypes.JSON([]byte("{}")),
+		Preferences:      []byte("{}"),
 	}
 
 	if err := s.repo.CreateUser(user); err != nil {
