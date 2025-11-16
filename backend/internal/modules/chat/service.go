@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"strings"
 	"time"
 
 	"github.com/google/uuid"
@@ -18,6 +19,11 @@ type Service struct {
 	openaiClient *openai.Client
 	db           *gorm.DB
 }
+
+const (
+	defaultImageSize = "1024x1024"
+	imageTokenCost   = 40
+)
 
 func NewService(repo *Repository, db *gorm.DB) *Service {
 	apiKey := os.Getenv("OPENAI_API_KEY")
@@ -450,4 +456,53 @@ func (s *Service) CallOpenAI(userID uuid.UUID, model string, messages []map[stri
 		"choices": resp.Choices,
 		"usage":   resp.Usage,
 	}, nil
+}
+
+func (s *Service) GenerateImage(userID uuid.UUID, prompt, size string) (string, error) {
+	prompt = strings.TrimSpace(prompt)
+	if prompt == "" {
+		return "", errors.New("prompt is required")
+	}
+
+	if size == "" {
+		size = defaultImageSize
+	}
+
+	hasCapacity, tokensUsed, tokensLimit, err := s.CheckTokenLimit(userID)
+	if err != nil {
+		return "", err
+	}
+
+	if !hasCapacity {
+		return "", errors.New("token limit exceeded")
+	}
+
+	projectedTokens := tokensUsed + imageTokenCost
+	if tokensLimit != -1 && projectedTokens > tokensLimit {
+		return "", fmt.Errorf("not enough tokens for image generation (%d/%d)", projectedTokens, tokensLimit)
+	}
+
+	req := openai.ImageRequest{
+		Prompt:         prompt,
+		Size:           size,
+		N:              1,
+		ResponseFormat: openai.CreateImageResponseFormatURL,
+	}
+
+	resp, err := s.openaiClient.CreateImage(context.Background(), req)
+	if err != nil {
+		return "", err
+	}
+
+	if len(resp.Data) == 0 || resp.Data[0].URL == "" {
+		return "", errors.New("image service returned an invalid response")
+	}
+
+	if err := s.db.Table("users").
+		Where("id = ?", userID).
+		UpdateColumn("tokens_used", gorm.Expr("tokens_used + ?", imageTokenCost)).Error; err != nil {
+		return "", err
+	}
+
+	return resp.Data[0].URL, nil
 }

@@ -6,6 +6,7 @@ import (
 
 	"github.com/google/uuid"
 	"golang.org/x/crypto/bcrypt"
+	"gorm.io/datatypes"
 )
 
 // UpdateProfile updates user's username and bio
@@ -77,12 +78,12 @@ func (s *Service) GetPreferences(userID uuid.UUID) (map[string]interface{}, erro
 		return nil, errors.New("user not found")
 	}
 
-	if user.Preferences == "" {
+	if len(user.Preferences) == 0 {
 		return make(map[string]interface{}), nil
 	}
 
 	var preferences map[string]interface{}
-	if err := json.Unmarshal([]byte(user.Preferences), &preferences); err != nil {
+	if err := json.Unmarshal(user.Preferences, &preferences); err != nil {
 		return make(map[string]interface{}), nil
 	}
 
@@ -101,7 +102,7 @@ func (s *Service) UpdatePreferences(userID uuid.UUID, preferences map[string]int
 		return errors.New("failed to marshal preferences")
 	}
 
-	user.Preferences = string(preferencesJSON)
+	user.Preferences = datatypes.JSON(preferencesJSON)
 
 	if err := s.repo.UpdateUser(user); err != nil {
 		return err

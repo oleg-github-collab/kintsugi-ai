@@ -215,10 +215,10 @@ func (h *Handler) GetTokenUsage(c *fiber.Ctx) error {
 	}
 
 	return c.JSON(fiber.Map{
-		"tokens_used":   tokensUsed,
-		"tokens_limit":  tokensLimit,
-		"has_capacity":  hasCapacity,
-		"is_unlimited":  tokensLimit == -1,
+		"tokens_used":  tokensUsed,
+		"tokens_limit": tokensLimit,
+		"has_capacity": hasCapacity,
+		"is_unlimited": tokensLimit == -1,
 	})
 }
 
@@ -246,4 +246,30 @@ func (h *Handler) ChatCompletions(c *fiber.Ctx) error {
 	}
 
 	return c.JSON(response)
+}
+
+func (h *Handler) GenerateImage(c *fiber.Ctx) error {
+	userID := c.Locals("user_id").(uuid.UUID)
+
+	var req struct {
+		Prompt string `json:"prompt"`
+		Size   string `json:"size"`
+	}
+
+	if err := c.BodyParser(&req); err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error": "Invalid request body",
+		})
+	}
+
+	imageURL, err := h.service.GenerateImage(userID, req.Prompt, req.Size)
+	if err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error": err.Error(),
+		})
+	}
+
+	return c.JSON(fiber.Map{
+		"url": imageURL,
+	})
 }

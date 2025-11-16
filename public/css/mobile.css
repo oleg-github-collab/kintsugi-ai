@@ -1,5 +1,166 @@
 /* Mobile Responsive Styles - Kintsugi AI */
 
+/* App shell helpers */
+.mobile-shell {
+    width: 100%;
+    min-height: 100vh;
+    background: radial-gradient(circle at 20% 20%, rgba(255, 255, 255, 0.08), transparent 45%),
+        radial-gradient(circle at 80% 0%, rgba(0, 255, 255, 0.08), transparent 50%),
+        linear-gradient(180deg, rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 0.95));
+    padding-top: 4rem;
+    position: relative;
+    overflow-x: hidden;
+}
+
+.hero-section {
+    padding: 0 1rem 3rem;
+}
+
+.hero-card {
+    max-width: 520px;
+    margin: 0 auto;
+    border: 2px solid rgba(0, 255, 255, 0.25);
+    border-radius: 28px;
+    padding: 1.25rem 1.5rem;
+    background: rgba(5, 5, 5, 0.85);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8), inset 0 0 40px rgba(0, 255, 255, 0.15);
+    backdrop-filter: blur(20px);
+    animation: heroLift 1.1s ease;
+}
+
+.hero-badge {
+    display: inline-flex;
+    gap: 0.5rem;
+    align-items: center;
+    font-size: 0.85rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    border: 1px solid rgba(240, 255, 0, 0.5);
+    padding: 0.5rem 1rem;
+    border-radius: 999px;
+    background: rgba(240, 255, 0, 0.05);
+}
+
+.hero-card h1 {
+    font-size: clamp(2.5rem, 5vw, 4rem);
+    margin-bottom: 1rem;
+    line-height: 1.1;
+}
+
+.hero-card h1 .text-gold {
+    text-shadow: 0 0 12px rgba(240, 255, 0, 0.9);
+}
+
+.hero-card p {
+    font-size: 1rem;
+    line-height: 1.6;
+    color: #ddd;
+    margin-bottom: 1.25rem;
+}
+
+html.mobile-nav-open {
+    overflow: hidden;
+}
+
+.mobile-menu-toggle {
+    display: none;
+}
+
+.hero-cta-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+}
+
+.hero-cta-group .btn {
+    width: 100%;
+    justify-content: center;
+    letter-spacing: 0.05em;
+}
+
+@keyframes heroLift {
+    from {
+        transform: translateY(20px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+/* Mobile menu overlay */
+.mobile-nav-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.95);
+    display: none;
+    align-items: flex-start;
+    justify-content: flex-end;
+    z-index: 1200;
+    padding: 1rem;
+    transition: opacity 0.3s ease;
+}
+
+.mobile-nav-overlay.open {
+    display: flex;
+}
+
+.mobile-nav-panel {
+    width: min(320px, 100%);
+    background: rgba(5, 5, 5, 0.95);
+    border-radius: 24px;
+    border: 2px solid rgba(0, 255, 255, 0.4);
+    padding: 1rem;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8);
+}
+
+.mobile-nav-panel-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 0.3em;
+    color: var(--cyber-cyan);
+}
+
+.mobile-nav-panel-links {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.mobile-nav-panel-links a {
+    padding: 0.75rem 1rem;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    font-weight: bold;
+    color: var(--digital-white);
+    background: rgba(255, 255, 255, 0.02);
+    transition: background 0.3s ease, border 0.3s ease;
+}
+
+.mobile-nav-panel-links a:hover {
+    background: rgba(0, 255, 255, 0.15);
+    border-color: var(--cyber-cyan);
+}
+
+.mobile-nav-close {
+    background: transparent;
+    border: none;
+    color: var(--cyber-cyan);
+    font-size: 1.5rem;
+    cursor: pointer;
+    padding: 0;
+}
+
+/* Mobile menu toggle button already styled later */
+
 /* Mobile-first breakpoints */
 @media (max-width: 768px) {
     /* Navigation */

@@ -76,6 +76,7 @@ document.addEventListener("DOMContentLoaded", function() {
             if (cursorInvert) cursorInvert.classList.remove('hover');
         });
     });
+    initMobileNavigation();
 });
 
 // Auth helpers
@@ -110,3 +111,77 @@ function logout() {
 const API_URL = window.location.hostname === 'localhost'
     ? 'http://localhost:8080/api'
     : '/api';
+
+function initMobileNavigation() {
+    if (document.querySelector('.mobile-nav-overlay')) {
+        return;
+    }
+
+    const navLinks = document.querySelector('.nav-links');
+    const navContainer = navLinks?.closest('.nav-container');
+    if (!navLinks || !navContainer) {
+        return;
+    }
+
+    if (navContainer.querySelector('.mobile-menu-toggle')) {
+        return;
+    }
+
+    const toggle = document.createElement('button');
+    toggle.type = 'button';
+    toggle.className = 'mobile-menu-toggle touch-target';
+    toggle.setAttribute('aria-label', 'Open navigation menu');
+    toggle.innerHTML = '<span></span><span></span><span></span>';
+    navContainer.appendChild(toggle);
+
+    const overlay = document.createElement('div');
+    overlay.className = 'mobile-nav-overlay';
+    overlay.innerHTML = `
+        <div class="mobile-nav-panel ripple">
+            <div class="mobile-nav-panel-header">
+                <span>Menu</span>
+                <button type="button" class="mobile-nav-close" aria-label="Close menu">&times;</button>
+            </div>
+            <div class="mobile-nav-panel-links"></div>
+        </div>
+    `;
+    document.body.appendChild(overlay);
+
+    const panelLinksContainer = overlay.querySelector('.mobile-nav-panel-links');
+    const closeBtn = overlay.querySelector('.mobile-nav-close');
+
+    const closeMobileNav = () => {
+        overlay.classList.remove('open');
+        document.documentElement.classList.remove('mobile-nav-open');
+    };
+
+    const openMobileNav = () => {
+        overlay.classList.add('open');
+        document.documentElement.classList.add('mobile-nav-open');
+    };
+
+    toggle.addEventListener('click', openMobileNav);
+    closeBtn?.addEventListener('click', closeMobileNav);
+    overlay.addEventListener('click', (event) => {
+        if (event.target === overlay) {
+            closeMobileNav();
+        }
+    });
+    document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape') {
+            closeMobileNav();
+        }
+    });
+    window.addEventListener('resize', closeMobileNav);
+
+    if (!panelLinksContainer) {
+        return;
+    }
+
+    navLinks.querySelectorAll('a').forEach(link => {
+        const clone = link.cloneNode(true);
+        clone.classList.add('touch-target');
+        clone.addEventListener('click', closeMobileNav);
+        panelLinksContainer.appendChild(clone);
+    });
+}

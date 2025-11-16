@@ -14,6 +14,33 @@ const messages = {};
 let isAIChat = false;
 let currentAIModel = 'gpt-4o'; // AI model for assistant
 
+function closeActiveModal() {
+    const overlay = document.querySelector('.kintsugi-modal');
+    if (overlay) {
+        overlay.remove();
+    }
+}
+
+function createModal(contentHtml, options = {}) {
+    const overlay = document.createElement('div');
+    overlay.className = 'kintsugi-modal';
+    const classes = ['kintsugi-modal-card', options.cardClass].filter(Boolean).join(' ');
+    overlay.innerHTML = `<div class="${classes}">${contentHtml}</div>`;
+    const card = overlay.querySelector('.kintsugi-modal-card');
+    if (options.maxWidth && card) {
+        card.style.maxWidth = options.maxWidth;
+    }
+    overlay.addEventListener('click', (event) => {
+        if (event.target === overlay) {
+            overlay.remove();
+        }
+    });
+    document.body.appendChild(overlay);
+    return overlay;
+}
+
+window.closeActiveModal = closeActiveModal;
+
 // Initialize WebSocket
 function connectWebSocket() {
     const wsUrl = window.location.hostname === 'localhost'
@@ -422,29 +449,41 @@ window.forwardCode = function(codeId) {
     const code = codeBlock.querySelector('code').textContent;
     const lang = codeBlock.querySelector('span').textContent.toLowerCase();
 
-    // Create forward modal
-    const modal = document.createElement('div');
-    modal.style.cssText = 'position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.9); z-index: 10000; display: flex; align-items: center; justify-content: center;';
-    modal.innerHTML = `
-        <div style="background: var(--digital-black); border: 3px solid var(--cyber-cyan); padding: 2rem; max-width: 600px; width: 90%;">
-            <h3 class="text-cyan" style="margin-bottom: 1rem;">📤 FORWARD CODE</h3>
-            <p style="color: #999; margin-bottom: 1rem;">Select a contact to forward this code snippet:</p>
-            <div style="max-height: 300px; overflow-y: auto; margin-bottom: 1rem;">
-                ${Object.values(conversations).filter(c => !c.isAI).map(c => `
-                    <button onclick="doForwardCode('${c.id}', \`${code.replace(/`/g, '\\`')}\`, '${lang}')" class="btn btn-secondary interactive" style="width: 100%; margin-bottom: 0.5rem; text-align: left;">
-                        ${c.name}
-                    </button>
-                `).join('')}
-            </div>
-            <button onclick="this.closest('div[style*=fixed]').remove()" class="btn btn-primary interactive" style="width: 100%;">CANCEL</button>
+    const modal = createModal(`
+        <div>
+            <h3 class="modal-title text-cyan">📤 FORWARD CODE</h3>
+            <p class="modal-subtitle">Select a contact to forward this code snippet:</p>
+            <div class="modal-contact-list"></div>
         </div>
-    `;
-    document.body.appendChild(modal);
+        <div class="modal-actions">
+            <button type="button" class="btn btn-primary interactive modal-close-btn">CANCEL</button>
+        </div>
+    `, { cardClass: 'modal-compact' });
+
+    const list = modal.querySelector('.modal-contact-list');
+    const contacts = Object.values(conversations).filter(c => !c.isAI);
+
+    if (contacts.length === 0) {
+        const empty = document.createElement('div');
+        empty.className = 'modal-empty';
+        empty.textContent = 'No contacts available yet.';
+        list.appendChild(empty);
+    } else {
+        contacts.forEach(contact => {
+            const button = document.createElement('button');
+            button.type = 'button';
+            button.className = 'btn btn-secondary interactive modal-contact';
+            button.textContent = contact.name;
+            button.addEventListener('click', () => doForwardCode(contact.id, code, lang));
+            list.appendChild(button);
+        });
+    }
+
+    modal.querySelector('.modal-close-btn').addEventListener('click', closeActiveModal);
 };
 
 window.doForwardCode = function(convId, code, lang) {
-    // Close modal
-    document.querySelector('div[style*="position: fixed"]').remove();
+    closeActiveModal();
 
     // In production, send the code as a message to the conversation
     alert(`Code forwarded to ${conversations[convId].name}!\n\nIn production, this would send the ${lang} code snippet.`);
@@ -469,27 +508,41 @@ window.downloadImage = async function(url, filename) {
 };
 
 window.forwardImage = function(imageUrl) {
-    const modal = document.createElement('div');
-    modal.style.cssText = 'position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.9); z-index: 10000; display: flex; align-items: center; justify-content: center;';
-    modal.innerHTML = `
-        <div style="background: var(--digital-black); border: 3px solid var(--cyber-cyan); padding: 2rem; max-width: 600px; width: 90%;">
-            <h3 class="text-cyan" style="margin-bottom: 1rem;">📤 FORWARD IMAGE</h3>
-            <p style="color: #999; margin-bottom: 1rem;">Select a contact to forward this image:</p>
-            <div style="max-height: 300px; overflow-y: auto; margin-bottom: 1rem;">
-                ${Object.values(conversations).filter(c => !c.isAI).map(c => `
-                    <button onclick="doForwardImage('${c.id}', '${imageUrl}')" class="btn btn-secondary interactive" style="width: 100%; margin-bottom: 0.5rem; text-align: left;">
-                        ${c.name}
-                    </button>
-                `).join('')}
-            </div>
-            <button onclick="this.closest('div[style*=fixed]').remove()" class="btn btn-primary interactive" style="width: 100%;">CANCEL</button>
+    const modal = createModal(`
+        <div>
+            <h3 class="modal-title text-cyan">📤 FORWARD IMAGE</h3>
+            <p class="modal-subtitle">Select a contact to forward this image:</p>
+            <div class="modal-contact-list"></div>
         </div>
-    `;
-    document.body.appendChild(modal);
+        <div class="modal-actions">
+            <button type="button" class="btn btn-primary interactive modal-close-btn">CANCEL</button>
+        </div>
+    `, { cardClass: 'modal-compact' });
+
+    const list = modal.querySelector('.modal-contact-list');
+    const contacts = Object.values(conversations).filter(c => !c.isAI);
+
+    if (contacts.length === 0) {
+        const empty = document.createElement('div');
+        empty.className = 'modal-empty';
+        empty.textContent = 'No contacts available yet.';
+        list.appendChild(empty);
+    } else {
+        contacts.forEach(contact => {
+            const button = document.createElement('button');
+            button.type = 'button';
+            button.className = 'btn btn-secondary interactive modal-contact';
+            button.textContent = contact.name;
+            button.addEventListener('click', () => doForwardImage(contact.id, imageUrl));
+            list.appendChild(button);
+        });
+    }
+
+    modal.querySelector('.modal-close-btn').addEventListener('click', closeActiveModal);
 };
 
 window.doForwardImage = function(convId, imageUrl) {
-    document.querySelector('div[style*="position: fixed"]').remove();
+    closeActiveModal();
     alert(`Image forwarded to ${conversations[convId].name}!\n\nIn production, this would send the image.`);
 };
 
@@ -953,33 +1006,43 @@ window.generateInviteLink = async function() {
         const telegramLink = `https://t.me/share/url?url=${encodeURIComponent(inviteLink)}&text=${encodeURIComponent('Join me on Kintsugi AI Messenger!')}`;
         const whatsappLink = `https://wa.me/?text=${encodeURIComponent('Join me on Kintsugi AI Messenger! ' + inviteLink)}`;
 
-        const modal = `
-            <div style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: var(--digital-black); border: 3px solid var(--kintsugi-gold); padding: 2rem; z-index: 10000; min-width: 400px;">
-                <h3 class="text-gold" style="font-size: 1.5rem; margin-bottom: 1rem;">INVITE FRIENDS</h3>
-                <p style="color: var(--cyber-cyan); margin-bottom: 1rem;">Share this link to invite friends to register:</p>
-                <div style="margin-bottom: 1rem;">
-                    <input type="text" id="invite-link-input" value="${inviteLink}" readonly style="width: 100%; padding: 0.75rem; border: 2px solid var(--cyber-cyan); background: var(--digital-black); color: var(--cyber-cyan); font-family: monospace;">
+        const inviteId = `invite-link-${Date.now()}`;
+        const modal = createModal(`
+            <div>
+                <h3 class="modal-title text-gold">INVITE FRIENDS</h3>
+                <p class="modal-subtitle">Share this link to invite friends to register:</p>
+                <div class="modal-input-group">
+                    <input id="${inviteId}" value="${inviteLink}" readonly>
+                    <button type="button" class="modal-copy-btn interactive">📋 COPY LINK</button>
                 </div>
-                <button onclick="navigator.clipboard.writeText(document.getElementById('invite-link-input').value); this.textContent='✓ COPIED!'" class="btn btn-primary interactive" style="width: 100%; margin-bottom: 1rem;">📋 COPY LINK</button>
-                <div style="display: flex; gap: 1rem; margin-top: 1.5rem;">
-                    <a href="${telegramLink}" target="_blank" class="btn btn-primary interactive" style="flex: 1; text-align: center;">📱 TELEGRAM</a>
-                    <a href="${whatsappLink}" target="_blank" class="btn btn-primary interactive" style="flex: 1; text-align: center;">💬 WHATSAPP</a>
+                <div class="modal-share-row">
+                    <a href="${telegramLink}" target="_blank" rel="noreferrer noopener" class="interactive">📱 TELEGRAM</a>
+                    <a href="${whatsappLink}" target="_blank" rel="noreferrer noopener" class="interactive">💬 WHATSAPP</a>
                 </div>
-                <button onclick="closeInviteModal()" class="btn btn-secondary interactive" style="width: 100%; margin-top: 1rem;">CLOSE</button>
             </div>
-            <div id="invite-backdrop" onclick="closeInviteModal()" style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.8); z-index: 9999;"></div>
-        `;
+            <div class="modal-actions">
+                <button type="button" class="btn btn-secondary interactive modal-close-btn">CLOSE</button>
+            </div>
+        `, { cardClass: 'modal-wide' });
 
-        document.body.insertAdjacentHTML('beforeend', modal);
+        const copyBtn = modal.querySelector('.modal-copy-btn');
+        const inviteInput = modal.querySelector(`#${inviteId}`);
+        if (copyBtn && inviteInput) {
+            copyBtn.addEventListener('click', () => {
+                navigator.clipboard.writeText(inviteInput.value);
+                const original = copyBtn.textContent;
+                copyBtn.textContent = '✓ COPIED!';
+                setTimeout(() => {
+                    copyBtn.textContent = original;
+                }, 2000);
+            });
+        }
+
+        modal.querySelector('.modal-close-btn')?.addEventListener('click', closeActiveModal);
     } catch (error) {
         console.error('Failed to generate invite link:', error);
         alert('Failed to generate invite link. Please try again.');
     }
-};
-
-window.closeInviteModal = function() {
-    document.getElementById('invite-backdrop')?.remove();
-    document.querySelector('[id="invite-link-input"]')?.closest('div[style*="position: fixed"]')?.remove();
 };
 
 // Message search
