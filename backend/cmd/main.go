@@ -187,25 +187,8 @@ func migrateDatabase(db *gorm.DB) error {
 
 	// Migrate models one by one for better error handling
 	models := []interface{}{
-		// Auth
 		&auth.User{},
-		// Chat
 		&chat.Chat{},
-		// Messenger
-		&messenger.Conversation{},
-		&messenger.Participant{},
-		&messenger.ConversationMessage{},
-		&messenger.Reaction{},
-		&messenger.ReadReceipt{},
-		&messenger.Story{},
-		&messenger.StoryView{},
-		&messenger.InviteCode{},
-		&messenger.GroupInvite{},
-		// Translation
-		&translation.Translation{},
-		// Subscription
-		&subscription.Subscription{},
-		&subscription.Payment{},
 	}
 
 	for _, model := range models {
@@ -215,19 +198,26 @@ func migrateDatabase(db *gorm.DB) error {
 		}
 		log.Printf("Successfully migrated %T\n", model)
 
-		// Add preferences column manually after User migration
-		switch model.(type) {
-		case *auth.User:
+		if _, ok := model.(*auth.User); ok {
 			log.Println("Adding preferences column to users table...")
 			db.Exec("ALTER TABLE users ADD COLUMN IF NOT EXISTS preferences JSONB DEFAULT '{}'::jsonb")
-			if err := ensureRefreshTokensTable(db); err != nil {
-				return err
-			}
-		case *chat.Chat:
-			if err := ensureChatMessagesTable(db); err != nil {
-				return err
-			}
 		}
+	}
+
+	if err := ensureRefreshTokensTable(db); err != nil {
+		return fmt.Errorf("failed to ensure refresh_tokens table: %w", err)
+	}
+	if err := ensureChatMessagesTable(db); err != nil {
+		return fmt.Errorf("failed to ensure chat messages table: %w", err)
+	}
+	if err := ensureMessengerTables(db); err != nil {
+		return fmt.Errorf("failed to ensure messenger tables: %w", err)
+	}
+	if err := ensureTranslationTable(db); err != nil {
+		return fmt.Errorf("failed to ensure translation table: %w", err)
+	}
+	if err := ensureSubscriptionTables(db); err != nil {
+		return fmt.Errorf("failed to ensure subscription tables: %w", err)
 	}
 
 	// Create indexes
@@ -300,6 +290,371 @@ func ensureChatMessagesTable(db *gorm.DB) error {
 	}
 
 	log.Println("Chat messages table ensured via manual SQL")
+	return nil
+}
+
+func ensureMessengerTables(db *gorm.DB) error {
+	tasks := []func(*gorm.DB) error{
+		ensureConversationsTable,
+		ensureParticipantsTable,
+		ensureConversationMessagesTable,
+		ensureReactionsTable,
+		ensureReadReceiptsTable,
+		ensureStoriesTable,
+		ensureStoryViewsTable,
+		ensureInviteCodesTable,
+		ensureGroupInvitesTable,
+	}
+
+	for _, task := range tasks {
+		if err := task(db); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+func ensureConversationsTable(db *gorm.DB) error {
+	sql := `
+	CREATE TABLE IF NOT EXISTS conversations (
+		id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+		type varchar(20) NOT NULL,
+		name varchar(255),
+		description text,
+		avatar text,
+		is_ai_agent boolean DEFAULT false,
+		enable_video boolean DEFAULT false,
+		created_by uuid,
+		created_at timestamptz DEFAULT CURRENT_TIMESTAMP,
+		updated_at timestamptz DEFAULT CURRENT_TIMESTAMP,
+		deleted_at timestamptz
+	)`
+
+	if err := db.Exec(sql).Error; err != nil {
+		log.Printf("Failed to create conversations table: %v", err)
+		return fmt.Errorf("failed to create conversations table: %w", err)
+	}
+
+	if err := db.Exec("CREATE INDEX IF NOT EXISTS idx_conversations_deleted_at ON conversations(deleted_at)").Error; err != nil {
+		return fmt.Errorf("failed to create conversations deleted index: %w", err)
+	}
+
+	log.Println("Conversations table ensured via manual SQL")
+	return nil
+}
+
+func ensureParticipantsTable(db *gorm.DB) error {
+	sql := `
+	CREATE TABLE IF NOT EXISTS participants (
+		id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+		conversation_id uuid NOT NULL REFERENCES conversations(id) ON DELETE CASCADE,
+		user_id uuid NOT NULL,
+		role varchar(20) DEFAULT 'member',
+		is_pinned boolean DEFAULT false,
+		is_muted boolean DEFAULT false,
+		is_archived boolean DEFAULT false,
+		joined_at timestamptz DEFAULT CURRENT_TIMESTAMP
+	)`
+
+	if err := db.Exec(sql).Error; err != nil {
+		log.Printf("Failed to create participants table: %v", err)
+		return fmt.Errorf("failed to create participants table: %w", err)
+	}
+
+	if err := db.Exec("CREATE INDEX IF NOT EXISTS idx_participants_conversation_id ON participants(conversation_id)").Error; err != nil {
+		return fmt.Errorf("failed to create participants conversation index: %w", err)
+	}
+	if err := db.Exec("CREATE INDEX IF NOT EXISTS idx_participants_user_id ON participants(user_id)").Error; err != nil {
+		return fmt.Errorf("failed to create participants user index: %w", err)
+	}
+
+	log.Println("Participants table ensured via manual SQL")
+	return nil
+}
+
+func ensureConversationMessagesTable(db *gorm.DB) error {
+	sql := `
+	CREATE TABLE IF NOT EXISTS conversation_messages (
+		id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+		conversation_id uuid NOT NULL REFERENCES conversations(id) ON DELETE CASCADE,
+		sender_id uuid NOT NULL,
+		content text NOT NULL,
+		message_type varchar(20) DEFAULT 'text',
+		media_url text,
+		reply_to_id uuid,
+		is_edited boolean DEFAULT false,
+		is_forwarded boolean DEFAULT false,
+		created_at timestamptz DEFAULT CURRENT_TIMESTAMP,
+		updated_at timestamptz DEFAULT CURRENT_TIMESTAMP,
+		deleted_at timestamptz
+	)`
+
+	if err := db.Exec(sql).Error; err != nil {
+		log.Printf("Failed to create conversation_messages table: %v", err)
+		return fmt.Errorf("failed to create conversation_messages table: %w", err)
+	}
+
+	if err := db.Exec("CREATE INDEX IF NOT EXISTS idx_conversation_messages_conversation_id ON conversation_messages(conversation_id)").Error; err != nil {
+		return fmt.Errorf("failed to create conversation_messages conversation index: %w", err)
+	}
+	if err := db.Exec("CREATE INDEX IF NOT EXISTS idx_conversation_messages_created_at ON conversation_messages(created_at)").Error; err != nil {
+		return fmt.Errorf("failed to create conversation_messages created index: %w", err)
+	}
+
+	log.Println("Conversation messages table ensured via manual SQL")
+	return nil
+}
+
+func ensureReactionsTable(db *gorm.DB) error {
+	sql := `
+	CREATE TABLE IF NOT EXISTS reactions (
+		id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+		message_id uuid NOT NULL REFERENCES conversation_messages(id) ON DELETE CASCADE,
+		user_id uuid NOT NULL,
+		emoji varchar(10) NOT NULL,
+		created_at timestamptz DEFAULT CURRENT_TIMESTAMP
+	)`
+
+	if err := db.Exec(sql).Error; err != nil {
+		log.Printf("Failed to create reactions table: %v", err)
+		return fmt.Errorf("failed to create reactions table: %w", err)
+	}
+
+	if err := db.Exec("CREATE INDEX IF NOT EXISTS idx_reactions_message_id ON reactions(message_id)").Error; err != nil {
+		return fmt.Errorf("failed to create reactions message index: %w", err)
+	}
+
+	log.Println("Reactions table ensured via manual SQL")
+	return nil
+}
+
+func ensureReadReceiptsTable(db *gorm.DB) error {
+	sql := `
+	CREATE TABLE IF NOT EXISTS read_receipts (
+		id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+		message_id uuid NOT NULL REFERENCES conversation_messages(id) ON DELETE CASCADE,
+		user_id uuid NOT NULL,
+		read_at timestamptz DEFAULT CURRENT_TIMESTAMP
+	)`
+
+	if err := db.Exec(sql).Error; err != nil {
+		log.Printf("Failed to create read_receipts table: %v", err)
+		return fmt.Errorf("failed to create read_receipts table: %w", err)
+	}
+
+	if err := db.Exec("CREATE INDEX IF NOT EXISTS idx_read_receipts_message_id ON read_receipts(message_id)").Error; err != nil {
+		return fmt.Errorf("failed to create read_receipts message index: %w", err)
+	}
+
+	log.Println("Read receipts table ensured via manual SQL")
+	return nil
+}
+
+func ensureStoriesTable(db *gorm.DB) error {
+	sql := `
+	CREATE TABLE IF NOT EXISTS stories (
+		id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+		user_id uuid NOT NULL,
+		media_url text NOT NULL,
+		media_type varchar(20) NOT NULL,
+		caption text,
+		expires_at timestamptz NOT NULL,
+		created_at timestamptz DEFAULT CURRENT_TIMESTAMP,
+		deleted_at timestamptz
+	)`
+
+	if err := db.Exec(sql).Error; err != nil {
+		log.Printf("Failed to create stories table: %v", err)
+		return fmt.Errorf("failed to create stories table: %w", err)
+	}
+
+	if err := db.Exec("CREATE INDEX IF NOT EXISTS idx_stories_user_id ON stories(user_id)").Error; err != nil {
+		return fmt.Errorf("failed to create stories user index: %w", err)
+	}
+
+	log.Println("Stories table ensured via manual SQL")
+	return nil
+}
+
+func ensureStoryViewsTable(db *gorm.DB) error {
+	sql := `
+	CREATE TABLE IF NOT EXISTS story_views (
+		id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+		story_id uuid NOT NULL REFERENCES stories(id) ON DELETE CASCADE,
+		user_id uuid NOT NULL,
+		viewed_at timestamptz DEFAULT CURRENT_TIMESTAMP
+	)`
+
+	if err := db.Exec(sql).Error; err != nil {
+		log.Printf("Failed to create story_views table: %v", err)
+		return fmt.Errorf("failed to create story_views table: %w", err)
+	}
+
+	if err := db.Exec("CREATE INDEX IF NOT EXISTS idx_story_views_story_id ON story_views(story_id)").Error; err != nil {
+		return fmt.Errorf("failed to create story_views story index: %w", err)
+	}
+
+	log.Println("Story views table ensured via manual SQL")
+	return nil
+}
+
+func ensureInviteCodesTable(db *gorm.DB) error {
+	sql := `
+	CREATE TABLE IF NOT EXISTS invite_codes (
+		id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+		code varchar(50) NOT NULL UNIQUE,
+		conversation_id uuid REFERENCES conversations(id) ON DELETE CASCADE,
+		created_by uuid NOT NULL,
+		used_by uuid,
+		used_at timestamptz,
+		expires_at timestamptz,
+		created_at timestamptz DEFAULT CURRENT_TIMESTAMP,
+		deleted_at timestamptz
+	)`
+
+	if err := db.Exec(sql).Error; err != nil {
+		log.Printf("Failed to create invite_codes table: %v", err)
+		return fmt.Errorf("failed to create invite_codes table: %w", err)
+	}
+
+	if err := db.Exec("CREATE INDEX IF NOT EXISTS idx_invite_codes_code ON invite_codes(code)").Error; err != nil {
+		return fmt.Errorf("failed to create invite_codes code index: %w", err)
+	}
+
+	log.Println("Invite codes table ensured via manual SQL")
+	return nil
+}
+
+func ensureGroupInvitesTable(db *gorm.DB) error {
+	sql := `
+	CREATE TABLE IF NOT EXISTS group_invites (
+		id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+		group_id uuid NOT NULL REFERENCES conversations(id) ON DELETE CASCADE,
+		code varchar(50) UNIQUE NOT NULL,
+		created_by uuid NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+		max_uses integer DEFAULT 0,
+		used_count integer DEFAULT 0,
+		expires_at timestamptz,
+		created_at timestamptz DEFAULT CURRENT_TIMESTAMP,
+		deleted_at timestamptz
+	)`
+
+	if err := db.Exec(sql).Error; err != nil {
+		log.Printf("Failed to create group_invites table: %v", err)
+		return fmt.Errorf("failed to create group_invites table: %w", err)
+	}
+
+	if err := db.Exec("CREATE INDEX IF NOT EXISTS idx_group_invites_code ON group_invites(code)").Error; err != nil {
+		return fmt.Errorf("failed to create group_invites code index: %w", err)
+	}
+
+	log.Println("Group invites table ensured via manual SQL")
+	return nil
+}
+
+func ensureTranslationTable(db *gorm.DB) error {
+	sql := `
+	CREATE TABLE IF NOT EXISTS translations (
+		id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+		user_id uuid NOT NULL,
+		source_language varchar(10) NOT NULL,
+		target_language varchar(10) NOT NULL,
+		source_text text NOT NULL,
+		translated_text text,
+		char_count integer NOT NULL,
+		chunk_count integer DEFAULT 1,
+		service varchar(20) NOT NULL,
+		plan varchar(50) NOT NULL,
+		cost decimal(10,4),
+		status varchar(20) DEFAULT 'pending',
+		error_message text,
+		created_at timestamptz DEFAULT CURRENT_TIMESTAMP,
+		completed_at timestamptz,
+		deleted_at timestamptz
+	)`
+
+	if err := db.Exec(sql).Error; err != nil {
+		log.Printf("Failed to create translations table: %v", err)
+		return fmt.Errorf("failed to create translations table: %w", err)
+	}
+
+	if err := db.Exec("CREATE INDEX IF NOT EXISTS idx_translations_user_id ON translations(user_id)").Error; err != nil {
+		return fmt.Errorf("failed to create translations user index: %w", err)
+	}
+	if err := db.Exec("CREATE INDEX IF NOT EXISTS idx_translations_status ON translations(status)").Error; err != nil {
+		return fmt.Errorf("failed to create translations status index: %w", err)
+	}
+
+	log.Println("Translation table ensured via manual SQL")
+	return nil
+}
+
+func ensureSubscriptionTables(db *gorm.DB) error {
+	if err := ensureSubscriptionsTable(db); err != nil {
+		return err
+	}
+	if err := ensurePaymentsTable(db); err != nil {
+		return err
+	}
+	return nil
+}
+
+func ensureSubscriptionsTable(db *gorm.DB) error {
+	sql := `
+	CREATE TABLE IF NOT EXISTS subscriptions (
+		id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+		user_id uuid NOT NULL UNIQUE,
+		stripe_subscription_id varchar(255) UNIQUE,
+		stripe_price_id varchar(255),
+		tier varchar(50) NOT NULL,
+		status varchar(20) NOT NULL,
+		current_period_start timestamptz,
+		current_period_end timestamptz,
+		cancel_at_period_end boolean DEFAULT false,
+		created_at timestamptz DEFAULT CURRENT_TIMESTAMP,
+		updated_at timestamptz DEFAULT CURRENT_TIMESTAMP,
+		deleted_at timestamptz
+	)`
+
+	if err := db.Exec(sql).Error; err != nil {
+		log.Printf("Failed to create subscriptions table: %v", err)
+		return fmt.Errorf("failed to create subscriptions table: %w", err)
+	}
+
+	if err := db.Exec("CREATE INDEX IF NOT EXISTS idx_subscriptions_user_id ON subscriptions(user_id)").Error; err != nil {
+		return fmt.Errorf("failed to create subscriptions user index: %w", err)
+	}
+	if err := db.Exec("CREATE INDEX IF NOT EXISTS idx_subscriptions_status ON subscriptions(status)").Error; err != nil {
+		return fmt.Errorf("failed to create subscriptions status index: %w", err)
+	}
+
+	log.Println("Subscriptions table ensured via manual SQL")
+	return nil
+}
+
+func ensurePaymentsTable(db *gorm.DB) error {
+	sql := `
+	CREATE TABLE IF NOT EXISTS payments (
+		id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+		user_id uuid NOT NULL,
+		stripe_payment_id varchar(255) NOT NULL UNIQUE,
+		amount bigint NOT NULL,
+		currency varchar(3) DEFAULT 'usd',
+		status varchar(20) NOT NULL,
+		description text,
+		created_at timestamptz DEFAULT CURRENT_TIMESTAMP
+	)`
+
+	if err := db.Exec(sql).Error; err != nil {
+		log.Printf("Failed to create payments table: %v", err)
+		return fmt.Errorf("failed to create payments table: %w", err)
+	}
+
+	if err := db.Exec("CREATE INDEX IF NOT EXISTS idx_payments_user_id ON payments(user_id)").Error; err != nil {
+		return fmt.Errorf("failed to create payments user index: %w", err)
+	}
+
+	log.Println("Payments table ensured via manual SQL")
 	return nil
 }
 
