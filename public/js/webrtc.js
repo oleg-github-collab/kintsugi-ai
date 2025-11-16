@@ -29,11 +29,22 @@ window.startCall = function(type) {
     const contact = conversations[currentConversationId];
 
     // Don't allow calls to AI
-    if (contact.isAI) {
+    if (contact && contact.isAI) {
         return;
     }
 
-    // Initiate call directly to current conversation
+    // Check if it's a group conversation
+    if (contact && contact.type === 'group') {
+        // Use ConferenceManager for group calls
+        if (typeof ConferenceManager !== 'undefined') {
+            ConferenceManager.showConferenceOptions(currentConversationId, contact.name || 'Group');
+        } else {
+            alert('Conference features are loading. Please try again in a moment.');
+        }
+        return;
+    }
+
+    // For direct/1-on-1 calls, use WebRTC
     initiateCall(currentConversationId, type);
 };
 

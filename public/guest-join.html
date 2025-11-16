@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Join Conference // Kintsugi AI</title>
+    <link rel="stylesheet" href="/css/styles.css">
+    <link rel="stylesheet" href="/css/mobile.css">
+</head>
+<body class="crt-effect">
+
+    <canvas id="matrix-canvas" class="matrix-bg"></canvas>
+
+    <main style="min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 2rem;">
+        <div class="scanlines" style="max-width: 600px; width: 100%; background: var(--digital-black); border: 4px solid var(--kintsugi-gold); padding: 3rem; box-shadow: 0 0 60px rgba(240, 255, 0, 0.6);">
+            <!-- Logo -->
+            <div style="text-align: center; margin-bottom: 2rem;">
+                <h1 class="text-rainbow text-neon" style="font-size: 2.5rem; margin-bottom: 0.5rem;">
+                    ⟡ KINTSUGI AI ⟡
+                </h1>
+                <div style="color: var(--cyber-cyan); font-size: 1rem;">
+                    Video Conference Platform
+                </div>
+            </div>
+
+            <!-- Group Info -->
+            <div id="group-info" style="margin-bottom: 2.5rem; padding: 1.5rem; background: linear-gradient(135deg, rgba(240, 255, 0, 0.15), rgba(240, 255, 0, 0.05)); border: 3px solid var(--kintsugi-gold);">
+                <div style="text-align: center;">
+                    <div style="color: var(--cyber-cyan); font-size: 0.9rem; margin-bottom: 0.5rem; text-transform: uppercase; font-weight: bold;">
+                        YOU'RE INVITED TO JOIN:
+                    </div>
+                    <h2 id="group-name" class="text-gold" style="font-size: 2rem; margin: 0; text-shadow: 0 0 15px rgba(240, 255, 0, 0.6);">
+                        Loading...
+                    </h2>
+                </div>
+            </div>
+
+            <!-- Join Form -->
+            <div id="join-form">
+                <div style="margin-bottom: 2rem;">
+                    <label style="display: block; color: var(--kintsugi-gold); margin-bottom: 0.75rem; font-weight: bold; font-size: 1.1rem;">
+                        YOUR NAME:
+                    </label>
+                    <input
+                        type="text"
+                        id="guest-name"
+                        placeholder="Enter your display name..."
+                        class="form-input interactive"
+                        style="width: 100%; padding: 1.25rem; border: 3px solid var(--cyber-cyan); font-size: 1.1rem; background: rgba(0,0,0,0.3);"
+                        maxlength="50"
+                        autofocus
+                    >
+                    <div style="color: #666; font-size: 0.85rem; margin-top: 0.5rem;">
+                        This name will be visible to other participants
+                    </div>
+                </div>
+
+                <!-- Device Check -->
+                <div style="margin-bottom: 2rem; padding: 1.5rem; background: rgba(0, 255, 255, 0.05); border: 2px solid var(--cyber-cyan);">
+                    <div style="color: var(--cyber-cyan); font-size: 0.95rem; font-weight: bold; margin-bottom: 1rem;">
+                        🎥 PRE-FLIGHT CHECK:
+                    </div>
+                    <div id="device-status" style="color: #aaa; font-size: 0.9rem; line-height: 1.8;">
+                        <div id="camera-status">🎥 Camera: <span style="color: #999;">Checking...</span></div>
+                        <div id="mic-status">🎤 Microphone: <span style="color: #999;">Checking...</span></div>
+                    </div>
+                </div>
+
+                <!-- Privacy Notice -->
+                <div style="margin-bottom: 2rem; padding: 1.25rem; background: rgba(157, 0, 255, 0.08); border: 2px solid var(--electric-purple); border-radius: 4px;">
+                    <div style="color: var(--electric-purple); font-size: 0.85rem; font-weight: bold; margin-bottom: 0.5rem;">
+                        🔒 PRIVACY & SECURITY
+                    </div>
+                    <div style="color: #aaa; font-size: 0.85rem; line-height: 1.6;">
+                        • Your connection is encrypted end-to-end<br>
+                        • No account required to join<br>
+                        • Your data is not stored after the call<br>
+                        • You can leave at any time
+                    </div>
+                </div>
+
+                <!-- Join Button -->
+                <button
+                    id="join-button"
+                    onclick="joinAsGuest()"
+                    class="btn btn-primary interactive"
+                    style="width: 100%; padding: 1.5rem; font-size: 1.3rem; font-weight: bold; background: linear-gradient(135deg, var(--kintsugi-gold), var(--cyber-cyan)); color: var(--digital-black); text-transform: uppercase; box-shadow: 0 0 30px rgba(240, 255, 0, 0.5);"
+                >
+                    ▶ JOIN CONFERENCE
+                </button>
+
+                <!-- Register Link -->
+                <div style="text-align: center; margin-top: 1.5rem; padding-top: 1.5rem; border-top: 2px solid #333;">
+                    <div style="color: #999; font-size: 0.9rem; margin-bottom: 0.75rem;">
+                        Want to host your own conferences?
+                    </div>
+                    <a href="/register.html" style="color: var(--cyber-cyan); text-decoration: none; font-weight: bold; font-size: 1rem;">
+                        Create a Free Account →
+                    </a>
+                </div>
+            </div>
+
+            <!-- Loading State -->
+            <div id="loading-state" style="display: none; text-align: center; padding: 3rem 0;">
+                <div style="font-size: 3rem; margin-bottom: 1rem; animation: pulse 2s infinite;">
+                    🎥
+                </div>
+                <div class="text-cyan" style="font-size: 1.2rem; font-weight: bold; margin-bottom: 0.5rem;">
+                    CONNECTING TO CONFERENCE...
+                </div>
+                <div style="color: #999; font-size: 0.95rem;">
+                    Please wait while we set up your connection
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="/js/main.js"></script>
+    <script src="/js/video-conference.js"></script>
+    <script>
+        let groupId = null;
+        let groupName = null;
+
+        // Parse URL parameters
+        function parseURL() {
+            const params = new URLSearchParams(window.location.search);
+            groupId = params.get('group');
+            groupName = params.get('name') || 'Conference';
+
+            if (!groupId) {
+                alert('Invalid conference link. Please check your invitation.');
+                window.location.href = '/';
+                return;
+            }
+
+            document.getElementById('group-name').textContent = decodeURIComponent(groupName);
+        }
+
+        // Check device permissions
+        async function checkDevices() {
+            const cameraStatus = document.getElementById('camera-status');
+            const micStatus = document.getElementById('mic-status');
+
+            try {
+                // Check camera
+                const videoStream = await navigator.mediaDevices.getUserMedia({ video: true });
+                cameraStatus.innerHTML = '🎥 Camera: <span style="color: var(--cyber-cyan);">✓ Ready</span>';
+                videoStream.getTracks().forEach(track => track.stop());
+            } catch (err) {
+                cameraStatus.innerHTML = '🎥 Camera: <span style="color: var(--neon-pink);">⚠ Not available</span>';
+            }
+
+            try {
+                // Check microphone
+                const audioStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                micStatus.innerHTML = '🎤 Microphone: <span style="color: var(--cyber-cyan);">✓ Ready</span>';
+                audioStream.getTracks().forEach(track => track.stop());
+            } catch (err) {
+                micStatus.innerHTML = '🎤 Microphone: <span style="color: var(--neon-pink);">⚠ Not available</span>';
+            }
+        }
+
+        // Join as guest
+        async function joinAsGuest() {
+            const guestName = document.getElementById('guest-name').value.trim();
+
+            if (!guestName) {
+                alert('Please enter your name to join the conference.');
+                document.getElementById('guest-name').focus();
+                return;
+            }
+
+            if (guestName.length < 2) {
+                alert('Please enter a name with at least 2 characters.');
+                return;
+            }
+
+            // Show loading
+            document.getElementById('join-form').style.display = 'none';
+            document.getElementById('loading-state').style.display = 'block';
+
+            try {
+                // Initialize VideoConference
+                if (typeof VideoConference !== 'undefined') {
+                    await VideoConference.initialize();
+                    await VideoConference.joinConference(groupId, guestName, true);
+                } else {
+                    throw new Error('Video conference module not loaded');
+                }
+            } catch (error) {
+                console.error('Failed to join:', error);
+                alert('Failed to join conference. Please try again or contact the host.');
+                document.getElementById('join-form').style.display = 'block';
+                document.getElementById('loading-state').style.display = 'none';
+            }
+        }
+
+        // Handle Enter key
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('guest-name')?.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    joinAsGuest();
+                }
+            });
+        });
+
+        // Initialize
+        parseURL();
+        checkDevices();
+    </script>
+</body>
+</html>

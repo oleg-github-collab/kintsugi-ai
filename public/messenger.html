@@ -52,8 +52,8 @@
 
                     <!-- Stories -->
                     <div class="stories-container">
-                        <div class="story-item" onclick="viewStory('your-story')">
-                            <div class="story-avatar">+</div>
+                        <div class="story-item" onclick="StoriesManager.showCreateStory()" style="cursor: pointer;">
+                            <div class="story-avatar" style="border-style: dashed;">+</div>
                             <div class="story-name">Add Story</div>
                         </div>
                         <div id="stories-list"></div>
@@ -395,6 +395,8 @@
     <script src="/js/media-upload.js"></script>
     <script src="/js/group-chat.js"></script>
     <script src="/js/video-conference.js"></script>
+    <script src="/js/conference-manager.js"></script>
+    <script src="/js/stories.js"></script>
     <script src="/js/cookie-consent.js"></script>
     <script>
         // Mobile conversations toggle
