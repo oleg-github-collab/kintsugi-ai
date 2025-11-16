@@ -2,6 +2,7 @@ package messenger
 
 import (
 	"errors"
+	"fmt"
 	"time"
 
 	"github.com/google/uuid"
@@ -388,6 +389,58 @@ func (s *Service) DeleteStory(storyID, userID uuid.UUID) error {
 // Search users
 func (s *Service) SearchUsers(query string) ([]map[string]interface{}, error) {
 	return s.repo.SearchUsers(query)
+}
+
+func (s *Service) AcceptInvite(userID uuid.UUID, code string) (*Conversation, error) {
+	if code == "" {
+		return nil, errors.New("invite code is required")
+	}
+
+	invite, err := s.repo.GetInviteByCode(code)
+	if err != nil {
+		return nil, err
+	}
+
+	if invite.UsedBy != nil {
+		return nil, errors.New("invite already used")
+	}
+
+	if invite.ExpiresAt.Before(time.Now()) {
+		return nil, errors.New("invite has expired")
+	}
+
+	if invite.CreatedBy == userID {
+		return nil, errors.New("cannot accept your own invite")
+	}
+
+	conversation, err := s.repo.FindDirectConversationBetween(userID, invite.CreatedBy)
+	if err != nil {
+		return nil, err
+	}
+
+	if conversation == nil {
+		username, usernameErr := s.repo.GetUsername(invite.CreatedBy)
+		if usernameErr != nil {
+			username = "Direct Chat"
+		}
+
+		req := &CreateConversationRequest{
+			Type:           "direct",
+			Name:           fmt.Sprintf("Chat with %s", username),
+			ParticipantIDs: []uuid.UUID{invite.CreatedBy},
+		}
+
+		conversation, err = s.CreateConversation(userID, req)
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	if err := s.repo.MarkInviteUsed(invite.ID, userID); err != nil {
+		return nil, err
+	}
+
+	return conversation, nil
 }
 
 // Create invite

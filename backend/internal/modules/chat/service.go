@@ -468,6 +468,27 @@ func (s *Service) GenerateImage(userID uuid.UUID, prompt, size string) (string, 
 		size = defaultImageSize
 	}
 
+	// Check user subscription tier - only Premium+ can generate images
+	var user struct {
+		SubscriptionTier string
+		TokensUsed       int64
+		TokensLimit      int64
+	}
+
+	err := s.db.Table("users").
+		Where("id = ?", userID).
+		Select("subscription_tier, tokens_used, tokens_limit").
+		Scan(&user).Error
+
+	if err != nil {
+		return "", err
+	}
+
+	// Only Premium and Unlimited tiers can generate images
+	if user.SubscriptionTier == "basic" {
+		return "", errors.New("image generation is only available for Premium and Unlimited subscribers")
+	}
+
 	hasCapacity, tokensUsed, tokensLimit, err := s.CheckTokenLimit(userID)
 	if err != nil {
 		return "", err

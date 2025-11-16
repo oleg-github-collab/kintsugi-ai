@@ -120,7 +120,7 @@ func (s *Service) GetUsageStats(userID uuid.UUID) (map[string]interface{}, error
 		"total_ai_chats":     0,
 		"total_groups":       0,
 		"tokens_used":        0,
-		"tokens_limit":       100000,
+		"tokens_limit":       20000,
 	}
 
 	user, err := s.repo.GetUserByID(userID)

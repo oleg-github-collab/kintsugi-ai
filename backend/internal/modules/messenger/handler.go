@@ -481,3 +481,28 @@ func (h *Handler) CreateInvite(c *fiber.Ctx) error {
 		"invite_code": inviteCode,
 	})
 }
+
+func (h *Handler) AcceptInvite(c *fiber.Ctx) error {
+	userID := c.Locals("user_id").(uuid.UUID)
+
+	var req struct {
+		Code string `json:"code"`
+	}
+
+	if err := c.BodyParser(&req); err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error": "Invalid request body",
+		})
+	}
+
+	conversation, err := h.service.AcceptInvite(userID, req.Code)
+	if err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error": err.Error(),
+		})
+	}
+
+	return c.JSON(fiber.Map{
+		"conversation": conversation,
+	})
+}

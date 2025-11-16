@@ -17,7 +17,7 @@ CREATE TABLE users (
     password_hash VARCHAR(255) NOT NULL,
     subscription_tier VARCHAR(20) DEFAULT 'basic',
     tokens_used BIGINT DEFAULT 0,
-    tokens_limit BIGINT DEFAULT 100000,
+    tokens_limit BIGINT DEFAULT 20000,
     reset_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     stripe_customer_id VARCHAR(255),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,

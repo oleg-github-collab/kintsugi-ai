@@ -262,6 +262,61 @@ func (r *Repository) SearchUsers(query string) ([]map[string]interface{}, error)
 	return users, err
 }
 
+func (r *Repository) GetInviteByCode(code string) (*InviteCode, error) {
+	var invite InviteCode
+	err := r.db.Where("code = ? AND deleted_at IS NULL", code).First(&invite).Error
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil, errors.New("invite not found")
+		}
+		return nil, err
+	}
+	return &invite, nil
+}
+
+func (r *Repository) MarkInviteUsed(inviteID, userID uuid.UUID) error {
+	return r.db.Model(&InviteCode{}).
+		Where("id = ?", inviteID).
+		Updates(map[string]interface{}{
+			"used_by": userID,
+			"used_at": time.Now(),
+		}).Error
+}
+
+func (r *Repository) FindDirectConversationBetween(userA, userB uuid.UUID) (*Conversation, error) {
+	var conversation Conversation
+	err := r.db.Table("conversations").
+		Select("conversations.*").
+		Joins("JOIN participants p1 ON p1.conversation_id = conversations.id AND p1.user_id = ?", userA).
+		Joins("JOIN participants p2 ON p2.conversation_id = conversations.id AND p2.user_id = ?", userB).
+		Where("conversations.type = ?", "direct").
+		Order("conversations.updated_at DESC").
+		Preload("Participants").
+		First(&conversation).Error
+
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil, nil
+		}
+		return nil, err
+	}
+	return &conversation, nil
+}
+
+func (r *Repository) GetUsername(userID uuid.UUID) (string, error) {
+	var result struct {
+		Username string
+	}
+	err := r.db.Table("users").
+		Select("username").
+		Where("id = ?", userID).
+		First(&result).Error
+	if err != nil {
+		return "", err
+	}
+	return result.Username, nil
+}
+
 // Create invite
 func (r *Repository) CreateInvite(userID uuid.UUID, inviteCode string) error {
 	invite := &InviteCode{

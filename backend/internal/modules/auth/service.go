@@ -57,7 +57,7 @@ func (s *Service) Register(req *RegisterRequest) (*AuthResponse, error) {
 		Email:            req.Email,
 		PasswordHash:     string(passwordHash),
 		SubscriptionTier: "basic",
-		TokensLimit:      100000,
+		TokensLimit:      20000,
 		TokensUsed:       0,
 		ResetAt:          time.Now().Add(6 * time.Hour),
 		Preferences:      JSONB("{}"),

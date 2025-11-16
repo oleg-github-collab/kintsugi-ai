@@ -44,6 +44,7 @@ func RegisterRoutes(app *fiber.App, handler *Handler, authMiddleware fiber.Handl
 
 	// Invite links
 	messenger.Post("/create-invite", handler.CreateInvite)
+	messenger.Post("/accept-invite", handler.AcceptInvite)
 
 	// Group chat endpoints
 	messenger.Post("/groups", handler.CreateGroup)

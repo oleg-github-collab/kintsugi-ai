@@ -33,12 +33,12 @@ func NewService(repo *Repository, db *gorm.DB) *Service {
 			Tier:          "basic",
 			Name:          "Basic",
 			PriceMonthly:  0,
-			TokensLimit:   getEnvInt64("BASIC_TOKEN_LIMIT", 100000),
+			TokensLimit:   getEnvInt64("BASIC_TOKEN_LIMIT", 20000),
 			ResetInterval: "6h",
 			Features: []string{
 				"Simple text chat",
 				"Basic tasks",
-				"100k tokens every 6 hours",
+				"20k tokens every 6 hours",
 			},
 		},
 		"premium_starter": {
