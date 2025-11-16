@@ -185,3 +185,17 @@ function initMobileNavigation() {
         panelLinksContainer.appendChild(clone);
     });
 }
+
+function initStickyHeader() {
+    const nav = document.querySelector('nav');
+    if (!nav) return;
+
+    const toggleSticky = () => {
+        const scrolled = window.scrollY > 60;
+        nav.classList.toggle('scrolled', scrolled);
+    };
+
+    window.addEventListener('scroll', toggleSticky);
+    toggleSticky();
+}
+    initStickyHeader();

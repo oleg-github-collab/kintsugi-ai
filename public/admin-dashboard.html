@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard // Kintsugi AI</title>
+    <link rel="stylesheet" href="/css/styles.css">
+    <link rel="stylesheet" href="/css/typography.css">
+    <style>
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            padding: 1.5rem;
+            border: 3px solid var(--cyber-cyan);
+            background: rgba(0, 255, 255, 0.05);
+            transition: all 0.3s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 16px rgba(0, 255, 255, 0.2);
+        }
+
+        .table-container {
+            overflow-x: auto;
+            border: 3px solid var(--electric-purple);
+            background: rgba(157, 0, 255, 0.05);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            background: rgba(157, 0, 255, 0.2);
+            color: var(--electric-purple);
+            padding: 1rem;
+            text-align: left;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        td {
+            padding: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            color: #ccc;
+        }
+
+        tr:hover {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .action-btn {
+            padding: 0.5rem 1rem;
+            margin-right: 0.5rem;
+            border: 2px solid var(--cyber-cyan);
+            background: rgba(0, 255, 255, 0.1);
+            color: var(--cyber-cyan);
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: all 0.2s;
+        }
+
+        .action-btn:hover {
+            background: rgba(0, 255, 255, 0.25);
+            transform: translateY(-2px);
+        }
+
+        .action-btn.danger {
+            border-color: var(--neon-pink);
+            color: var(--neon-pink);
+            background: rgba(255, 0, 255, 0.1);
+        }
+
+        .action-btn.danger:hover {
+            background: rgba(255, 0, 255, 0.25);
+        }
+    </style>
+</head>
+<body class="crt-effect">
+
+    <canvas id="matrix-canvas" class="matrix-bg"></canvas>
+    <div class="cursor-invert"></div>
+    <div class="cursor-cross"></div>
+
+    <nav class="scanlines">
+        <div class="nav-container">
+            <a href="/" class="nav-logo text-rainbow">⟡ KINTSUGI AI ⟡</a>
+            <div class="nav-links">
+                <a href="/admin-dashboard.html" class="nav-link text-purple">ADMIN</a>
+                <a href="/chat.html" class="nav-link">CHAT</a>
+                <a href="/profile.html" class="nav-link">PROFILE</a>
+                <a href="#" onclick="logout()" class="nav-link text-pink">LOGOUT</a>
+            </div>
+        </div>
+    </nav>
+
+    <main style="padding: 100px 2rem 2rem 2rem; max-width: 1600px; margin: 0 auto;">
+        <div class="scanlines">
+            <h1 class="text-purple text-neon" style="font-size: 2.5rem; margin-bottom: 0.5rem;">⚡ ADMIN DASHBOARD</h1>
+            <p style="color: #999; margin-bottom: 2rem;">System Overview & User Management</p>
+
+            <!-- System Statistics -->
+            <div class="dashboard-grid" id="stats-grid">
+                <div class="stat-card">
+                    <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">👥</div>
+                    <div style="font-size: 2rem; color: var(--cyber-cyan); font-weight: bold;" id="total-users">-</div>
+                    <div style="color: #999; text-transform: uppercase;">Total Users</div>
+                </div>
+
+                <div class="stat-card" style="border-color: var(--kintsugi-gold); background: rgba(240, 255, 0, 0.05);">
+                    <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">📊</div>
+                    <div style="font-size: 2rem; color: var(--kintsugi-gold); font-weight: bold;" id="active-today">-</div>
+                    <div style="color: #999; text-transform: uppercase;">Active Today</div>
+                </div>
+
+                <div class="stat-card" style="border-color: var(--electric-purple); background: rgba(157, 0, 255, 0.05);">
+                    <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">💬</div>
+                    <div style="font-size: 2rem; color: var(--electric-purple); font-weight: bold;" id="total-chats">-</div>
+                    <div style="color: #999; text-transform: uppercase;">Total Chats</div>
+                </div>
+
+                <div class="stat-card" style="border-color: var(--neon-pink); background: rgba(255, 0, 255, 0.05);">
+                    <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">💰</div>
+                    <div style="font-size: 2rem; color: var(--neon-pink); font-weight: bold;" id="revenue">-</div>
+                    <div style="color: #999; text-transform: uppercase;">Monthly Revenue</div>
+                </div>
+
+                <div class="stat-card" style="border-color: var(--matrix-green); background: rgba(0, 255, 0, 0.05);">
+                    <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">🔢</div>
+                    <div style="font-size: 2rem; color: var(--matrix-green); font-weight: bold;" id="total-tokens">-</div>
+                    <div style="color: #999; text-transform: uppercase;">Total Tokens Used</div>
+                </div>
+
+                <div class="stat-card" style="border-color: var(--neon-orange); background: rgba(255, 165, 0, 0.05);">
+                    <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">👤</div>
+                    <div style="font-size: 2rem; color: var(--neon-orange); font-weight: bold;" id="new-users-week">-</div>
+                    <div style="color: #999; text-transform: uppercase;">New Users (Week)</div>
+                </div>
+            </div>
+
+            <!-- User Search & Filters -->
+            <div style="margin-bottom: 2rem;">
+                <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+                    <input
+                        type="text"
+                        id="search-input"
+                        placeholder="Search users by email or username..."
+                        class="form-input interactive"
+                        style="flex: 1; min-width: 300px; padding: 1rem; border: 3px solid var(--cyber-cyan);"
+                    >
+                    <button onclick="AdminDashboard.searchUsers()" class="btn btn-primary interactive" style="padding: 1rem 2rem;">
+                        🔍 SEARCH
+                    </button>
+                    <button onclick="AdminDashboard.loadAllUsers()" class="btn btn-secondary interactive" style="padding: 1rem 2rem;">
+                        ↻ RESET
+                    </button>
+                </div>
+            </div>
+
+            <!-- Users Table -->
+            <div class="table-container">
+                <h3 class="text-purple text-neon" style="padding: 1.5rem; font-size: 1.5rem; margin: 0;">USER MANAGEMENT</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>User</th>
+                            <th>Email</th>
+                            <th>Plan</th>
+                            <th>Role</th>
+                            <th>Tokens Used</th>
+                            <th>Created</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="users-table-body">
+                        <tr>
+                            <td colspan="7" style="text-align: center; padding: 2rem; color: #666;">
+                                Loading users...
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Pagination -->
+            <div style="display: flex; justify-content: center; gap: 1rem; margin-top: 2rem;">
+                <button id="prev-btn" onclick="AdminDashboard.prevPage()" class="btn btn-secondary interactive" disabled>
+                    ← PREVIOUS
+                </button>
+                <span style="color: var(--cyber-cyan); padding: 1rem; font-weight: bold;" id="page-info">Page 1</span>
+                <button id="next-btn" onclick="AdminDashboard.nextPage()" class="btn btn-secondary interactive">
+                    NEXT →
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <script src="/js/main.js"></script>
+    <script src="/js/admin-dashboard.js"></script>
+</body>
+</html>

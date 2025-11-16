@@ -41,6 +41,180 @@ function createModal(contentHtml, options = {}) {
 
 window.closeActiveModal = closeActiveModal;
 
+function updateNotificationBadge() {
+    const badge = document.getElementById('notification-badge');
+    if (!badge) return;
+    const count = NotificationCenter.unreadCount();
+    badge.textContent = count > 0 ? count : '';
+}
+
+function renderNotificationItems() {
+    return NotificationCenter.notifications.map(n => `
+        <div class="notification-card ${n.read ? '' : 'unread'}" data-id="${n.id}">
+            <div class="notification-title">${n.title}</div>
+            <div class="notification-description">${n.description}</div>
+            <div class="notification-time">${n.time}</div>
+        </div>
+    `).join('');
+}
+
+function showNotificationsPanel() {
+    const modal = createModal(`
+        <div>
+            <div class="modal-header" style="justify-content: space-between;">
+                <div>
+                    <h3 class="modal-title text-cyan">NOTIFICATIONS</h3>
+                    <p class="modal-subtitle">${NotificationCenter.unreadCount()} unread</p>
+                </div>
+                <button type="button" class="btn btn-secondary interactive modal-close-btn">✕</button>
+            </div>
+            <div class="notification-list">
+                ${renderNotificationItems()}
+            </div>
+            <div class="modal-actions">
+                <button type="button" class="btn btn-primary interactive mark-all-btn">MARK ALL AS READ</button>
+                <button type="button" class="btn btn-secondary interactive modal-close-btn">CLOSE</button>
+            </div>
+        </div>
+    `, { cardClass: 'modal-wide' });
+
+    modal.querySelectorAll('.notification-card').forEach(card => {
+        card.addEventListener('click', () => {
+            const id = card.dataset.id;
+            NotificationCenter.toggleRead(id);
+            modal.querySelector('.notification-list').innerHTML = renderNotificationItems();
+            updateNotificationBadge();
+        });
+    });
+
+    modal.querySelector('.mark-all-btn')?.addEventListener('click', () => {
+        NotificationCenter.markAllRead();
+        updateNotificationBadge();
+        closeActiveModal();
+    });
+
+    modal.querySelectorAll('.modal-close-btn').forEach(btn => {
+        btn.addEventListener('click', closeActiveModal);
+    });
+}
+
+function showSettingsPanel() {
+    const modal = createModal(`
+        <div>
+            <div class="modal-header" style="justify-content: space-between;">
+                <div>
+                    <h3 class="modal-title text-gold">SETTINGS</h3>
+                    <p class="modal-subtitle">Customize your messenger preferences on the go.</p>
+                </div>
+                <button type="button" class="btn btn-secondary interactive modal-close-btn">✕</button>
+            </div>
+            <div class="modal-contact-list" id="settings-toggles">
+                <div class="settings-toggle">
+                    <span>Compact thread layout</span>
+                    <span class="toggle-pill ${SettingsCenter.get('compactView') ? 'on' : ''}" data-key="compactView">${SettingsCenter.get('compactView') ? 'ON' : 'OFF'}</span>
+                </div>
+                <div class="settings-toggle">
+                    <span>Push notifications</span>
+                    <span class="toggle-pill ${SettingsCenter.get('pushAlerts') ? 'on' : ''}" data-key="pushAlerts">${SettingsCenter.get('pushAlerts') ? 'ON' : 'OFF'}</span>
+                </div>
+                <div class="settings-toggle">
+                    <span>Force dark chrome</span>
+                    <span class="toggle-pill ${SettingsCenter.get('darkMode') ? 'on' : ''}" data-key="darkMode">${SettingsCenter.get('darkMode') ? 'ON' : 'OFF'}</span>
+                </div>
+            </div>
+            <div class="modal-actions">
+                <button type="button" class="btn btn-secondary interactive modal-close-btn">CLOSE</button>
+            </div>
+        </div>
+    `, { cardClass: 'modal-compact' });
+
+    modal.querySelectorAll('.toggle-pill').forEach(pill => {
+        pill.addEventListener('click', () => {
+            const key = pill.dataset.key;
+            SettingsCenter.toggle(key);
+            pill.classList.toggle('on', SettingsCenter.get(key));
+            pill.textContent = SettingsCenter.get(key) ? 'ON' : 'OFF';
+        });
+    });
+
+    modal.querySelectorAll('.modal-close-btn').forEach(btn => {
+        btn.addEventListener('click', closeActiveModal);
+    });
+}
+
+const NotificationCenter = {
+    storageKey: 'kintsugi_notifications',
+    notifications: [
+        { id: 'welcome', title: 'Welcome aboard', description: 'Your Kintsugi AI account is ready.', time: 'Just now', read: false },
+        { id: 'token_reset', title: 'Tokens refreshed', description: 'Your hourly token bucket was reset.', time: '1 hour ago', read: false },
+        { id: 'story_live', title: 'Story shared', description: 'One of your circles posted a new story.', time: 'Today', read: true }
+    ],
+    load() {
+        try {
+            const stored = localStorage.getItem(this.storageKey);
+            if (stored) {
+                this.notifications = JSON.parse(stored);
+            }
+        } catch (err) {
+            console.warn('Failed to load notifications:', err);
+        }
+    },
+    save() {
+        localStorage.setItem(this.storageKey, JSON.stringify(this.notifications));
+    },
+    unreadCount() {
+        return this.notifications.filter(n => !n.read).length;
+    },
+    toggleRead(id) {
+        const note = this.notifications.find(n => n.id === id);
+        if (note) {
+            note.read = !note.read;
+            this.save();
+        }
+    },
+    markAllRead() {
+        this.notifications.forEach(n => {
+            n.read = true;
+        });
+        this.save();
+    }
+};
+
+const SettingsCenter = {
+    storageKey: 'kintsugi_settings',
+    defaults: {
+        compactView: false,
+        pushAlerts: true,
+        darkMode: true
+    },
+    state: {},
+    load() {
+        try {
+            const stored = localStorage.getItem(this.storageKey);
+            this.state = stored ? JSON.parse(stored) : { ...this.defaults };
+        } catch (err) {
+            console.warn('Failed to load settings:', err);
+            this.state = { ...this.defaults };
+        }
+    },
+    save() {
+        localStorage.setItem(this.storageKey, JSON.stringify(this.state));
+    },
+    toggle(key) {
+        if (typeof this.state[key] === 'boolean') {
+            this.state[key] = !this.state[key];
+            this.save();
+        }
+    },
+    get(key) {
+        return this.state[key];
+    }
+};
+
+NotificationCenter.load();
+SettingsCenter.load();
+updateNotificationBadge();
+
 // Initialize WebSocket
 function connectWebSocket() {
     const wsUrl = window.location.hostname === 'localhost'
@@ -568,6 +742,15 @@ function getFileExtension(lang) {
     return extensions[lang.toLowerCase()] || 'txt';
 }
 
+function copyInviteLink(userId, username) {
+    const text = `Join my Kintsugi AI chat: ${username} just invited you!`;
+    navigator.clipboard.writeText(text).then(() => {
+        alert('Message copied! Share it with your contact.');
+    }).catch(() => {
+        alert('Unable to copy to clipboard.');
+    });
+}
+
 function renderReactions(reactions) {
     const grouped = {};
     reactions.forEach(r => {
@@ -919,7 +1102,16 @@ document.getElementById('user-search-input')?.addEventListener('input', async (e
     const query = e.target.value.trim();
     if (query.length < 3) {
         document.getElementById('user-search-results').innerHTML = '';
+        const status = document.getElementById('user-search-status');
+        if (status) {
+            status.textContent = 'Enter at least 3 characters to search.';
+        }
         return;
+    }
+
+    const status = document.getElementById('user-search-status');
+    if (status) {
+        status.textContent = 'Searching...';
     }
 
     try {
@@ -942,16 +1134,34 @@ function renderUserSearchResults(users) {
     const container = document.getElementById('user-search-results');
     container.innerHTML = '';
 
+    if (users.length === 0) {
+        const status = document.getElementById('user-search-status');
+        if (status) {
+            status.textContent = 'No users found yet. Try another query.';
+        }
+        return;
+    }
+
+    const status = document.getElementById('user-search-status');
+    if (status) {
+        status.textContent = `${users.length} match${users.length === 1 ? '' : 'es'} found`;
+    }
+
     users.forEach(user => {
         const div = document.createElement('div');
-        div.className = 'user-search-item interactive';
+        div.className = 'search-result-card interactive';
         div.innerHTML = `
-            <div class="conversation-avatar">${getInitials(user.username)}</div>
-            <div style="flex: 1;">
-                <div class="conversation-name">${user.username}</div>
-                <div class="conversation-preview">${user.email}</div>
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <strong>${user.username}</strong>
+                    <div class="result-meta">${user.email}</div>
+                </div>
+                <span class="result-meta">ID: ${user.id.slice(0, 6)}</span>
             </div>
-            <button onclick="startConversation('${user.id}')" class="btn btn-primary interactive" style="padding: 0.5rem 1rem;">MESSAGE</button>
+            <div class="result-actions">
+                <button onclick="startConversation('${user.id}')" class="btn btn-primary interactive" style="padding: 0.5rem 1rem;">📬 START CHAT</button>
+                <button onclick="copyInviteLink('${user.id}', '${user.username}')" class="btn btn-secondary interactive" style="padding: 0.5rem 1rem;">🔗 COPY</button>
+            </div>
         `;
         container.appendChild(div);
     });

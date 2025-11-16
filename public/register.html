@@ -106,11 +106,18 @@
                 const data = await response.json();
 
                 if (response.ok) {
-                    successDiv.textContent = 'Account created! Redirecting to login...';
+                    successDiv.textContent = 'Account created! Redirecting to messenger...';
                     successDiv.style.display = 'block';
-                    setTimeout(() => {
-                        window.location.href = '/login.html';
-                    }, 2000);
+
+                    setToken(data.access_token);
+                    localStorage.setItem('refresh_token', data.refresh_token);
+
+                    const inviteCode = new URLSearchParams(window.location.search).get('invite');
+                    if (inviteCode) {
+                        await acceptInviteCode(inviteCode, data.access_token);
+                    }
+
+                    window.location.href = '/messenger.html';
                 } else {
                     errorDiv.textContent = data.error || 'Registration failed';
                     errorDiv.style.display = 'block';
@@ -120,6 +127,21 @@
                 errorDiv.style.display = 'block';
             }
         });
+
+        async function acceptInviteCode(code, accessToken) {
+            try {
+                await fetch(`${API_URL}/messenger/accept-invite`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${accessToken}`
+                    },
+                    body: JSON.stringify({ code })
+                });
+            } catch (err) {
+                console.error('Failed to accept invite:', err);
+            }
+        }
     </script>
     <script src="/js/cookie-consent.js"></script>
 </body>

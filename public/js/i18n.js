@@ -1522,11 +1522,13 @@
             btn.addEventListener('click', (e) => {
                 e.stopPropagation();
                 dropdown.classList.toggle('active');
+                switcher.classList.toggle('open', dropdown.classList.contains('active'));
             });
 
             // Close dropdown when clicking outside
             document.addEventListener('click', () => {
                 dropdown.classList.remove('active');
+                switcher.classList.remove('open');
             });
 
             // Language selection
@@ -1546,6 +1548,7 @@
                     option.classList.add('active');
 
                     dropdown.classList.remove('active');
+                    switcher.classList.remove('open');
                 });
             });
 
