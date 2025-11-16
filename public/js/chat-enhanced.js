@@ -74,9 +74,20 @@ const ChatEnhanced = {
 
         if (!userMessage) return;
 
+        const token = getToken();
+        if (!token) {
+            this.showNotification('❌ Not authenticated', 'error');
+            window.location.href = '/login.html';
+            return;
+        }
+
         // Create chat if needed
         if (!this.currentChatId) {
-            await this.createNewChat(userMessage.substring(0, 50));
+            const created = await this.createNewChat(userMessage.substring(0, 50));
+            if (!created) {
+                this.showNotification('❌ Failed to create chat', 'error');
+                return;
+            }
         }
 
         // Add user message to UI
@@ -97,7 +108,7 @@ const ChatEnhanced = {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${getToken()}`
+                    'Authorization': `Bearer ${token}`
                 },
                 body: JSON.stringify({
                     content: userMessage
@@ -105,7 +116,12 @@ const ChatEnhanced = {
             });
 
             if (!response.ok) {
-                throw new Error('Request failed');
+                if (response.status === 401) {
+                    removeToken();
+                    window.location.href = '/login.html';
+                    return;
+                }
+                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
             }
 
             // Remove loading
@@ -252,11 +268,18 @@ const ChatEnhanced = {
     // Create new chat
     createNewChat: async function(title = 'New Chat') {
         try {
+            const token = getToken();
+            if (!token) {
+                console.error('[CHAT] No token for creating chat');
+                window.location.href = '/login.html';
+                return false;
+            }
+
             const response = await fetch(`${API_URL}/chats`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${getToken()}`
+                    'Authorization': `Bearer ${token}`
                 },
                 body: JSON.stringify({
                     title: title,
@@ -264,15 +287,23 @@ const ChatEnhanced = {
                 })
             });
 
-            if (response.ok) {
-                const data = await response.json();
-                this.currentChatId = data.id;
-                document.getElementById('current-chat-title').textContent = title.toUpperCase();
-                this.loadChatHistory();
-                return true;
+            if (!response.ok) {
+                if (response.status === 401) {
+                    console.error('[CHAT] Unauthorized creating chat');
+                    removeToken();
+                    window.location.href = '/login.html';
+                    return false;
+                }
+                throw new Error(`HTTP ${response.status}`);
             }
+
+            const data = await response.json();
+            this.currentChatId = data.id;
+            document.getElementById('current-chat-title').textContent = title.toUpperCase();
+            this.loadChatHistory();
+            return true;
         } catch (error) {
-            console.error('Create chat error:', error);
+            console.error('[CHAT] Create chat error:', error);
             this.showNotification('❌ Failed to create chat', 'error');
         }
         return false;
@@ -281,19 +312,33 @@ const ChatEnhanced = {
     // Load chat history
     loadChatHistory: async function() {
         try {
+            const token = getToken();
+            if (!token) {
+                console.error('[CHAT] No token for chat history');
+                return;
+            }
+
             const response = await fetch(`${API_URL}/chats`, {
                 headers: {
-                    'Authorization': `Bearer ${getToken()}`
+                    'Authorization': `Bearer ${token}`
                 }
             });
 
-            if (response.ok) {
-                const data = await response.json();
-                this.chatHistory = data.chats || [];
-                this.renderChatHistory();
+            if (!response.ok) {
+                if (response.status === 401) {
+                    console.error('[CHAT] Unauthorized loading chat history');
+                    removeToken();
+                    window.location.href = '/login.html';
+                    return;
+                }
+                throw new Error(`HTTP ${response.status}`);
             }
+
+            const data = await response.json();
+            this.chatHistory = data.chats || [];
+            this.renderChatHistory();
         } catch (error) {
-            console.error('Load history error:', error);
+            console.error('[CHAT] Load history error:', error);
         }
     },
 
@@ -331,33 +376,47 @@ const ChatEnhanced = {
     // Load specific chat
     loadChat: async function(chatId) {
         try {
+            const token = getToken();
+            if (!token) {
+                console.error('[CHAT] No token for loading chat');
+                return;
+            }
+
             const response = await fetch(`${API_URL}/chats/${chatId}/messages`, {
                 headers: {
-                    'Authorization': `Bearer ${getToken()}`
+                    'Authorization': `Bearer ${token}`
                 }
             });
 
-            if (response.ok) {
-                const data = await response.json();
-                this.currentChatId = chatId;
-                this.messages = data.messages || [];
-
-                // Clear and reload messages
-                document.getElementById('chat-messages').innerHTML = '';
-                document.getElementById('welcome-message')?.remove();
-
-                this.messages.forEach(msg => {
-                    const formattedContent = msg.role === 'assistant'
-                        ? SyntaxHighlighter.formatMarkdown(msg.content)
-                        : msg.content;
-                    this.addMessage(msg.role, formattedContent, null, msg.role === 'assistant');
-                });
-
-                this.updateMessageCount();
-                this.renderChatHistory();
+            if (!response.ok) {
+                if (response.status === 401) {
+                    console.error('[CHAT] Unauthorized loading chat');
+                    removeToken();
+                    window.location.href = '/login.html';
+                    return;
+                }
+                throw new Error(`HTTP ${response.status}`);
             }
+
+            const data = await response.json();
+            this.currentChatId = chatId;
+            this.messages = data.messages || [];
+
+            // Clear and reload messages
+            document.getElementById('chat-messages').innerHTML = '';
+            document.getElementById('welcome-message')?.remove();
+
+            this.messages.forEach(msg => {
+                const formattedContent = msg.role === 'assistant'
+                    ? SyntaxHighlighter.formatMarkdown(msg.content)
+                    : msg.content;
+                this.addMessage(msg.role, formattedContent, null, msg.role === 'assistant');
+            });
+
+            this.updateMessageCount();
+            this.renderChatHistory();
         } catch (error) {
-            console.error('Load chat error:', error);
+            console.error('[CHAT] Load chat error:', error);
         }
     },
 
@@ -369,34 +428,49 @@ const ChatEnhanced = {
     // Load user info
     loadUserInfo: async function() {
         try {
+            const token = getToken();
+            if (!token) {
+                console.error('[CHAT] No token available');
+                window.location.href = '/login.html';
+                return;
+            }
+
             const response = await fetch(`${API_URL}/auth/me`, {
                 headers: {
-                    'Authorization': `Bearer ${getToken()}`
+                    'Authorization': `Bearer ${token}`
                 }
             });
 
-            if (response.ok) {
-                const data = await response.json();
-                const tokensUsed = data.user.tokens_used || 0;
-                const tokensLimit = data.user.tokens_limit || 50000;
-
-                document.getElementById('tokens-used').textContent = tokensUsed.toLocaleString();
-                document.getElementById('tokens-limit').textContent = tokensLimit.toLocaleString();
-
-                const percentage = (tokensUsed / tokensLimit) * 100;
-                const progressBar = document.getElementById('token-progress');
-                progressBar.style.width = percentage + '%';
-
-                if (percentage > 80) {
-                    progressBar.style.background = 'linear-gradient(90deg, var(--neon-pink), var(--neon-orange))';
-                } else if (percentage > 50) {
-                    progressBar.style.background = 'linear-gradient(90deg, var(--kintsugi-gold), var(--neon-orange))';
-                } else {
-                    progressBar.style.background = 'linear-gradient(90deg, var(--cyber-cyan), var(--kintsugi-gold))';
+            if (!response.ok) {
+                if (response.status === 401) {
+                    console.error('[CHAT] Unauthorized - redirecting to login');
+                    removeToken();
+                    window.location.href = '/login.html';
+                    return;
                 }
+                throw new Error(`HTTP ${response.status}`);
+            }
+
+            const data = await response.json();
+            const tokensUsed = data.user.tokens_used || 0;
+            const tokensLimit = data.user.tokens_limit || 50000;
+
+            document.getElementById('tokens-used').textContent = tokensUsed.toLocaleString();
+            document.getElementById('tokens-limit').textContent = tokensLimit.toLocaleString();
+
+            const percentage = (tokensUsed / tokensLimit) * 100;
+            const progressBar = document.getElementById('token-progress');
+            progressBar.style.width = percentage + '%';
+
+            if (percentage > 80) {
+                progressBar.style.background = 'linear-gradient(90deg, var(--neon-pink), var(--neon-orange))';
+            } else if (percentage > 50) {
+                progressBar.style.background = 'linear-gradient(90deg, var(--kintsugi-gold), var(--neon-orange))';
+            } else {
+                progressBar.style.background = 'linear-gradient(90deg, var(--cyber-cyan), var(--kintsugi-gold))';
             }
         } catch (error) {
-            console.error('Load user info error:', error);
+            console.error('[CHAT] Load user info error:', error);
         }
     },
 
