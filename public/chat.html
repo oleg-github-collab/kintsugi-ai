@@ -8,17 +8,132 @@
     <link rel="stylesheet" href="/css/typography.css">
     <link rel="stylesheet" href="/css/syntax.css">
     <link rel="stylesheet" href="/css/mobile.css">
+    <style>
+        .chat-enhanced-container {
+            display: grid;
+            grid-template-columns: 280px 1fr 320px;
+            gap: 0;
+            height: calc(100vh - 80px);
+            max-width: 100%;
+            margin: 0 auto;
+        }
+
+        .chat-history-sidebar {
+            border: 3px solid var(--cyber-cyan);
+            background: var(--digital-black);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .chat-settings-sidebar {
+            border: 3px solid var(--electric-purple);
+            background: var(--digital-black);
+            overflow-y: auto;
+        }
+
+        .chat-item {
+            padding: 1rem;
+            border-bottom: 2px solid #1a1a1a;
+            cursor: pointer;
+            transition: all 0.2s;
+            position: relative;
+        }
+
+        .chat-item:hover {
+            background: rgba(0, 255, 255, 0.1);
+            border-left: 4px solid var(--cyber-cyan);
+            transform: translateX(4px);
+        }
+
+        .chat-item.active {
+            background: rgba(0, 255, 255, 0.15);
+            border-left: 4px solid var(--kintsugi-gold);
+        }
+
+        .enhanced-message {
+            padding: 1.5rem;
+            margin: 1rem 0;
+            border: 3px solid var(--cyber-cyan);
+            background: rgba(0, 255, 255, 0.05);
+            box-shadow: 4px 4px 0px rgba(0, 255, 255, 0.2);
+            animation: slideInMessage 0.3s ease-out;
+        }
+
+        .enhanced-message.user {
+            border-color: var(--kintsugi-gold);
+            background: rgba(240, 255, 0, 0.05);
+            box-shadow: 4px 4px 0px rgba(240, 255, 0, 0.2);
+            margin-left: auto;
+            max-width: 80%;
+        }
+
+        .enhanced-message.assistant {
+            border-color: var(--cyber-cyan);
+            max-width: 90%;
+        }
+
+        .message-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.75rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .message-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .message-btn {
+            padding: 0.3rem 0.6rem;
+            border: 2px solid var(--cyber-cyan);
+            background: rgba(0, 255, 255, 0.1);
+            color: var(--cyber-cyan);
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .message-btn:hover {
+            background: rgba(0, 255, 255, 0.25);
+            transform: translateY(-2px);
+        }
+
+        .template-card {
+            padding: 1rem;
+            border: 2px solid var(--electric-purple);
+            background: rgba(157, 0, 255, 0.05);
+            margin-bottom: 0.75rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .template-card:hover {
+            border-color: var(--kintsugi-gold);
+            background: rgba(240, 255, 0, 0.05);
+            transform: translateX(4px);
+        }
+
+        @media (max-width: 1024px) {
+            .chat-enhanced-container {
+                grid-template-columns: 1fr;
+            }
+            .chat-history-sidebar,
+            .chat-settings-sidebar {
+                display: none;
+            }
+        }
+    </style>
 </head>
 <body class="crt-effect">
 
-    <!-- Matrix background canvas -->
     <canvas id="matrix-canvas" class="matrix-bg"></canvas>
-
-    <!-- Custom Cursor -->
     <div class="cursor-invert"></div>
     <div class="cursor-cross"></div>
 
-    <!-- Navigation -->
     <nav class="scanlines">
         <div class="nav-container">
             <a href="/" class="nav-logo text-rainbow">⟡ KINTSUGI AI ⟡</a>
@@ -26,281 +141,249 @@
                 <a href="/chat.html" class="nav-link text-gold">CHAT</a>
                 <a href="/messenger.html" class="nav-link">MESSENGER</a>
                 <a href="/translation.html" class="nav-link">TRANSLATION</a>
+                <a href="/profile.html" class="nav-link">PROFILE</a>
                 <a href="#" onclick="logout()" class="nav-link text-pink">LOGOUT</a>
             </div>
         </div>
     </nav>
 
-    <!-- Main Content -->
-    <main>
-        <section style="padding-top: 100px;">
-            <div class="container">
-                <div class="chat-container">
-                    <!-- Sidebar -->
-                    <div class="chat-sidebar scanlines">
-                        <h3 class="text-gold" style="font-size: 1.5rem; font-weight: bold; text-transform: uppercase; margin-bottom: 1.5rem;">
-                            [ AI_MODELS ]
-                        </h3>
+    <main style="padding-top: 80px;">
+        <div class="chat-enhanced-container">
+            <!-- Chat History Sidebar -->
+            <div class="chat-history-sidebar scanlines">
+                <div style="padding: 1.5rem; border-bottom: 3px solid var(--cyber-cyan);">
+                    <h3 class="text-cyan text-neon" style="font-size: 1.25rem; margin-bottom: 1rem;">[ CHAT_HISTORY ]</h3>
+                    <button onclick="startNewChat()" class="btn btn-primary interactive" style="width: 100%; padding: 0.75rem;">
+                        ✨ NEW CHAT
+                    </button>
+                </div>
 
-                        <div style="display: flex; flex-direction: column; gap: 1rem; margin-bottom: 2rem;">
-                            <button class="model-btn btn btn-primary" data-model="gpt-4o" data-multiplier="1" style="text-align: left;">
+                <div id="chat-history-list" style="flex: 1; overflow-y: auto; padding: 0.5rem;">
+                    <!-- Chat history items will be loaded here -->
+                </div>
+
+                <div style="padding: 1rem; border-top: 2px solid var(--cyber-cyan);">
+                    <button onclick="toggleSettings()" class="btn btn-secondary interactive" style="width: 100%; padding: 0.75rem; font-size: 0.85rem;">
+                        ⚙️ SETTINGS
+                    </button>
+                </div>
+            </div>
+
+            <!-- Main Chat Area -->
+            <div class="chat-main scanlines" style="border: 3px solid var(--kintsugi-gold); display: flex; flex-direction: column;">
+                <!-- Chat Header -->
+                <div style="padding: 1.5rem; border-bottom: 3px solid var(--kintsugi-gold); background: linear-gradient(90deg, rgba(240, 255, 0, 0.05), rgba(0, 255, 255, 0.05)); display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                        <h2 id="current-chat-title" class="text-gold" style="font-size: 1.5rem; margin-bottom: 0.25rem;">NEW CHAT</h2>
+                        <div style="color: #999; font-size: 0.9rem;">
+                            <span id="current-model-display">Model: BASIC</span> • <span id="message-count">0 messages</span>
+                        </div>
+                    </div>
+                    <div style="display: flex; gap: 0.75rem;">
+                        <button onclick="exportChat()" class="btn btn-secondary interactive" style="padding: 0.75rem 1rem; font-size: 0.85rem;">
+                            ⬇ EXPORT
+                        </button>
+                        <button onclick="clearChat()" class="btn btn-secondary interactive" style="padding: 0.75rem 1rem; font-size: 0.85rem; border-color: var(--neon-pink); color: var(--neon-pink);">
+                            🗑️ CLEAR
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Messages Area -->
+                <div class="chat-messages" id="chat-messages" style="flex: 1; padding: 2rem; overflow-y: auto;">
+                    <!-- Welcome Message -->
+                    <div id="welcome-message" style="text-align: center; margin-top: 3rem;">
+                        <div style="font-size: 4rem; margin-bottom: 1rem; animation: pulse 2s infinite;">🤖</div>
+                        <h2 class="text-gold text-neon" style="font-size: 2rem; margin-bottom: 1rem;">
+                            WELCOME TO KINTSUGI AI
+                        </h2>
+                        <p style="color: #999; font-size: 1.1rem; margin-bottom: 2rem; max-width: 600px; margin-left: auto; margin-right: auto;">
+                            Choose a model from the right panel and start chatting with AI. Try using templates below for quick start!
+                        </p>
+
+                        <!-- Quick Templates -->
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem; max-width: 900px; margin: 0 auto;">
+                            <div onclick="useTemplate('code')" class="border-3 border-cyan interactive" style="padding: 1.5rem; background: rgba(0, 255, 255, 0.05); cursor: pointer; transition: all 0.2s;">
+                                <div style="font-size: 2rem; margin-bottom: 0.5rem;">💻</div>
+                                <div class="text-cyan" style="font-weight: bold; margin-bottom: 0.5rem;">Code Assistant</div>
+                                <div style="color: #999; font-size: 0.85rem;">Help with programming, debugging, and code generation</div>
+                            </div>
+                            <div onclick="useTemplate('write')" class="border-3 border-purple interactive" style="padding: 1.5rem; background: rgba(157, 0, 255, 0.05); cursor: pointer; transition: all 0.2s;">
+                                <div style="font-size: 2rem; margin-bottom: 0.5rem;">✍️</div>
+                                <div class="text-purple" style="font-weight: bold; margin-bottom: 0.5rem;">Writing Helper</div>
+                                <div style="color: #999; font-size: 0.85rem;">Create, edit, and improve written content</div>
+                            </div>
+                            <div onclick="useTemplate('explain')" class="border-3 border-gold interactive" style="padding: 1.5rem; background: rgba(240, 255, 0, 0.05); cursor: pointer; transition: all 0.2s;">
+                                <div style="font-size: 2rem; margin-bottom: 0.5rem;">🎓</div>
+                                <div class="text-gold" style="font-weight: bold; margin-bottom: 0.5rem;">Explain Concepts</div>
+                                <div style="color: #999; font-size: 0.85rem;">Learn and understand complex topics</div>
+                            </div>
+                            <div onclick="useTemplate('creative')" class="border-3 border-pink interactive" style="padding: 1.5rem; background: rgba(255, 0, 255, 0.05); cursor: pointer; transition: all 0.2s;">
+                                <div style="font-size: 2rem; margin-bottom: 0.5rem;">🎨</div>
+                                <div class="text-pink" style="font-weight: bold; margin-bottom: 0.5rem;">Creative Ideas</div>
+                                <div style="color: #999; font-size: 0.85rem;">Brainstorm and generate creative content</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Input Area -->
+                <div style="padding: 1.5rem; border-top: 3px solid var(--kintsugi-gold); background: linear-gradient(180deg, rgba(240, 255, 0, 0.02), rgba(240, 255, 0, 0.08));">
+                    <!-- Attachments Preview -->
+                    <div id="attachments-preview" style="display: none; margin-bottom: 1rem; padding: 1rem; border: 2px solid var(--cyber-cyan); background: rgba(0, 255, 255, 0.05);">
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <div style="color: var(--cyber-cyan); font-weight: bold;">📎 Attachment:</div>
+                            <button onclick="clearAttachment()" style="color: var(--neon-pink); background: none; border: none; cursor: pointer;">✕</button>
+                        </div>
+                        <div id="attachment-name" style="color: #ccc; font-size: 0.9rem; margin-top: 0.5rem;"></div>
+                    </div>
+
+                    <form id="chat-form" style="display: flex; gap: 0.75rem; align-items: end;">
+                        <div style="flex: 1;">
+                            <textarea
+                                id="chat-input"
+                                placeholder="Type your message here... (Shift+Enter for new line)"
+                                class="form-input interactive"
+                                style="width: 100%; border: 3px solid var(--cyber-cyan); padding: 1rem; min-height: 60px; max-height: 200px; resize: vertical; font-size: 1rem;"
+                                rows="2"
+                            ></textarea>
+                            <div style="display: flex; justify-content: space-between; margin-top: 0.5rem;">
+                                <div style="display: flex; gap: 0.5rem;">
+                                    <button type="button" onclick="attachFile()" class="btn btn-secondary interactive" style="padding: 0.5rem 0.75rem; font-size: 0.85rem;">
+                                        📎 FILE
+                                    </button>
+                                    <button type="button" onclick="toggleSystemPrompt()" class="btn btn-secondary interactive" style="padding: 0.5rem 0.75rem; font-size: 0.85rem;">
+                                        📝 PROMPT
+                                    </button>
+                                </div>
+                                <div style="color: #666; font-size: 0.85rem; padding: 0.5rem;">
+                                    <span id="char-counter">0</span> chars
+                                </div>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary interactive" style="padding: 1.25rem 2rem; font-size: 1.1rem; background: linear-gradient(135deg, var(--kintsugi-gold), var(--cyber-cyan)); color: var(--digital-black); font-weight: bold;">
+                            SEND ▶
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Settings Sidebar -->
+            <div class="chat-settings-sidebar scanlines">
+                <div style="padding: 1.5rem; border-bottom: 3px solid var(--electric-purple); background: linear-gradient(135deg, rgba(157, 0, 255, 0.1), rgba(157, 0, 255, 0.05));">
+                    <h3 class="text-purple text-neon" style="font-size: 1.25rem;">[ AI_SETTINGS ]</h3>
+                </div>
+
+                <div style="padding: 1.5rem;">
+                    <!-- Model Selection -->
+                    <div style="margin-bottom: 2rem;">
+                        <h4 class="text-cyan" style="font-size: 1rem; margin-bottom: 1rem; text-transform: uppercase;">Model</h4>
+                        <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+                            <button class="model-btn btn btn-primary" data-model="gpt-4o" data-multiplier="1" onclick="selectModel(this)">
                                 🔹 BASIC
                             </button>
-                            <button class="model-btn btn btn-secondary" data-model="gpt-4o" data-multiplier="3.5" style="text-align: left;">
-                                💎 EPIC (Image/Code)
+                            <button class="model-btn btn btn-secondary" data-model="gpt-4o" data-multiplier="3.5" onclick="selectModel(this)">
+                                💎 EPIC
                             </button>
-                        </div>
-
-                        <div class="border-3 border-cyan" style="padding: 1.5rem; background-color: rgba(0, 255, 255, 0.05);">
-                            <h4 class="text-cyan" style="font-size: 1.1rem; font-weight: bold; text-transform: uppercase; margin-bottom: 1rem;">
-                                TOKEN_USAGE
-                            </h4>
-                            <div style="margin-bottom: 0.5rem; color: #ccc; font-size: 1.1rem;">
-                                <span id="tokens-used">0</span> / <span id="tokens-limit">50000</span>
-                            </div>
-                            <div style="width: 100%; height: 20px; border: 2px solid var(--cyber-cyan); background: var(--digital-black); position: relative; margin-bottom: 0.5rem;">
-                                <div id="token-progress" style="height: 100%; background: linear-gradient(90deg, var(--cyber-cyan), var(--kintsugi-gold)); width: 0%; transition: width 0.3s;"></div>
-                            </div>
-                            <p style="font-size: 0.85rem; color: #999;">
-                                <span id="model-info">BASIC: 1x tokens</span> • Resets every 6 hours
-                            </p>
                         </div>
                     </div>
 
-                    <!-- Chat Main -->
-                    <div class="chat-main scanlines">
-                        <div class="chat-messages" id="chat-messages">
-                            <div style="text-align: center; color: #666; margin-top: 3rem;">
-                                <p style="font-size: 1.25rem; font-weight: bold; text-transform: uppercase;">
-                                    [ SELECT_MODEL_TO_START ]
-                                </p>
+                    <!-- Token Usage -->
+                    <div class="border-3 border-cyan" style="padding: 1.25rem; background: rgba(0, 255, 255, 0.05); margin-bottom: 2rem;">
+                        <h4 class="text-cyan" style="font-size: 0.95rem; margin-bottom: 0.75rem; text-transform: uppercase;">Token Usage</h4>
+                        <div style="font-size: 1.1rem; margin-bottom: 0.5rem; color: #ccc;">
+                            <span id="tokens-used">0</span> / <span id="tokens-limit">50000</span>
+                        </div>
+                        <div style="width: 100%; height: 12px; border: 2px solid var(--cyber-cyan); background: var(--digital-black); position: relative;">
+                            <div id="token-progress" style="height: 100%; background: linear-gradient(90deg, var(--cyber-cyan), var(--kintsugi-gold)); width: 0%; transition: width 0.3s;"></div>
+                        </div>
+                        <p style="font-size: 0.8rem; color: #999; margin-top: 0.5rem;">
+                            Resets every 6 hours
+                        </p>
+                    </div>
+
+                    <!-- Parameters -->
+                    <div style="margin-bottom: 2rem;">
+                        <h4 class="text-gold" style="font-size: 1rem; margin-bottom: 1rem; text-transform: uppercase;">Parameters</h4>
+
+                        <div style="margin-bottom: 1.25rem;">
+                            <label style="display: block; color: var(--cyber-cyan); margin-bottom: 0.5rem; font-size: 0.9rem;">
+                                Temperature: <span id="temp-value">0.7</span>
+                            </label>
+                            <input type="range" id="temperature" min="0" max="2" step="0.1" value="0.7" style="width: 100%;">
+                            <div style="display: flex; justify-content: space-between; color: #666; font-size: 0.75rem; margin-top: 0.25rem;">
+                                <span>Precise</span>
+                                <span>Creative</span>
                             </div>
                         </div>
 
-                        <div class="chat-input-container">
-                            <form id="chat-form" style="display: flex; gap: 1rem;">
-                                <input
-                                    type="text"
-                                    id="chat-input"
-                                    placeholder="Type your message..."
-                                    class="form-input"
-                                    style="flex: 1; border: 2px solid var(--cyber-cyan); border-radius: 0; padding: 1rem;"
-                                    required
-                                >
-                                <button type="submit" class="btn btn-secondary" style="padding: 1rem 2rem;">
-                                    SEND ▶
-                                </button>
-                            </form>
+                        <div style="margin-bottom: 1.25rem;">
+                            <label style="display: block; color: var(--cyber-cyan); margin-bottom: 0.5rem; font-size: 0.9rem;">
+                                Max Length: <span id="length-value">2000</span>
+                            </label>
+                            <input type="range" id="max-length" min="100" max="4000" step="100" value="2000" style="width: 100%;">
+                        </div>
+
+                        <div style="margin-bottom: 1.25rem;">
+                            <label style="display: flex; align-items: center; gap: 0.75rem; cursor: pointer;">
+                                <input type="checkbox" id="stream-response" checked style="width: 18px; height: 18px;">
+                                <span style="color: var(--cyber-cyan); font-size: 0.9rem;">Stream Response</span>
+                            </label>
+                        </div>
+
+                        <div style="margin-bottom: 1.25rem;">
+                            <label style="display: flex; align-items: center; gap: 0.75rem; cursor: pointer;">
+                                <input type="checkbox" id="code-execution" style="width: 18px; height: 18px;">
+                                <span style="color: var(--cyber-cyan); font-size: 0.9rem;">Enable Code Execution</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- System Prompt -->
+                    <div id="system-prompt-section" style="display: none; margin-bottom: 2rem;">
+                        <h4 class="text-purple" style="font-size: 1rem; margin-bottom: 1rem; text-transform: uppercase;">System Prompt</h4>
+                        <textarea
+                            id="system-prompt"
+                            placeholder="Define AI behavior..."
+                            class="form-input"
+                            style="width: 100%; padding: 0.75rem; min-height: 100px; font-size: 0.85rem;"
+                        ></textarea>
+                    </div>
+
+                    <!-- Templates -->
+                    <div style="margin-bottom: 2rem;">
+                        <h4 class="text-pink" style="font-size: 1rem; margin-bottom: 1rem; text-transform: uppercase;">Quick Templates</h4>
+
+                        <div class="template-card" onclick="useTemplate('code')">
+                            <div style="font-weight: bold; color: var(--cyber-cyan); margin-bottom: 0.25rem;">💻 Code Helper</div>
+                            <div style="font-size: 0.8rem; color: #999;">Programming assistant</div>
+                        </div>
+
+                        <div class="template-card" onclick="useTemplate('write')">
+                            <div style="font-weight: bold; color: var(--electric-purple); margin-bottom: 0.25rem;">✍️ Writer</div>
+                            <div style="font-size: 0.8rem; color: #999;">Content creation</div>
+                        </div>
+
+                        <div class="template-card" onclick="useTemplate('explain')">
+                            <div style="font-weight: bold; color: var(--kintsugi-gold); margin-bottom: 0.25rem;">🎓 Teacher</div>
+                            <div style="font-size: 0.8rem; color: #999;">Explain concepts</div>
+                        </div>
+
+                        <div class="template-card" onclick="useTemplate('creative')">
+                            <div style="font-weight: bold; color: var(--neon-pink); margin-bottom: 0.25rem;">🎨 Creative</div>
+                            <div style="font-size: 0.8rem; color: #999;">Brainstorming ideas</div>
                         </div>
                     </div>
                 </div>
             </div>
-        </section>
+        </div>
     </main>
 
+    <input type="file" id="file-input" style="display: none;" accept="image/*,.pdf,.txt,.doc,.docx">
+
     <script src="/js/main.js"></script>
-    <script>
-        // Check auth
-        if (!isAuthenticated()) {
-            window.location.href = '/login.html';
-        }
-
-        let currentModel = 'gpt-4o';
-        let currentMultiplier = 1;
-        let currentChatId = null;
-        const messages = [];
-
-        // Model selection
-        document.querySelectorAll('.model-btn').forEach(btn => {
-            btn.addEventListener('click', () => {
-                currentModel = btn.dataset.model;
-                currentMultiplier = parseFloat(btn.dataset.multiplier);
-
-                document.querySelectorAll('.model-btn').forEach(b => {
-                    b.className = 'model-btn btn btn-secondary';
-                });
-                btn.className = 'model-btn btn btn-primary';
-
-                // Update model info
-                const modelInfo = currentMultiplier === 1 ? 'BASIC: 1x tokens' : 'EPIC: 3.5x tokens (Image/Code)';
-                document.getElementById('model-info').textContent = modelInfo;
-            });
-        });
-
-        // Chat form submission
-        document.getElementById('chat-form').addEventListener('submit', async (e) => {
-            e.preventDefault();
-
-            const input = document.getElementById('chat-input');
-            const userMessage = input.value.trim();
-            if (!userMessage) return;
-
-            // Create chat if needed
-            if (!currentChatId) {
-                try {
-                    const createRes = await fetch(`${API_URL}/chats`, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'Authorization': `Bearer ${getToken()}`
-                        },
-                        body: JSON.stringify({
-                            title: userMessage.substring(0, 50),
-                            model: currentModel
-                        })
-                    });
-
-                    if (createRes.ok) {
-                        const chatData = await createRes.json();
-                        currentChatId = chatData.id;
-                    } else {
-                        addMessage('assistant', 'Error: Failed to create chat', 'error-' + Date.now());
-                        return;
-                    }
-                } catch (error) {
-                    addMessage('assistant', 'Error: Network error', 'error-' + Date.now());
-                    return;
-                }
-            }
-
-            // Add user message
-            addMessage('user', userMessage);
-            input.value = '';
-
-            // Add loading message
-            const loadingId = 'loading-' + Date.now();
-            addMessage('assistant', '...', loadingId);
-
-            try {
-                const response = await fetch(`${API_URL}/chats/${currentChatId}/messages`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${getToken()}`
-                    },
-                    body: JSON.stringify({
-                        content: userMessage
-                    })
-                });
-
-                if (!response.ok) {
-                    throw new Error('Request failed');
-                }
-
-                // Remove loading message
-                document.getElementById(loadingId)?.remove();
-
-                // Handle SSE stream
-                const reader = response.body.getReader();
-                const decoder = new TextDecoder();
-                let assistantMessage = '';
-                const assistantId = 'msg-' + Date.now();
-                addMessage('assistant', '', assistantId);
-
-                while (true) {
-                    const { value, done } = await reader.read();
-                    if (done) break;
-
-                    const chunk = decoder.decode(value);
-                    const lines = chunk.split('\n');
-
-                    for (const line of lines) {
-                        if (line.startsWith('data: ')) {
-                            const data = line.slice(6);
-                            if (data === '[DONE]') continue;
-
-                            try {
-                                const json = JSON.parse(data);
-                                if (json.delta) {
-                                    assistantMessage += json.delta;
-                                    updateMessage(assistantId, assistantMessage);
-                                }
-                            } catch (e) {
-                                // Skip invalid JSON
-                            }
-                        }
-                    }
-                }
-
-                messages.push({ role: 'user', content: userMessage });
-                messages.push({ role: 'assistant', content: assistantMessage });
-
-                // Reload token usage
-                loadUserInfo();
-
-            } catch (error) {
-                document.getElementById(loadingId)?.remove();
-                addMessage('assistant', 'Error: Failed to get response', 'error-' + Date.now());
-            }
-        });
-
-        function addMessage(role, content, id = null) {
-            const messagesDiv = document.getElementById('chat-messages');
-            const messageDiv = document.createElement('div');
-            messageDiv.className = `message message-${role}`;
-            if (id) messageDiv.id = id;
-            messageDiv.textContent = content;
-            messagesDiv.appendChild(messageDiv);
-            messagesDiv.scrollTop = messagesDiv.scrollHeight;
-        }
-
-        function updateMessage(id, content) {
-            const messageDiv = document.getElementById(id);
-            if (messageDiv) {
-                messageDiv.textContent = content;
-            }
-        }
-
-        // Load user info and update token display
-        async function loadUserInfo() {
-            try {
-                const response = await fetch(`${API_URL}/auth/me`, {
-                    headers: {
-                        'Authorization': `Bearer ${getToken()}`
-                    }
-                });
-
-                if (response.ok) {
-                    const data = await response.json();
-                    const tokensUsed = data.user.tokens_used || 0;
-                    const tokensLimit = data.user.tokens_limit || 50000;
-
-                    document.getElementById('tokens-used').textContent = tokensUsed;
-                    document.getElementById('tokens-limit').textContent = tokensLimit;
-
-                    // Update progress bar
-                    const percentage = (tokensUsed / tokensLimit) * 100;
-                    document.getElementById('token-progress').style.width = percentage + '%';
-
-                    // Change color based on usage
-                    const progressBar = document.getElementById('token-progress');
-                    if (percentage > 80) {
-                        progressBar.style.background = 'linear-gradient(90deg, var(--neon-pink), var(--neon-orange))';
-                    } else if (percentage > 50) {
-                        progressBar.style.background = 'linear-gradient(90deg, var(--kintsugi-gold), var(--neon-orange))';
-                    } else {
-                        progressBar.style.background = 'linear-gradient(90deg, var(--cyber-cyan), var(--kintsugi-gold))';
-                    }
-                }
-            } catch (error) {
-                console.error('Failed to load user info');
-            }
-        }
-
-        // Token counting function with multiplier
-        function countTokens(text) {
-            // Approximate: 1 token ≈ 4 characters for English
-            // More accurate: count words, punctuation, special chars
-            const chars = text.length;
-            const words = text.split(/\s+/).length;
-            const tokens = Math.ceil((chars / 4 + words) / 2);
-            return Math.ceil(tokens * currentMultiplier);
-        }
-
-        loadUserInfo();
-        // Refresh token display every 30 seconds
-        setInterval(loadUserInfo, 30000);
-    </script>
+    <script src="/js/syntax-highlighter.js"></script>
+    <script src="/js/chat-enhanced.js"></script>
     <script src="/js/cookie-consent.js"></script>
 </body>
 </html>
