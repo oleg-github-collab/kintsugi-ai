@@ -6,6 +6,7 @@
     <title>Kintsugi AI // All-in-One AI Platform</title>
     <link rel="stylesheet" href="/css/styles.css">
     <link rel="stylesheet" href="/css/mobile.css">
+    <link rel="stylesheet" href="/css/mobile-enhanced.css">
 </head>
 <body class="crt-effect">
 
@@ -29,10 +30,11 @@
         <div class="nav-container">
             <a href="/" class="nav-logo text-rainbow">⟡ KINTSUGI AI ⟡</a>
             <div class="nav-links">
-                <a href="/" class="nav-link">HOME</a>
-                <a href="/login.html" class="btn btn-secondary" style="margin: 0; padding: 0.5rem 1rem;">LOG_IN</a>
-                <a href="/register.html" class="btn btn-primary" style="margin: 0; padding: 0.5rem 1rem;">SIGN_UP</a>
+                <a href="/" class="nav-link" data-i18n="nav.home">HOME</a>
+                <a href="/login.html" class="btn btn-secondary" style="margin: 0; padding: 0.5rem 1rem;" data-i18n="nav.login">LOG_IN</a>
+                <a href="/register.html" class="btn btn-primary" style="margin: 0; padding: 0.5rem 1rem;" data-i18n="nav.signup">SIGN_UP</a>
             </div>
+            <div id="language-switcher-container" style="margin-left: auto;"></div>
         </div>
     </nav>
 
@@ -43,7 +45,7 @@
             <div class="container" style="position: relative; z-index: 10;">
                 <div style="max-width: 800px;">
                     <div style="margin-bottom: 2rem;">
-                        <span class="border-3 border-gold bg-gold-10 text-gold" style="display: inline-block; padding: 0.75rem 1.5rem; font-weight: bold; text-transform: uppercase; font-size: 0.9rem;">
+                        <span class="border-3 border-gold bg-gold-10 text-gold" style="display: inline-block; padding: 0.75rem 1.5rem; font-weight: bold; text-transform: uppercase; font-size: 0.9rem;" data-i18n="hero.subtitle">
                             ◆ ALL-IN-ONE AI PLATFORM ◆
                         </span>
                     </div>
@@ -54,18 +56,18 @@
                     </h1>
 
                     <div class="border-3 border-cyan bg-black shadow-neo-cyan" style="display: inline-block; padding: 1.5rem 2rem; margin-bottom: 2rem;">
-                        <p class="text-cyan" style="font-size: 1.75rem; font-weight: bold; text-transform: uppercase; letter-spacing: 0.05em;">
+                        <p class="text-cyan" style="font-size: 1.75rem; font-weight: bold; text-transform: uppercase; letter-spacing: 0.05em;" data-i18n="hero.tagline">
                             Chat • Messenger • Translation
                         </p>
                     </div>
 
-                    <p style="font-size: 1.25rem; line-height: 1.8; margin-bottom: 3rem; border-left: 4px solid var(--cyber-pink); padding-left: 1.5rem;">
+                    <p style="font-size: 1.25rem; line-height: 1.8; margin-bottom: 3rem; border-left: 4px solid var(--cyber-pink); padding-left: 1.5rem;" data-i18n="hero.description">
                         Unified AI platform combining <span class="text-gold" style="font-weight: bold;">advanced chat models</span>, <span class="text-cyan" style="font-weight: bold;">real-time messenger</span>, and <span class="text-orange" style="font-weight: bold;">professional translation</span>.
                     </p>
 
                     <div style="display: flex; gap: 1rem; margin-bottom: 3rem;">
-                        <a href="/register.html" class="btn btn-primary" style="font-size: 1.1rem;">▶ START_FREE</a>
-                        <a href="#features" class="btn btn-secondary" style="font-size: 1.1rem;">⚡ VIEW_FEATURES</a>
+                        <a href="/register.html" class="btn btn-primary" style="font-size: 1.1rem;" data-i18n="common.startFree">▶ START_FREE</a>
+                        <a href="#features" class="btn btn-secondary" style="font-size: 1.1rem;" data-i18n="common.viewFeatures">⚡ VIEW_FEATURES</a>
                     </div>
 
                     <div class="loading-bar"></div>
@@ -84,7 +86,7 @@
                             ◈ PLATFORM FEATURES ◈
                         </span>
                     </div>
-                    <h2 class="text-rainbow" style="font-size: 4rem; font-weight: bold; text-transform: uppercase;">
+                    <h2 class="text-rainbow" style="font-size: 4rem; font-weight: bold; text-transform: uppercase;" data-i18n="features.title">
                         [ THREE_PLATFORMS_IN_ONE ]
                     </h2>
                 </div>
@@ -93,8 +95,8 @@
                     <!-- Feature 1: AI Chat -->
                     <div class="border-3 border-gold bg-gold-10 shadow-neo scanlines" style="padding: 2.5rem; transition: all 0.3s;">
                         <div style="font-size: 4rem; margin-bottom: 1.5rem;">💬</div>
-                        <h3 class="text-gold" style="font-size: 2rem; font-weight: bold; text-transform: uppercase; margin-bottom: 1rem;">AI CHAT</h3>
-                        <p style="font-size: 1.1rem; color: #ccc; margin-bottom: 1.5rem;">
+                        <h3 class="text-gold" style="font-size: 2rem; font-weight: bold; text-transform: uppercase; margin-bottom: 1rem;" data-i18n="features.aichat">AI CHAT</h3>
+                        <p style="font-size: 1.1rem; color: #ccc; margin-bottom: 1.5rem;" data-i18n="features.aichatDesc">
                             Access powerful AI models with real-time streaming responses. Basic and Epic tiers available.
                         </p>
                         <ul style="list-style: none; color: #999;">
@@ -107,8 +109,8 @@
                     <!-- Feature 2: Messenger -->
                     <div class="border-3 border-cyan bg-cyan-10 shadow-neo-cyan scanlines" style="padding: 2.5rem; transition: all 0.3s;">
                         <div style="font-size: 4rem; margin-bottom: 1.5rem;">🔄</div>
-                        <h3 class="text-cyan" style="font-size: 2rem; font-weight: bold; text-transform: uppercase; margin-bottom: 1rem;">MESSENGER</h3>
-                        <p style="font-size: 1.1rem; color: #ccc; margin-bottom: 1.5rem;">
+                        <h3 class="text-cyan" style="font-size: 2rem; font-weight: bold; text-transform: uppercase; margin-bottom: 1rem;" data-i18n="features.messenger">MESSENGER</h3>
+                        <p style="font-size: 1.1rem; color: #ccc; margin-bottom: 1.5rem;" data-i18n="features.messengerDesc">
                             Real-time chat for instant messaging, reactions, and ephemeral stories.
                         </p>
                         <ul style="list-style: none; color: #999;">
@@ -121,8 +123,8 @@
                     <!-- Feature 3: Translation -->
                     <div class="border-3 border-pink bg-pink-10 shadow-neo-pink scanlines" style="padding: 2.5rem; transition: all 0.3s;">
                         <div style="font-size: 4rem; margin-bottom: 1.5rem;">🌐</div>
-                        <h3 class="text-pink" style="font-size: 2rem; font-weight: bold; text-transform: uppercase; margin-bottom: 1rem;">TRANSLATION</h3>
-                        <p style="font-size: 1.1rem; color: #ccc; margin-bottom: 1.5rem;">
+                        <h3 class="text-pink" style="font-size: 2rem; font-weight: bold; text-transform: uppercase; margin-bottom: 1rem;" data-i18n="features.translation">TRANSLATION</h3>
+                        <p style="font-size: 1.1rem; color: #ccc; margin-bottom: 1.5rem;" data-i18n="features.translationDesc">
                             Professional book translation with context-aware AI technology.
                         </p>
                         <ul style="list-style: none; color: #999;">
@@ -213,5 +215,13 @@
 
     <script src="/js/main.js"></script>
     <script src="/js/cookie-consent.js"></script>
+    <script src="/js/i18n.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            if (window.I18n) {
+                window.I18n.createLanguageSwitcher('#language-switcher-container');
+            }
+        });
+    </script>
 </body>
 </html>

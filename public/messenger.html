@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="/css/messenger.css">
     <link rel="stylesheet" href="/css/syntax.css">
     <link rel="stylesheet" href="/css/mobile.css">
+    <link rel="stylesheet" href="/css/mobile-enhanced.css">
 </head>
 <body class="crt-effect">
 
@@ -19,11 +20,12 @@
         <div class="nav-container">
             <a href="/" class="nav-logo text-rainbow">⟡ KINTSUGI AI ⟡</a>
             <div class="nav-links">
-                <a href="/chat.html" class="nav-link">CHAT</a>
-                <a href="/messenger.html" class="nav-link text-cyan">MESSENGER</a>
-                <a href="/translation.html" class="nav-link">TRANSLATION</a>
-                <a href="#" onclick="logout()" class="nav-link text-pink">LOGOUT</a>
+                <a href="/chat.html" class="nav-link" data-i18n="nav.chat">CHAT</a>
+                <a href="/messenger.html" class="nav-link text-cyan" data-i18n="nav.messenger">MESSENGER</a>
+                <a href="/translation.html" class="nav-link" data-i18n="nav.translation">TRANSLATION</a>
+                <a href="#" onclick="logout()" class="nav-link text-pink" data-i18n="nav.logout">LOGOUT</a>
             </div>
+            <div id="language-switcher-container" style="margin-left: auto;"></div>
         </div>
     </nav>
 
@@ -38,15 +40,15 @@
                 <!-- Conversations Sidebar -->
                 <div class="conversations-sidebar scanlines" id="conversations-sidebar">
                     <div class="sidebar-header">
-                        <h2 class="text-cyan text-neon" style="font-size: 1.5rem; font-weight: bold; text-transform: uppercase; margin-bottom: 1rem;">
+                        <h2 class="text-cyan text-neon" style="font-size: 1.5rem; font-weight: bold; text-transform: uppercase; margin-bottom: 1rem;" data-i18n="messenger.title">
                             [ MESSENGER ]
                         </h2>
                         <div style="display: flex; flex-direction: column; gap: 0.5rem;">
                             <div style="display: flex; gap: 0.5rem;">
-                                <button onclick="showUserSearch()" class="btn btn-primary interactive" style="flex: 1; padding: 0.5rem; font-size: 0.85rem;">👤 FIND</button>
-                                <button onclick="generateInviteLink()" class="btn btn-secondary interactive" style="flex: 1; padding: 0.5rem; font-size: 0.85rem;">🔗 INVITE</button>
+                                <button onclick="showUserSearch()" class="btn btn-primary interactive" style="flex: 1; padding: 0.5rem; font-size: 0.85rem;" data-i18n="messenger.find">👤 FIND</button>
+                                <button onclick="generateInviteLink()" class="btn btn-secondary interactive" style="flex: 1; padding: 0.5rem; font-size: 0.85rem;" data-i18n="messenger.invite">🔗 INVITE</button>
                             </div>
-                            <button onclick="showCreateGroup()" class="btn btn-primary interactive" style="width: 100%; padding: 0.5rem; font-size: 0.85rem; background: linear-gradient(135deg, var(--electric-purple), var(--cyber-pink));">👥 CREATE GROUP</button>
+                            <button onclick="showCreateGroup()" class="btn btn-primary interactive" style="width: 100%; padding: 0.5rem; font-size: 0.85rem; background: linear-gradient(135deg, var(--electric-purple), var(--cyber-pink));" data-i18n="messenger.createGroup">👥 CREATE GROUP</button>
                         </div>
                     </div>
 
@@ -67,6 +69,8 @@
                             placeholder="Search conversations..."
                             class="form-input interactive"
                             style="width: 100%; padding: 0.75rem; border: 2px solid var(--cyber-cyan);"
+                            data-i18n-attr="placeholder"
+                            data-i18n="messenger.searchConversations"
                         >
                     </div>
 
@@ -128,8 +132,10 @@
                                 class="form-input interactive"
                                 style="flex: 1; border: 2px solid var(--kintsugi-gold); padding: 1rem;"
                                 disabled
+                                data-i18n-attr="placeholder"
+                                data-i18n="messenger.typeMessage"
                             >
-                            <button type="submit" class="btn btn-primary interactive" style="padding: 1rem 2rem;" disabled>
+                            <button type="submit" class="btn btn-primary interactive" style="padding: 1rem 2rem;" disabled data-i18n="common.send">
                                 SEND ▶
                             </button>
                         </form>
@@ -399,6 +405,14 @@
     <script src="/js/conference-manager.js"></script>
     <script src="/js/stories.js"></script>
     <script src="/js/cookie-consent.js"></script>
+    <script src="/js/i18n.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            if (window.I18n) {
+                window.I18n.createLanguageSwitcher('#language-switcher-container');
+            }
+        });
+    </script>
     <script>
         // Mobile conversations toggle
         function toggleConversations() {

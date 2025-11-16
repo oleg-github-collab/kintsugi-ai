@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Translation // Kintsugi AI</title>
     <link rel="stylesheet" href="/css/styles.css">
+    <link rel="stylesheet" href="/css/mobile.css">
+    <link rel="stylesheet" href="/css/mobile-enhanced.css">
 </head>
 <body class="crt-effect">
 
@@ -16,11 +18,12 @@
         <div class="nav-container">
             <a href="/" class="nav-logo text-rainbow">⟡ KINTSUGI AI ⟡</a>
             <div class="nav-links">
-                <a href="/chat.html" class="nav-link">CHAT</a>
-                <a href="/messenger.html" class="nav-link">MESSENGER</a>
-                <a href="/translation.html" class="nav-link text-pink">TRANSLATION</a>
-                <a href="#" onclick="logout()" class="nav-link text-pink">LOGOUT</a>
+                <a href="/chat.html" class="nav-link" data-i18n="nav.chat">CHAT</a>
+                <a href="/messenger.html" class="nav-link" data-i18n="nav.messenger">MESSENGER</a>
+                <a href="/translation.html" class="nav-link text-pink" data-i18n="nav.translation">TRANSLATION</a>
+                <a href="#" onclick="logout()" class="nav-link text-pink" data-i18n="nav.logout">LOGOUT</a>
             </div>
+            <div id="language-switcher-container" style="margin-left: auto;"></div>
         </div>
     </nav>
 
@@ -28,15 +31,15 @@
         <section style="padding-top: 100px; min-height: calc(100vh - 100px); display: flex; align-items: center; justify-content: center;">
             <div class="container" style="text-align: center;">
                 <div class="border-3 border-pink bg-pink-10 shadow-neo-pink scanlines" style="padding: 4rem; max-width: 600px; margin: 0 auto;">
-                    <h1 class="text-pink text-neon" style="font-size: 3rem; font-weight: bold; text-transform: uppercase; margin-bottom: 1.5rem;">
+                    <h1 class="text-pink text-neon" style="font-size: 3rem; font-weight: bold; text-transform: uppercase; margin-bottom: 1.5rem;" data-i18n="translation.title">
                         [ TRANSLATION ]
                     </h1>
                     <div class="loading-bar" style="margin-bottom: 2rem;"></div>
-                    <p style="font-size: 1.25rem; color: #ccc; line-height: 1.8;">
+                    <p style="font-size: 1.25rem; color: #ccc; line-height: 1.8;" data-i18n="translation.description">
                         Professional book translation powered by DeepL and o.translator with per-1800-character pricing.
                     </p>
                     <p style="font-size: 1.1rem; color: #999; margin-top: 2rem;">
-                        <span class="text-orange" style="font-weight: bold;">Coming Soon</span>
+                        <span class="text-orange" style="font-weight: bold;" data-i18n="common.comingSoon">Coming Soon</span>
                     </p>
                 </div>
             </div>
@@ -44,6 +47,14 @@
     </main>
 
     <script src="/js/main.js"></script>
+    <script src="/js/i18n.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            if (window.I18n) {
+                window.I18n.createLanguageSwitcher('#language-switcher-container');
+            }
+        });
+    </script>
     <script>
         if (!isAuthenticated()) {
             window.location.href = '/login.html';

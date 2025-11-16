@@ -483,49 +483,123 @@ const MessageActions = {
 
     searchGifs: async function(query, modal) {
         const resultsContainer = modal.querySelector('#gif-results');
-        resultsContainer.innerHTML = '<div style="grid-column: 1 / -1; text-align: center; color: var(--cyber-cyan); padding: 3rem;">Searching...</div>';
+        resultsContainer.innerHTML = '<div style="grid-column: 1 / -1; text-align: center; color: var(--cyber-cyan); padding: 3rem;">🔍 Searching GIFs...</div>';
 
-        // Giphy API key (use your own in production)
-        const GIPHY_API_KEY = 'YOUR_GIPHY_API_KEY'; // Replace with actual key
-        const url = `https://api.giphy.com/v1/gifs/search?api_key=${GIPHY_API_KEY}&q=${encodeURIComponent(query)}&limit=20&rating=g`;
+        // Tenor API (free, works out of the box)
+        // Get your own API key at: https://tenor.com/developer/keyregistration
+        const TENOR_API_KEY = 'AIzaSyAyimkuYQYF_FXVALexPuGQctUWRURdCYQ'; // Demo key - replace with your own
+        const url = `https://tenor.googleapis.com/v2/search?q=${encodeURIComponent(query)}&key=${TENOR_API_KEY}&client_key=kintsugi_ai&limit=20&media_filter=gif`;
 
         try {
-            // For demo purposes, use trending GIFs endpoint which doesn't require API key
-            const trendingUrl = `https://api.giphy.com/v1/gifs/trending?api_key=YOUR_GIPHY_API_KEY&limit=20&rating=g`;
+            const response = await fetch(url);
 
-            // In production, use actual Giphy API
-            // For now, show placeholder GIFs
-            resultsContainer.innerHTML = `
-                <div style="grid-column: 1 / -1; text-align: center; padding: 2rem;">
-                    <div style="color: var(--kintsugi-gold); font-size: 3rem; margin-bottom: 1rem;">🎬</div>
-                    <div style="color: var(--cyber-cyan); font-weight: bold; margin-bottom: 0.5rem;">GIF SEARCH READY</div>
-                    <div style="color: #999; font-size: 0.9rem; margin-bottom: 1.5rem;">
-                        Configure Giphy API key in production to enable GIF search
+            if (!response.ok) {
+                throw new Error('Tenor API error');
+            }
+
+            const data = await response.json();
+
+            if (!data.results || data.results.length === 0) {
+                resultsContainer.innerHTML = `
+                    <div style="grid-column: 1 / -1; text-align: center; padding: 3rem;">
+                        <div style="color: #999; font-size: 1.2rem; margin-bottom: 1rem;">😕 No GIFs found</div>
+                        <div style="color: #666; font-size: 0.9rem;">Try a different search term</div>
                     </div>
-                    <div style="padding: 1rem; border: 2px dashed var(--electric-purple); background: rgba(157, 0, 255, 0.05);">
-                        <div style="color: #ccc; font-size: 0.85rem; margin-bottom: 0.5rem;">💡 TO ENABLE:</div>
-                        <div style="color: #999; font-size: 0.85rem; text-align: left;">
-                            1. Get free API key from developers.giphy.com<br>
-                            2. Replace YOUR_GIPHY_API_KEY in message-actions.js<br>
-                            3. Search query: "${query}"
+                `;
+                return;
+            }
+
+            // Display GIFs in grid
+            resultsContainer.innerHTML = data.results.map(gif => {
+                const gifUrl = gif.media_formats.gif.url;
+                const previewUrl = gif.media_formats.tinygif.url;
+                const title = (gif.content_description || 'GIF').replace(/'/g, "\\'").replace(/"/g, '&quot;');
+
+                return `
+                    <div class="gif-item interactive"
+                         data-gif-url="${gifUrl.replace(/'/g, "\\'")}"
+                         data-gif-title="${title}"
+                         style="cursor: pointer; border: 2px solid var(--cyber-cyan); background: rgba(0, 255, 255, 0.05); overflow: hidden; aspect-ratio: 1; position: relative; transition: all 0.2s;">
+                        <img src="${previewUrl}"
+                             alt="${title}"
+                             loading="lazy"
+                             style="width: 100%; height: 100%; object-fit: cover; display: block;">
+                        <div class="gif-title" style="position: absolute; bottom: 0; left: 0; right: 0; background: linear-gradient(transparent, rgba(0, 0, 0, 0.8)); padding: 0.5rem; font-size: 0.7rem; color: #fff; display: none;">
+                            ${title.substring(0, 30)}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            // Add click handlers and hover effects
+            modal.querySelectorAll('.gif-item').forEach(item => {
+                item.onclick = () => {
+                    const gifUrl = item.getAttribute('data-gif-url');
+                    const title = item.getAttribute('data-gif-title');
+                    this.sendGif(gifUrl, title);
+                };
+
+                item.onmouseover = () => {
+                    item.style.transform = 'scale(1.05)';
+                    item.style.borderColor = 'var(--kintsugi-gold)';
+                    item.style.zIndex = '10';
+                    const desc = item.querySelector('.gif-title');
+                    if (desc) desc.style.display = 'block';
+                };
+
+                item.onmouseout = () => {
+                    item.style.transform = 'scale(1)';
+                    item.style.borderColor = 'var(--cyber-cyan)';
+                    item.style.zIndex = '1';
+                    const desc = item.querySelector('.gif-title');
+                    if (desc) desc.style.display = 'none';
+                };
+            });
+
+        } catch (error) {
+            console.error('Tenor API error:', error);
+            resultsContainer.innerHTML = `
+                <div style="grid-column: 1 / -1; text-align: center; padding: 3rem;">
+                    <div style="color: var(--neon-pink); font-size: 3rem; margin-bottom: 1rem;">❌</div>
+                    <div style="color: var(--neon-pink); font-weight: bold; margin-bottom: 0.5rem;">Failed to load GIFs</div>
+                    <div style="color: #999; font-size: 0.9rem; margin-bottom: 1.5rem;">
+                        ${error.message}
+                    </div>
+                    <div style="padding: 1rem; border: 2px solid var(--electric-purple); background: rgba(157, 0, 255, 0.05);">
+                        <div style="color: #ccc; font-size: 0.85rem; margin-bottom: 0.5rem;">💡 Get Tenor API Key:</div>
+                        <div style="color: #999; font-size: 0.85rem;">
+                            Visit: <a href="https://tenor.com/developer/keyregistration" target="_blank" class="text-gold" style="text-decoration: underline;">tenor.com/developer</a>
                         </div>
                     </div>
                 </div>
             `;
-        } catch (error) {
-            console.error('GIF search error:', error);
-            resultsContainer.innerHTML = '<div style="grid-column: 1 / -1; text-align: center; color: var(--neon-pink); padding: 3rem;">❌ Failed to load GIFs</div>';
         }
     },
 
-    sendGif: function(gifUrl) {
+    sendGif: function(gifUrl, title = 'GIF') {
         document.getElementById('gif-picker-modal')?.remove();
 
+        if (!currentConversationId) {
+            this.showNotification('❌ Select a conversation first', 'error');
+            return;
+        }
+
+        // For AI chat, just add as a link
+        if (isAIChat) {
+            const input = document.getElementById('message-input');
+            input.value = `Check out this GIF: ${gifUrl}`;
+            document.getElementById('message-form').dispatchEvent(new Event('submit'));
+            return;
+        }
+
+        // For regular messenger, send as special GIF message
         const input = document.getElementById('message-input');
-        input.value = `[GIF: ${gifUrl}]`;
+        input.value = `🎬 ${title}\n${gifUrl}`;
 
         // Trigger send
         document.getElementById('message-form').dispatchEvent(new Event('submit'));
+
+        this.showNotification('✓ GIF sent!', 'success');
     },
 
     // Helpers

@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="/css/typography.css">
     <link rel="stylesheet" href="/css/syntax.css">
     <link rel="stylesheet" href="/css/mobile.css">
+    <link rel="stylesheet" href="/css/mobile-enhanced.css">
     <style>
         .chat-enhanced-container {
             display: grid;
@@ -138,12 +139,13 @@
         <div class="nav-container">
             <a href="/" class="nav-logo text-rainbow">⟡ KINTSUGI AI ⟡</a>
             <div class="nav-links">
-                <a href="/chat.html" class="nav-link text-gold">CHAT</a>
-                <a href="/messenger.html" class="nav-link">MESSENGER</a>
-                <a href="/translation.html" class="nav-link">TRANSLATION</a>
-                <a href="/profile.html" class="nav-link">PROFILE</a>
-                <a href="#" onclick="logout()" class="nav-link text-pink">LOGOUT</a>
+                <a href="/chat.html" class="nav-link text-gold" data-i18n="nav.chat">CHAT</a>
+                <a href="/messenger.html" class="nav-link" data-i18n="nav.messenger">MESSENGER</a>
+                <a href="/translation.html" class="nav-link" data-i18n="nav.translation">TRANSLATION</a>
+                <a href="/profile.html" class="nav-link" data-i18n="nav.profile">PROFILE</a>
+                <a href="#" onclick="logout()" class="nav-link text-pink" data-i18n="nav.logout">LOGOUT</a>
             </div>
+            <div id="language-switcher-container" style="margin-left: auto;"></div>
         </div>
     </nav>
 
@@ -152,8 +154,8 @@
             <!-- Chat History Sidebar -->
             <div class="chat-history-sidebar scanlines">
                 <div style="padding: 1.5rem; border-bottom: 3px solid var(--cyber-cyan);">
-                    <h3 class="text-cyan text-neon" style="font-size: 1.25rem; margin-bottom: 1rem;">[ CHAT_HISTORY ]</h3>
-                    <button onclick="startNewChat()" class="btn btn-primary interactive" style="width: 100%; padding: 0.75rem;">
+                    <h3 class="text-cyan text-neon" style="font-size: 1.25rem; margin-bottom: 1rem;" data-i18n="chat.history">[ CHAT_HISTORY ]</h3>
+                    <button onclick="startNewChat()" class="btn btn-primary interactive" style="width: 100%; padding: 0.75rem;" data-i18n="chat.newChat">
                         ✨ NEW CHAT
                     </button>
                 </div>
@@ -194,10 +196,10 @@
                     <!-- Welcome Message -->
                     <div id="welcome-message" style="text-align: center; margin-top: 3rem;">
                         <div style="font-size: 4rem; margin-bottom: 1rem; animation: pulse 2s infinite;">🤖</div>
-                        <h2 class="text-gold text-neon" style="font-size: 2rem; margin-bottom: 1rem;">
+                        <h2 class="text-gold text-neon" style="font-size: 2rem; margin-bottom: 1rem;" data-i18n="chat.welcome">
                             WELCOME TO KINTSUGI AI
                         </h2>
-                        <p style="color: #999; font-size: 1.1rem; margin-bottom: 2rem; max-width: 600px; margin-left: auto; margin-right: auto;">
+                        <p style="color: #999; font-size: 1.1rem; margin-bottom: 2rem; max-width: 600px; margin-left: auto; margin-right: auto;" data-i18n="chat.welcomeDesc">
                             Choose a model from the right panel and start chatting with AI. Try using templates below for quick start!
                         </p>
 
@@ -246,6 +248,8 @@
                                 class="form-input interactive"
                                 style="width: 100%; border: 3px solid var(--cyber-cyan); padding: 1rem; min-height: 60px; max-height: 200px; resize: vertical; font-size: 1rem;"
                                 rows="2"
+                                data-i18n-attr="placeholder"
+                                data-i18n="chat.typeMessage"
                             ></textarea>
                             <div style="display: flex; justify-content: space-between; margin-top: 0.5rem;">
                                 <div style="display: flex; gap: 0.5rem;">
@@ -261,7 +265,7 @@
                                 </div>
                             </div>
                         </div>
-                        <button type="submit" class="btn btn-primary interactive" style="padding: 1.25rem 2rem; font-size: 1.1rem; background: linear-gradient(135deg, var(--kintsugi-gold), var(--cyber-cyan)); color: var(--digital-black); font-weight: bold;">
+                        <button type="submit" class="btn btn-primary interactive" style="padding: 1.25rem 2rem; font-size: 1.1rem; background: linear-gradient(135deg, var(--kintsugi-gold), var(--cyber-cyan)); color: var(--digital-black); font-weight: bold;" data-i18n="common.send">
                             SEND ▶
                         </button>
                     </form>
@@ -385,5 +389,13 @@
     <script src="/js/syntax-highlighter.js"></script>
     <script src="/js/chat-enhanced.js"></script>
     <script src="/js/cookie-consent.js"></script>
+    <script src="/js/i18n.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            if (window.I18n) {
+                window.I18n.createLanguageSwitcher('#language-switcher-container');
+            }
+        });
+    </script></script>
 </body>
 </html>

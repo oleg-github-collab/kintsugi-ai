@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Profile // Kintsugi AI</title>
     <link rel="stylesheet" href="/css/styles.css">
+    <link rel="stylesheet" href="/css/mobile.css">
+    <link rel="stylesheet" href="/css/mobile-enhanced.css">
 </head>
 <body class="crt-effect">
 
@@ -16,12 +18,13 @@
         <div class="nav-container">
             <a href="/" class="nav-logo text-rainbow">⟡ KINTSUGI AI ⟡</a>
             <div class="nav-links">
-                <a href="/chat.html" class="nav-link">CHAT</a>
-                <a href="/messenger.html" class="nav-link">MESSENGER</a>
-                <a href="/translation.html" class="nav-link">TRANSLATION</a>
-                <a href="/profile.html" class="nav-link text-gold">PROFILE</a>
-                <a href="#" onclick="logout()" class="nav-link text-pink">LOGOUT</a>
+                <a href="/chat.html" class="nav-link" data-i18n="nav.chat">CHAT</a>
+                <a href="/messenger.html" class="nav-link" data-i18n="nav.messenger">MESSENGER</a>
+                <a href="/translation.html" class="nav-link" data-i18n="nav.translation">TRANSLATION</a>
+                <a href="/profile.html" class="nav-link text-gold" data-i18n="nav.profile">PROFILE</a>
+                <a href="#" onclick="logout()" class="nav-link text-pink" data-i18n="nav.logout">LOGOUT</a>
             </div>
+            <div id="language-switcher-container" style="margin-left: auto;"></div>
         </div>
     </nav>
 
@@ -61,7 +64,7 @@
 
                 <!-- Stats Section -->
                 <div class="border-3 border-purple scanlines" style="padding: 2rem; margin-bottom: 2rem; background: rgba(128,0,255,0.05);">
-                    <h2 class="text-purple text-neon" style="font-size: 2rem; margin-bottom: 1.5rem;">[ USAGE_STATISTICS ]</h2>
+                    <h2 class="text-purple text-neon" style="font-size: 2rem; margin-bottom: 1.5rem;" data-i18n="profile.usageStats">[ USAGE_STATISTICS ]</h2>
                     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem;">
                         <div class="border-3 border-cyan" style="padding: 1.5rem; background: rgba(0,255,255,0.05); text-align: center;">
                             <div style="font-size: 3rem; margin-bottom: 0.5rem;">💬</div>
@@ -88,7 +91,7 @@
 
                 <!-- Account Information -->
                 <div class="border-3 border-cyan scanlines" style="padding: 2rem; margin-bottom: 2rem; background: rgba(0,255,255,0.05);">
-                    <h2 class="text-cyan text-neon" style="font-size: 2rem; margin-bottom: 1.5rem;">[ ACCOUNT_INFORMATION ]</h2>
+                    <h2 class="text-cyan text-neon" style="font-size: 2rem; margin-bottom: 1.5rem;" data-i18n="profile.accountInfo">[ ACCOUNT_INFORMATION ]</h2>
 
                     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem;">
                         <div>
@@ -105,12 +108,12 @@
                         </div>
                     </div>
 
-                    <button onclick="updateProfile()" class="btn btn-primary interactive" style="margin-top: 1.5rem; padding: 1rem 2rem;">💾 SAVE CHANGES</button>
+                    <button onclick="updateProfile()" class="btn btn-primary interactive" style="margin-top: 1.5rem; padding: 1rem 2rem;" data-i18n="common.saveChanges">💾 SAVE CHANGES</button>
                 </div>
 
                 <!-- Security -->
                 <div class="border-3 border-pink scanlines" style="padding: 2rem; margin-bottom: 2rem; background: rgba(255,0,255,0.05);">
-                    <h2 class="text-pink text-neon" style="font-size: 2rem; margin-bottom: 1.5rem;">[ SECURITY ]</h2>
+                    <h2 class="text-pink text-neon" style="font-size: 2rem; margin-bottom: 1.5rem;" data-i18n="profile.security">[ SECURITY ]</h2>
 
                     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem;">
                         <div>
@@ -162,6 +165,14 @@
     </main>
 
     <script src="/js/main.js"></script>
+    <script src="/js/i18n.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            if (window.I18n) {
+                window.I18n.createLanguageSwitcher('#language-switcher-container');
+            }
+        });
+    </script>
     <script>
         if (!isAuthenticated()) {
             window.location.href = '/login.html';

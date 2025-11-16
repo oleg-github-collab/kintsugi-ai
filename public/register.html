@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sign Up // Kintsugi AI</title>
     <link rel="stylesheet" href="/css/styles.css">
+    <link rel="stylesheet" href="/css/mobile.css">
+    <link rel="stylesheet" href="/css/mobile-enhanced.css">
 </head>
 <body class="crt-effect">
 
@@ -20,9 +22,10 @@
         <div class="nav-container">
             <a href="/" class="nav-logo text-rainbow">⟡ KINTSUGI AI ⟡</a>
             <div class="nav-links">
-                <a href="/" class="nav-link">HOME</a>
-                <a href="/login.html" class="nav-link text-cyan">LOG_IN</a>
+                <a href="/" class="nav-link" data-i18n="nav.home">HOME</a>
+                <a href="/login.html" class="nav-link text-cyan" data-i18n="nav.login">LOG_IN</a>
             </div>
+            <div id="language-switcher-container" style="margin-left: auto;"></div>
         </div>
     </nav>
 
@@ -30,39 +33,39 @@
     <main>
         <section style="min-height: 100vh; display: flex; align-items: center; justify-content: center;">
             <div class="form-container scanlines" style="border-color: var(--kintsugi-gold); background-color: rgba(240, 255, 0, 0.05); box-shadow: 8px 8px 0px 0px rgba(240, 255, 0, 1);">
-                <h2 class="text-gold text-neon" style="font-size: 2.5rem; font-weight: bold; text-transform: uppercase; text-align: center; margin-bottom: 1rem;">
+                <h2 class="text-gold text-neon" style="font-size: 2.5rem; font-weight: bold; text-transform: uppercase; text-align: center; margin-bottom: 1rem;" data-i18n="auth.signupTitle">
                     [ USER_AUTH:SIGNUP ]
                 </h2>
                 <div class="loading-bar" style="margin-bottom: 2rem;"></div>
 
                 <form id="registerForm">
                     <div class="form-group">
-                        <input type="text" id="username" name="username" class="form-input" placeholder=" " required>
-                        <label for="username" class="form-label">Username</label>
+                        <input type="text" id="username" name="username" class="form-input" placeholder=" " required data-i18n-attr="placeholder" data-i18n="auth.username">
+                        <label for="username" class="form-label" data-i18n="auth.username">Username</label>
                     </div>
 
                     <div class="form-group">
-                        <input type="email" id="email" name="email" class="form-input" placeholder=" " required>
-                        <label for="email" class="form-label">Email</label>
+                        <input type="email" id="email" name="email" class="form-input" placeholder=" " required data-i18n-attr="placeholder" data-i18n="auth.email">
+                        <label for="email" class="form-label" data-i18n="auth.email">Email</label>
                     </div>
 
                     <div class="form-group">
-                        <input type="password" id="password" name="password" class="form-input" placeholder=" " required minlength="8">
-                        <label for="password" class="form-label">Password</label>
+                        <input type="password" id="password" name="password" class="form-input" placeholder=" " required minlength="8" data-i18n-attr="placeholder" data-i18n="auth.password">
+                        <label for="password" class="form-label" data-i18n="auth.password">Password</label>
                     </div>
 
                     <div id="error-message" style="color: var(--cyber-pink); margin-top: 1rem; display: none;"></div>
                     <div id="success-message" style="color: var(--matrix-green); margin-top: 1rem; display: none;"></div>
 
                     <div style="margin-top: 2rem;">
-                        <button type="submit" class="btn btn-primary" style="width: 100%; font-size: 1.1rem;">
+                        <button type="submit" class="btn btn-primary" style="width: 100%; font-size: 1.1rem;" data-i18n="auth.createAccount">
                             ▶ CREATE_ACCOUNT
                         </button>
                     </div>
 
                     <p style="text-align: center; color: #999; margin-top: 1.5rem;">
-                        Already have an account?
-                        <a href="/login.html" class="text-cyan" style="font-weight: bold; text-decoration: none;">Log In</a>
+                        <span data-i18n="auth.haveAccount">Already have an account?</span>
+                        <a href="/login.html" class="text-cyan" style="font-weight: bold; text-decoration: none;" data-i18n="auth.logIn">Log In</a>
                     </p>
                 </form>
             </div>
@@ -70,6 +73,14 @@
     </main>
 
     <script src="/js/main.js"></script>
+    <script src="/js/i18n.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            if (window.I18n) {
+                window.I18n.createLanguageSwitcher('#language-switcher-container');
+            }
+        });
+    </script>
     <script>
         document.getElementById('registerForm').addEventListener('submit', async (e) => {
             e.preventDefault();
