@@ -35,16 +35,42 @@
             'common.search': 'Search',
             'common.filter': 'Filter',
             'common.sort': 'Sort',
+            'common.home': 'HOME',
+            'common.chat': 'CHAT',
+            'common.messenger': 'MESSENGER',
+            'common.translation': 'TRANSLATION',
+            'common.profile': 'PROFILE',
+            'common.startFree': 'START FREE',
+            'common.viewFeatures': 'VIEW FEATURES',
+            'common.saveChanges': 'SAVE CHANGES',
+            'common.comingSoon': 'COMING SOON',
 
-            // Features
+            // Hero Section
+            'hero.subtitle': 'ALL-IN-ONE AI PLATFORM',
+            'hero.tagline': 'Chat • Messenger • Translation',
+            'hero.description': 'Unified AI platform combining advanced chat models, real-time messenger, and professional translation.',
+
+            // Features Section
+            'features.title': 'THREE PLATFORMS IN ONE',
             'features.aichat': 'AI CHAT',
+            'features.aichatDesc': 'Access powerful AI models with real-time streaming responses. Basic and Epic tiers available.',
             'features.messenger': 'MESSENGER',
-            'features.video': 'VIDEO CALL',
+            'features.messengerDesc': 'Secure real-time messaging with group chats, video calls, and file sharing.',
             'features.translation': 'TRANSLATION',
-            'features.imagegen': 'IMAGE GEN',
+            'features.translationDesc': 'Professional-grade translation powered by DeepL and o.translator for 100+ languages.',
+            'features.imagegen': 'IMAGE GENERATION',
+            'features.imagegenDesc': 'Create stunning AI-generated images with DALL-E integration.',
+            'features.video': 'VIDEO CALLS',
+            'features.videoDesc': 'HD video conferencing for up to 50 participants with screen sharing.',
             'features.stories': 'STORIES',
+            'features.storiesDesc': 'Share 24-hour ephemeral content with your contacts.',
 
-            // Auth
+            // Auth Pages
+            'auth.loginTitle': 'LOGIN TO YOUR ACCOUNT',
+            'auth.signupTitle': 'CREATE YOUR ACCOUNT',
+            'auth.authenticate': 'AUTHENTICATE',
+            'auth.logIn': 'Log In',
+            'auth.createOne': 'Create one',
             'auth.username': 'Username',
             'auth.email': 'Email',
             'auth.password': 'Password',
@@ -57,6 +83,30 @@
             'auth.createAccount': 'Create Account',
             'auth.haveAccount': 'Already have an account?',
             'auth.noAccount': "Don't have an account?",
+
+            // Messenger
+            'messenger.title': 'MESSENGER',
+            'messenger.find': 'FIND USERS',
+            'messenger.invite': 'INVITE FRIENDS',
+            'messenger.createGroup': 'CREATE GROUP',
+            'messenger.searchConversations': 'Search conversations...',
+            'messenger.typeMessage': 'Type a message...',
+
+            // Chat
+            'chat.history': 'CHAT HISTORY',
+            'chat.newChat': 'NEW CHAT',
+            'chat.welcome': 'Welcome to Kintsugi AI',
+            'chat.welcomeDesc': 'Start a conversation with our AI assistant',
+            'chat.typeMessage': 'Type your message...',
+
+            // Profile
+            'profile.usageStats': 'USAGE STATISTICS',
+            'profile.accountInfo': 'ACCOUNT INFORMATION',
+            'profile.security': 'SECURITY',
+
+            // Translation
+            'translation.title': 'TRANSLATION',
+            'translation.description': 'Professional translation service',
 
             // Messages
             'msg.typeMessage': 'Type a message...',
@@ -135,16 +185,42 @@
             'common.search': 'Пошук',
             'common.filter': 'Фільтр',
             'common.sort': 'Сортування',
+            'common.home': 'ГОЛОВНА',
+            'common.chat': 'ЧАТ',
+            'common.messenger': 'МЕСЕНДЖЕР',
+            'common.translation': 'ПЕРЕКЛАД',
+            'common.profile': 'ПРОФІЛЬ',
+            'common.startFree': 'ПОЧАТИ БЕЗКОШТОВНО',
+            'common.viewFeatures': 'ПЕРЕГЛЯНУТИ МОЖЛИВОСТІ',
+            'common.saveChanges': 'ЗБЕРЕГТИ ЗМІНИ',
+            'common.comingSoon': 'НЕЗАБАРОМ',
 
-            // Функції
+            // Секція Героя
+            'hero.subtitle': 'ПЛАТФОРМА AI ВСЕ-В-ОДНОМУ',
+            'hero.tagline': 'Чат • Месенджер • Переклад',
+            'hero.description': 'Єдина AI платформа, що поєднує передові моделі чату, месенджер у реальному часі та професійний переклад.',
+
+            // Секція Можливостей
+            'features.title': 'ТРИ ПЛАТФОРМИ В ОДНІЙ',
             'features.aichat': 'AI ЧАТ',
+            'features.aichatDesc': 'Доступ до потужних моделей AI з відповідями у реальному часі. Доступні базовий та епічний рівні.',
             'features.messenger': 'МЕСЕНДЖЕР',
-            'features.video': 'ВІДЕОДЗВІНОК',
+            'features.messengerDesc': 'Захищений обмін повідомленнями у реальному часі з груповими чатами, відеодзвінками та обміном файлами.',
             'features.translation': 'ПЕРЕКЛАД',
+            'features.translationDesc': 'Професійний переклад на основі DeepL та o.translator для понад 100 мов.',
             'features.imagegen': 'ГЕНЕРАЦІЯ ЗОБРАЖЕНЬ',
+            'features.imagegenDesc': 'Створюйте приголомшливі зображення за допомогою інтеграції з DALL-E.',
+            'features.video': 'ВІДЕОДЗВІНКИ',
+            'features.videoDesc': 'HD відеоконференції до 50 учасників з демонстрацією екрану.',
             'features.stories': 'ІСТОРІЇ',
+            'features.storiesDesc': 'Діліться 24-годинним ефемерним контентом зі своїми контактами.',
 
-            // Автентифікація
+            // Сторінки Автентифікації
+            'auth.loginTitle': 'УВІЙТИ ДО ОБЛІКОВОГО ЗАПИСУ',
+            'auth.signupTitle': 'СТВОРИТИ ОБЛІКОВИЙ ЗАПИС',
+            'auth.authenticate': 'АВТЕНТИФІКУВАТИ',
+            'auth.logIn': 'Увійти',
+            'auth.createOne': 'Створити обліковий запис',
             'auth.username': "Ім'я користувача",
             'auth.email': 'Електронна пошта',
             'auth.password': 'Пароль',
@@ -157,6 +233,30 @@
             'auth.createAccount': 'Створити обліковий запис',
             'auth.haveAccount': 'Вже є обліковий запис?',
             'auth.noAccount': 'Немає облікового запису?',
+
+            // Месенджер
+            'messenger.title': 'МЕСЕНДЖЕР',
+            'messenger.find': 'ЗНАЙТИ КОРИСТУВАЧІВ',
+            'messenger.invite': 'ЗАПРОСИТИ ДРУЗІВ',
+            'messenger.createGroup': 'СТВОРИТИ ГРУПУ',
+            'messenger.searchConversations': 'Пошук бесід...',
+            'messenger.typeMessage': 'Введіть повідомлення...',
+
+            // Чат
+            'chat.history': 'ІСТОРІЯ ЧАТУ',
+            'chat.newChat': 'НОВИЙ ЧАТ',
+            'chat.welcome': 'Ласкаво просимо до Kintsugi AI',
+            'chat.welcomeDesc': 'Почніть розмову з нашим AI асистентом',
+            'chat.typeMessage': 'Введіть ваше повідомлення...',
+
+            // Профіль
+            'profile.usageStats': 'СТАТИСТИКА ВИКОРИСТАННЯ',
+            'profile.accountInfo': 'ІНФОРМАЦІЯ ПРО ОБЛІКОВИЙ ЗАПИС',
+            'profile.security': 'БЕЗПЕКА',
+
+            // Переклад
+            'translation.title': 'ПЕРЕКЛАД',
+            'translation.description': 'Професійний сервіс перекладу',
 
             // Повідомлення
             'msg.typeMessage': 'Введіть повідомлення...',
@@ -235,16 +335,42 @@
             'common.search': 'Buscar',
             'common.filter': 'Filtrar',
             'common.sort': 'Ordenar',
+            'common.home': 'INICIO',
+            'common.chat': 'CHAT',
+            'common.messenger': 'MENSAJERO',
+            'common.translation': 'TRADUCCIÓN',
+            'common.profile': 'PERFIL',
+            'common.startFree': 'EMPEZAR GRATIS',
+            'common.viewFeatures': 'VER CARACTERÍSTICAS',
+            'common.saveChanges': 'GUARDAR CAMBIOS',
+            'common.comingSoon': 'PRÓXIMAMENTE',
 
-            // Funciones
+            // Sección Hero
+            'hero.subtitle': 'PLATAFORMA AI TODO EN UNO',
+            'hero.tagline': 'Chat • Mensajero • Traducción',
+            'hero.description': 'Plataforma AI unificada que combina modelos de chat avanzados, mensajería en tiempo real y traducción profesional.',
+
+            // Sección de Características
+            'features.title': 'TRES PLATAFORMAS EN UNA',
             'features.aichat': 'CHAT IA',
+            'features.aichatDesc': 'Accede a potentes modelos de IA con respuestas en tiempo real. Niveles básico y épico disponibles.',
             'features.messenger': 'MENSAJERO',
-            'features.video': 'VIDEOLLAMADA',
+            'features.messengerDesc': 'Mensajería segura en tiempo real con chats grupales, videollamadas y compartir archivos.',
             'features.translation': 'TRADUCCIÓN',
-            'features.imagegen': 'GEN. IMÁGENES',
+            'features.translationDesc': 'Traducción de nivel profesional impulsada por DeepL y o.translator para más de 100 idiomas.',
+            'features.imagegen': 'GENERACIÓN DE IMÁGENES',
+            'features.imagegenDesc': 'Crea imágenes impresionantes generadas por IA con integración DALL-E.',
+            'features.video': 'VIDEOLLAMADAS',
+            'features.videoDesc': 'Videoconferencia HD para hasta 50 participantes con compartir pantalla.',
             'features.stories': 'HISTORIAS',
+            'features.storiesDesc': 'Comparte contenido efímero de 24 horas con tus contactos.',
 
-            // Autenticación
+            // Páginas de Autenticación
+            'auth.loginTitle': 'INICIAR SESIÓN EN TU CUENTA',
+            'auth.signupTitle': 'CREAR TU CUENTA',
+            'auth.authenticate': 'AUTENTICAR',
+            'auth.logIn': 'Iniciar Sesión',
+            'auth.createOne': 'Crear una',
             'auth.username': 'Usuario',
             'auth.email': 'Correo electrónico',
             'auth.password': 'Contraseña',
@@ -257,6 +383,30 @@
             'auth.createAccount': 'Crear cuenta',
             'auth.haveAccount': '¿Ya tienes una cuenta?',
             'auth.noAccount': '¿No tienes una cuenta?',
+
+            // Mensajero
+            'messenger.title': 'MENSAJERO',
+            'messenger.find': 'BUSCAR USUARIOS',
+            'messenger.invite': 'INVITAR AMIGOS',
+            'messenger.createGroup': 'CREAR GRUPO',
+            'messenger.searchConversations': 'Buscar conversaciones...',
+            'messenger.typeMessage': 'Escribe un mensaje...',
+
+            // Chat
+            'chat.history': 'HISTORIAL DE CHAT',
+            'chat.newChat': 'NUEVO CHAT',
+            'chat.welcome': 'Bienvenido a Kintsugi AI',
+            'chat.welcomeDesc': 'Inicia una conversación con nuestro asistente IA',
+            'chat.typeMessage': 'Escribe tu mensaje...',
+
+            // Perfil
+            'profile.usageStats': 'ESTADÍSTICAS DE USO',
+            'profile.accountInfo': 'INFORMACIÓN DE LA CUENTA',
+            'profile.security': 'SEGURIDAD',
+
+            // Traducción
+            'translation.title': 'TRADUCCIÓN',
+            'translation.description': 'Servicio de traducción profesional',
 
             // Mensajes
             'msg.typeMessage': 'Escribe un mensaje...',
@@ -335,16 +485,42 @@
             'common.search': 'Rechercher',
             'common.filter': 'Filtrer',
             'common.sort': 'Trier',
+            'common.home': 'ACCUEIL',
+            'common.chat': 'CHAT',
+            'common.messenger': 'MESSAGERIE',
+            'common.translation': 'TRADUCTION',
+            'common.profile': 'PROFIL',
+            'common.startFree': 'COMMENCER GRATUITEMENT',
+            'common.viewFeatures': 'VOIR LES FONCTIONNALITÉS',
+            'common.saveChanges': 'ENREGISTRER LES MODIFICATIONS',
+            'common.comingSoon': 'PROCHAINEMENT',
 
-            // Fonctionnalités
+            // Section Hero
+            'hero.subtitle': 'PLATEFORME IA TOUT-EN-UN',
+            'hero.tagline': 'Chat • Messagerie • Traduction',
+            'hero.description': 'Plateforme IA unifiée combinant des modèles de chat avancés, une messagerie en temps réel et une traduction professionnelle.',
+
+            // Section Fonctionnalités
+            'features.title': 'TROIS PLATEFORMES EN UNE',
             'features.aichat': 'CHAT IA',
+            'features.aichatDesc': 'Accédez à des modèles IA puissants avec des réponses en temps réel. Niveaux de base et épique disponibles.',
             'features.messenger': 'MESSAGERIE',
-            'features.video': 'APPEL VIDÉO',
+            'features.messengerDesc': 'Messagerie sécurisée en temps réel avec chats de groupe, appels vidéo et partage de fichiers.',
             'features.translation': 'TRADUCTION',
-            'features.imagegen': 'GEN. IMAGES',
+            'features.translationDesc': 'Traduction de qualité professionnelle alimentée par DeepL et o.translator pour plus de 100 langues.',
+            'features.imagegen': 'GÉNÉRATION D\'IMAGES',
+            'features.imagegenDesc': 'Créez des images époustouflantes générées par IA avec l\'intégration DALL-E.',
+            'features.video': 'APPELS VIDÉO',
+            'features.videoDesc': 'Visioconférence HD jusqu\'à 50 participants avec partage d\'écran.',
             'features.stories': 'HISTOIRES',
+            'features.storiesDesc': 'Partagez du contenu éphémère de 24 heures avec vos contacts.',
 
-            // Authentification
+            // Pages d'Authentification
+            'auth.loginTitle': 'CONNECTEZ-VOUS À VOTRE COMPTE',
+            'auth.signupTitle': 'CRÉEZ VOTRE COMPTE',
+            'auth.authenticate': 'S\'AUTHENTIFIER',
+            'auth.logIn': 'Se Connecter',
+            'auth.createOne': 'En créer un',
             'auth.username': 'Nom d\'utilisateur',
             'auth.email': 'Email',
             'auth.password': 'Mot de passe',
@@ -357,6 +533,30 @@
             'auth.createAccount': 'Créer un compte',
             'auth.haveAccount': 'Vous avez déjà un compte?',
             'auth.noAccount': 'Vous n\'avez pas de compte?',
+
+            // Messagerie
+            'messenger.title': 'MESSAGERIE',
+            'messenger.find': 'TROUVER DES UTILISATEURS',
+            'messenger.invite': 'INVITER DES AMIS',
+            'messenger.createGroup': 'CRÉER UN GROUPE',
+            'messenger.searchConversations': 'Rechercher des conversations...',
+            'messenger.typeMessage': 'Tapez un message...',
+
+            // Chat
+            'chat.history': 'HISTORIQUE DU CHAT',
+            'chat.newChat': 'NOUVEAU CHAT',
+            'chat.welcome': 'Bienvenue sur Kintsugi AI',
+            'chat.welcomeDesc': 'Commencez une conversation avec notre assistant IA',
+            'chat.typeMessage': 'Tapez votre message...',
+
+            // Profil
+            'profile.usageStats': 'STATISTIQUES D\'UTILISATION',
+            'profile.accountInfo': 'INFORMATIONS DU COMPTE',
+            'profile.security': 'SÉCURITÉ',
+
+            // Traduction
+            'translation.title': 'TRADUCTION',
+            'translation.description': 'Service de traduction professionnelle',
 
             // Messages
             'msg.typeMessage': 'Tapez un message...',
@@ -435,16 +635,42 @@
             'common.search': 'Suchen',
             'common.filter': 'Filter',
             'common.sort': 'Sortieren',
+            'common.home': 'STARTSEITE',
+            'common.chat': 'CHAT',
+            'common.messenger': 'MESSENGER',
+            'common.translation': 'ÜBERSETZUNG',
+            'common.profile': 'PROFIL',
+            'common.startFree': 'KOSTENLOS STARTEN',
+            'common.viewFeatures': 'FUNKTIONEN ANZEIGEN',
+            'common.saveChanges': 'ÄNDERUNGEN SPEICHERN',
+            'common.comingSoon': 'DEMNÄCHST',
 
-            // Funktionen
+            // Hero-Bereich
+            'hero.subtitle': 'ALLES-IN-EINEM KI-PLATTFORM',
+            'hero.tagline': 'Chat • Messenger • Übersetzung',
+            'hero.description': 'Einheitliche KI-Plattform, die fortschrittliche Chat-Modelle, Echtzeit-Messenger und professionelle Übersetzung kombiniert.',
+
+            // Funktionsbereich
+            'features.title': 'DREI PLATTFORMEN IN EINER',
             'features.aichat': 'KI-CHAT',
+            'features.aichatDesc': 'Zugriff auf leistungsstarke KI-Modelle mit Echtzeit-Streaming-Antworten. Basis- und Epic-Stufen verfügbar.',
             'features.messenger': 'MESSENGER',
-            'features.video': 'VIDEOANRUF',
+            'features.messengerDesc': 'Sichere Echtzeit-Nachrichten mit Gruppenchats, Videoanrufen und Dateifreigabe.',
             'features.translation': 'ÜBERSETZUNG',
-            'features.imagegen': 'BILD-GEN',
+            'features.translationDesc': 'Professionelle Übersetzung auf Basis von DeepL und o.translator für über 100 Sprachen.',
+            'features.imagegen': 'BILDGENERIERUNG',
+            'features.imagegenDesc': 'Erstellen Sie atemberaubende KI-generierte Bilder mit DALL-E-Integration.',
+            'features.video': 'VIDEOANRUFE',
+            'features.videoDesc': 'HD-Videokonferenzen für bis zu 50 Teilnehmer mit Bildschirmfreigabe.',
             'features.stories': 'GESCHICHTEN',
+            'features.storiesDesc': 'Teilen Sie 24-Stunden-Inhalte mit Ihren Kontakten.',
 
-            // Authentifizierung
+            // Authentifizierungsseiten
+            'auth.loginTitle': 'IN IHR KONTO EINLOGGEN',
+            'auth.signupTitle': 'IHR KONTO ERSTELLEN',
+            'auth.authenticate': 'AUTHENTIFIZIEREN',
+            'auth.logIn': 'Einloggen',
+            'auth.createOne': 'Eines erstellen',
             'auth.username': 'Benutzername',
             'auth.email': 'E-Mail',
             'auth.password': 'Passwort',
@@ -457,6 +683,30 @@
             'auth.createAccount': 'Konto erstellen',
             'auth.haveAccount': 'Haben Sie bereits ein Konto?',
             'auth.noAccount': 'Kein Konto?',
+
+            // Messenger
+            'messenger.title': 'MESSENGER',
+            'messenger.find': 'BENUTZER FINDEN',
+            'messenger.invite': 'FREUNDE EINLADEN',
+            'messenger.createGroup': 'GRUPPE ERSTELLEN',
+            'messenger.searchConversations': 'Unterhaltungen durchsuchen...',
+            'messenger.typeMessage': 'Nachricht eingeben...',
+
+            // Chat
+            'chat.history': 'CHAT-VERLAUF',
+            'chat.newChat': 'NEUER CHAT',
+            'chat.welcome': 'Willkommen bei Kintsugi AI',
+            'chat.welcomeDesc': 'Starten Sie ein Gespräch mit unserem KI-Assistenten',
+            'chat.typeMessage': 'Geben Sie Ihre Nachricht ein...',
+
+            // Profil
+            'profile.usageStats': 'NUTZUNGSSTATISTIKEN',
+            'profile.accountInfo': 'KONTOINFORMATIONEN',
+            'profile.security': 'SICHERHEIT',
+
+            // Übersetzung
+            'translation.title': 'ÜBERSETZUNG',
+            'translation.description': 'Professioneller Übersetzungsservice',
 
             // Nachrichten
             'msg.typeMessage': 'Nachricht eingeben...',
