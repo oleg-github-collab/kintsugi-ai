@@ -189,7 +189,6 @@ func migrateDatabase(db *gorm.DB) error {
 	models := []interface{}{
 		// Auth
 		&auth.User{},
-		&auth.RefreshToken{},
 		// Chat
 		&chat.Chat{},
 		&chat.Message{},
@@ -221,6 +220,9 @@ func migrateDatabase(db *gorm.DB) error {
 		if _, ok := model.(*auth.User); ok {
 			log.Println("Adding preferences column to users table...")
 			db.Exec("ALTER TABLE users ADD COLUMN IF NOT EXISTS preferences JSONB DEFAULT '{}'::jsonb")
+			if err := ensureRefreshTokensTable(db); err != nil {
+				return err
+			}
 		}
 	}
 
@@ -236,6 +238,31 @@ func migrateDatabase(db *gorm.DB) error {
 	db.Exec("CREATE INDEX IF NOT EXISTS idx_invite_codes_expires_at ON invite_codes(expires_at)")
 
 	log.Println("Database migrations completed")
+	return nil
+}
+
+func ensureRefreshTokensTable(db *gorm.DB) error {
+	createTableSQL := `
+		CREATE TABLE IF NOT EXISTS refresh_tokens (
+			id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+			user_id uuid NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+			token varchar(500) NOT NULL UNIQUE,
+			expires_at timestamptz NOT NULL,
+			created_at timestamptz DEFAULT CURRENT_TIMESTAMP
+		)
+	`
+
+	if err := db.Exec(createTableSQL).Error; err != nil {
+		log.Printf("Failed to create refresh_tokens table: %v", err)
+		return fmt.Errorf("failed to create refresh_tokens table: %w", err)
+	}
+
+	if err := db.Exec("CREATE INDEX IF NOT EXISTS idx_refresh_tokens_user_id ON refresh_tokens(user_id)").Error; err != nil {
+		log.Printf("Failed to create refresh_tokens index: %v", err)
+		return fmt.Errorf("failed to create refresh_tokens index: %w", err)
+	}
+
+	log.Println("Refresh tokens table ensured via manual SQL")
 	return nil
 }
 
