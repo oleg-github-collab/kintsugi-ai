@@ -191,7 +191,6 @@ func migrateDatabase(db *gorm.DB) error {
 		&auth.User{},
 		// Chat
 		&chat.Chat{},
-		&chat.Message{},
 		// Messenger
 		&messenger.Conversation{},
 		&messenger.Participant{},
@@ -217,10 +216,15 @@ func migrateDatabase(db *gorm.DB) error {
 		log.Printf("Successfully migrated %T\n", model)
 
 		// Add preferences column manually after User migration
-		if _, ok := model.(*auth.User); ok {
+		switch model.(type) {
+		case *auth.User:
 			log.Println("Adding preferences column to users table...")
 			db.Exec("ALTER TABLE users ADD COLUMN IF NOT EXISTS preferences JSONB DEFAULT '{}'::jsonb")
 			if err := ensureRefreshTokensTable(db); err != nil {
+				return err
+			}
+		case *chat.Chat:
+			if err := ensureChatMessagesTable(db); err != nil {
 				return err
 			}
 		}
@@ -263,6 +267,39 @@ func ensureRefreshTokensTable(db *gorm.DB) error {
 	}
 
 	log.Println("Refresh tokens table ensured via manual SQL")
+	return nil
+}
+
+func ensureChatMessagesTable(db *gorm.DB) error {
+	createTableSQL := `
+		CREATE TABLE IF NOT EXISTS messages (
+			id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+			chat_id uuid NOT NULL REFERENCES chats(id) ON DELETE CASCADE,
+			role varchar(20) NOT NULL,
+			content text NOT NULL,
+			tokens integer DEFAULT 0,
+			model varchar(50),
+			created_at timestamptz DEFAULT CURRENT_TIMESTAMP,
+			deleted_at timestamptz
+		)
+	`
+
+	if err := db.Exec(createTableSQL).Error; err != nil {
+		log.Printf("Failed to create messages table: %v", err)
+		return fmt.Errorf("failed to create messages table: %w", err)
+	}
+
+	if err := db.Exec("CREATE INDEX IF NOT EXISTS idx_messages_chat_id ON messages(chat_id)").Error; err != nil {
+		log.Printf("Failed to create messages chat index: %v", err)
+		return fmt.Errorf("failed to create messages chat index: %w", err)
+	}
+
+	if err := db.Exec("CREATE INDEX IF NOT EXISTS idx_messages_deleted_at ON messages(deleted_at)").Error; err != nil {
+		log.Printf("Failed to create messages deleted index: %v", err)
+		return fmt.Errorf("failed to create messages deleted index: %w", err)
+	}
+
+	log.Println("Chat messages table ensured via manual SQL")
 	return nil
 }
 
