@@ -65,7 +65,33 @@ func main() {
 	chatRepo := chat.NewRepository(db)
 	chatService := chat.NewService(chatRepo, db)
 	chatHandler := chat.NewHandler(chatService)
-	chat.RegisterRoutes(app, chatHandler, authMiddleware.Protected())
+
+	// Folders service and handler
+	foldersService := chat.NewFoldersService(db)
+	foldersHandler := chat.NewFoldersHandler(foldersService)
+
+	// Code execution service and handler
+	codeExecService, err := chat.NewCodeExecutionService(db)
+	if err != nil {
+		log.Printf("Warning: Failed to initialize code execution service: %v", err)
+		// Continue without code execution service
+		codeExecService = nil
+	}
+	var codeExecHandler *chat.CodeExecutionHandler
+	if codeExecService != nil {
+		codeExecHandler = chat.NewCodeExecutionHandler(codeExecService)
+	}
+
+	// Analytics service and handler
+	analyticsService := chat.NewAnalyticsService(db)
+	analyticsHandler := chat.NewAnalyticsHandler(analyticsService)
+
+	// Admin service and handler
+	adminService := chat.NewAdminService(db)
+	adminHandler := chat.NewAdminHandler(adminService, db)
+
+	// Register all chat routes (including folders, code execution, analytics, admin)
+	chat.RegisterRoutes(app, chatHandler, authMiddleware.Protected(), foldersHandler, codeExecHandler, analyticsHandler, adminHandler)
 
 	// Messenger module with WebSocket Hub
 	messengerHub := messenger.NewHub()
@@ -246,7 +272,192 @@ func migrateDatabase(db *gorm.DB) error {
 	db.Exec("CREATE INDEX IF NOT EXISTS idx_invite_codes_code ON invite_codes(code)")
 	db.Exec("CREATE INDEX IF NOT EXISTS idx_invite_codes_expires_at ON invite_codes(expires_at)")
 
+	if err := ensureAdvancedFeaturesTable(db); err != nil {
+		return fmt.Errorf("failed to ensure advanced features tables: %w", err)
+	}
+
 	log.Println("Database migrations completed")
+	return nil
+}
+
+func ensureAdvancedFeaturesTable(db *gorm.DB) error {
+	// Chat Folders
+	chatFoldersSQL := `
+	CREATE TABLE IF NOT EXISTS chat_folders (
+		id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+		user_id uuid NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+		name varchar(255) NOT NULL,
+		color varchar(20),
+		icon varchar(50),
+		position integer DEFAULT 0,
+		is_smart_folder boolean DEFAULT false,
+		smart_rules jsonb,
+		created_at timestamptz DEFAULT CURRENT_TIMESTAMP,
+		updated_at timestamptz DEFAULT CURRENT_TIMESTAMP,
+		deleted_at timestamptz
+	)`
+
+	if err := db.Exec(chatFoldersSQL).Error; err != nil {
+		log.Printf("Failed to create chat_folders table: %v", err)
+		return fmt.Errorf("failed to create chat_folders table: %w", err)
+	}
+
+	// Chat Tags
+	chatTagsSQL := `
+	CREATE TABLE IF NOT EXISTS chat_tags (
+		id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+		user_id uuid NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+		name varchar(100) NOT NULL,
+		color varchar(20),
+		created_at timestamptz DEFAULT CURRENT_TIMESTAMP,
+		deleted_at timestamptz
+	)`
+
+	if err := db.Exec(chatTagsSQL).Error; err != nil {
+		log.Printf("Failed to create chat_tags table: %v", err)
+		return fmt.Errorf("failed to create chat_tags table: %w", err)
+	}
+
+	// Chat Folder Assignments
+	chatFolderAssignmentsSQL := `
+	CREATE TABLE IF NOT EXISTS chat_folder_assignments (
+		id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+		chat_id uuid NOT NULL REFERENCES chats(id) ON DELETE CASCADE,
+		folder_id uuid NOT NULL REFERENCES chat_folders(id) ON DELETE CASCADE,
+		created_at timestamptz DEFAULT CURRENT_TIMESTAMP,
+		UNIQUE(chat_id, folder_id)
+	)`
+
+	if err := db.Exec(chatFolderAssignmentsSQL).Error; err != nil {
+		log.Printf("Failed to create chat_folder_assignments table: %v", err)
+		return fmt.Errorf("failed to create chat_folder_assignments table: %w", err)
+	}
+
+	// Chat Tag Assignments
+	chatTagAssignmentsSQL := `
+	CREATE TABLE IF NOT EXISTS chat_tag_assignments (
+		id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+		chat_id uuid NOT NULL REFERENCES chats(id) ON DELETE CASCADE,
+		tag_id uuid NOT NULL REFERENCES chat_tags(id) ON DELETE CASCADE,
+		created_at timestamptz DEFAULT CURRENT_TIMESTAMP,
+		UNIQUE(chat_id, tag_id)
+	)`
+
+	if err := db.Exec(chatTagAssignmentsSQL).Error; err != nil {
+		log.Printf("Failed to create chat_tag_assignments table: %v", err)
+		return fmt.Errorf("failed to create chat_tag_assignments table: %w", err)
+	}
+
+	// Code Executions
+	codeExecutionsSQL := `
+	CREATE TABLE IF NOT EXISTS code_executions (
+		id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+		user_id uuid NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+		chat_id uuid REFERENCES chats(id) ON DELETE SET NULL,
+		language varchar(50) NOT NULL,
+		code text NOT NULL,
+		output text,
+		error text,
+		status varchar(20) NOT NULL,
+		executed_at timestamptz DEFAULT CURRENT_TIMESTAMP,
+		created_at timestamptz DEFAULT CURRENT_TIMESTAMP
+	)`
+
+	if err := db.Exec(codeExecutionsSQL).Error; err != nil {
+		log.Printf("Failed to create code_executions table: %v", err)
+		return fmt.Errorf("failed to create code_executions table: %w", err)
+	}
+
+	// Voice Messages
+	voiceMessagesSQL := `
+	CREATE TABLE IF NOT EXISTS voice_messages (
+		id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+		user_id uuid NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+		message_id uuid REFERENCES conversation_messages(id) ON DELETE CASCADE,
+		file_url text NOT NULL,
+		duration integer,
+		waveform_data jsonb,
+		transcription text,
+		created_at timestamptz DEFAULT CURRENT_TIMESTAMP
+	)`
+
+	if err := db.Exec(voiceMessagesSQL).Error; err != nil {
+		log.Printf("Failed to create voice_messages table: %v", err)
+		return fmt.Errorf("failed to create voice_messages table: %w", err)
+	}
+
+	// File Attachments
+	fileAttachmentsSQL := `
+	CREATE TABLE IF NOT EXISTS file_attachments (
+		id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+		user_id uuid NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+		message_id uuid REFERENCES conversation_messages(id) ON DELETE CASCADE,
+		file_name varchar(255) NOT NULL,
+		file_type varchar(100),
+		file_size bigint,
+		file_url text NOT NULL,
+		thumbnail_url text,
+		created_at timestamptz DEFAULT CURRENT_TIMESTAMP
+	)`
+
+	if err := db.Exec(fileAttachmentsSQL).Error; err != nil {
+		log.Printf("Failed to create file_attachments table: %v", err)
+		return fmt.Errorf("failed to create file_attachments table: %w", err)
+	}
+
+	// Usage Analytics
+	usageAnalyticsSQL := `
+	CREATE TABLE IF NOT EXISTS usage_analytics (
+		id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+		user_id uuid NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+		date date NOT NULL,
+		chat_tokens bigint DEFAULT 0,
+		translation_chars bigint DEFAULT 0,
+		images_generated integer DEFAULT 0,
+		voice_messages integer DEFAULT 0,
+		messages_count integer DEFAULT 0,
+		time_spent_minutes integer DEFAULT 0,
+		created_at timestamptz DEFAULT CURRENT_TIMESTAMP,
+		updated_at timestamptz DEFAULT CURRENT_TIMESTAMP,
+		UNIQUE(user_id, date)
+	)`
+
+	if err := db.Exec(usageAnalyticsSQL).Error; err != nil {
+		log.Printf("Failed to create usage_analytics table: %v", err)
+		return fmt.Errorf("failed to create usage_analytics table: %w", err)
+	}
+
+	// Create indexes for all foreign keys and frequently queried columns
+	indexes := []string{
+		"CREATE INDEX IF NOT EXISTS idx_chat_folders_user_id ON chat_folders(user_id)",
+		"CREATE INDEX IF NOT EXISTS idx_chat_folders_deleted_at ON chat_folders(deleted_at)",
+		"CREATE INDEX IF NOT EXISTS idx_chat_folders_position ON chat_folders(position)",
+		"CREATE INDEX IF NOT EXISTS idx_chat_tags_user_id ON chat_tags(user_id)",
+		"CREATE INDEX IF NOT EXISTS idx_chat_tags_deleted_at ON chat_tags(deleted_at)",
+		"CREATE INDEX IF NOT EXISTS idx_chat_folder_assignments_chat_id ON chat_folder_assignments(chat_id)",
+		"CREATE INDEX IF NOT EXISTS idx_chat_folder_assignments_folder_id ON chat_folder_assignments(folder_id)",
+		"CREATE INDEX IF NOT EXISTS idx_chat_tag_assignments_chat_id ON chat_tag_assignments(chat_id)",
+		"CREATE INDEX IF NOT EXISTS idx_chat_tag_assignments_tag_id ON chat_tag_assignments(tag_id)",
+		"CREATE INDEX IF NOT EXISTS idx_code_executions_user_id ON code_executions(user_id)",
+		"CREATE INDEX IF NOT EXISTS idx_code_executions_chat_id ON code_executions(chat_id)",
+		"CREATE INDEX IF NOT EXISTS idx_code_executions_status ON code_executions(status)",
+		"CREATE INDEX IF NOT EXISTS idx_voice_messages_user_id ON voice_messages(user_id)",
+		"CREATE INDEX IF NOT EXISTS idx_voice_messages_message_id ON voice_messages(message_id)",
+		"CREATE INDEX IF NOT EXISTS idx_file_attachments_user_id ON file_attachments(user_id)",
+		"CREATE INDEX IF NOT EXISTS idx_file_attachments_message_id ON file_attachments(message_id)",
+		"CREATE INDEX IF NOT EXISTS idx_usage_analytics_user_id ON usage_analytics(user_id)",
+		"CREATE INDEX IF NOT EXISTS idx_usage_analytics_date ON usage_analytics(date)",
+		"CREATE INDEX IF NOT EXISTS idx_usage_analytics_user_date ON usage_analytics(user_id, date)",
+	}
+
+	for _, indexSQL := range indexes {
+		if err := db.Exec(indexSQL).Error; err != nil {
+			log.Printf("Failed to create index: %v", err)
+			return fmt.Errorf("failed to create index: %w", err)
+		}
+	}
+
+	log.Println("Advanced features tables ensured via manual SQL")
 	return nil
 }
 
