@@ -216,6 +216,12 @@ func migrateDatabase(db *gorm.DB) error {
 			return fmt.Errorf("failed to migrate %T: %w", model, err)
 		}
 		log.Printf("Successfully migrated %T\n", model)
+
+		// Add preferences column manually after User migration
+		if _, ok := model.(*auth.User); ok {
+			log.Println("Adding preferences column to users table...")
+			db.Exec("ALTER TABLE users ADD COLUMN IF NOT EXISTS preferences JSONB DEFAULT '{}'::jsonb")
+		}
 	}
 
 	// Create indexes
