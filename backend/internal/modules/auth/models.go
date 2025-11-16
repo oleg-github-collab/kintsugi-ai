@@ -2,7 +2,6 @@ package auth
 
 import (
 	"database/sql/driver"
-	"encoding/json"
 	"errors"
 	"time"
 
