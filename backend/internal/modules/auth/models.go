@@ -1,11 +1,44 @@
 package auth
 
 import (
+	"database/sql/driver"
+	"encoding/json"
+	"errors"
 	"time"
 
 	"github.com/google/uuid"
 	"gorm.io/gorm"
 )
+
+// JSONB is a custom type for PostgreSQL JSONB fields
+type JSONB []byte
+
+// Value implements the driver.Valuer interface
+func (j JSONB) Value() (driver.Value, error) {
+	if j == nil || len(j) == 0 {
+		return []byte("{}"), nil
+	}
+	return []byte(j), nil
+}
+
+// Scan implements the sql.Scanner interface
+func (j *JSONB) Scan(value interface{}) error {
+	if value == nil {
+		*j = []byte("{}")
+		return nil
+	}
+
+	switch v := value.(type) {
+	case []byte:
+		*j = v
+		return nil
+	case string:
+		*j = []byte(v)
+		return nil
+	default:
+		return errors.New("incompatible type for JSONB")
+	}
+}
 
 type User struct {
 	ID               uuid.UUID      `gorm:"type:uuid;primary_key;default:gen_random_uuid()" json:"id"`
@@ -19,7 +52,7 @@ type User struct {
 	TokensLimit      int64          `gorm:"default:100000" json:"tokens_limit"`
 	ResetAt          time.Time      `gorm:"default:CURRENT_TIMESTAMP" json:"reset_at"`
 	StripeCustomerID string    `gorm:"type:varchar(255)" json:"stripe_customer_id,omitempty"`
-	Preferences      []byte    `gorm:"type:jsonb" json:"preferences"`
+	Preferences      JSONB     `gorm:"type:jsonb" json:"preferences"`
 	CreatedAt        time.Time `gorm:"default:CURRENT_TIMESTAMP" json:"created_at"`
 	UpdatedAt        time.Time      `gorm:"default:CURRENT_TIMESTAMP" json:"updated_at"`
 	DeletedAt        gorm.DeletedAt `gorm:"index" json:"-"`
@@ -72,7 +105,7 @@ type UserDTO struct {
 // BeforeCreate hook to initialize Preferences with empty JSON
 func (u *User) BeforeCreate(tx *gorm.DB) error {
 	if u.Preferences == nil || len(u.Preferences) == 0 {
-		u.Preferences = []byte("{}")
+		u.Preferences = JSONB("{}")
 	}
 	return nil
 }

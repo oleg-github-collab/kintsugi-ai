@@ -101,7 +101,7 @@ func (s *Service) UpdatePreferences(userID uuid.UUID, preferences map[string]int
 		return errors.New("failed to marshal preferences")
 	}
 
-	user.Preferences = preferencesJSON
+	user.Preferences = JSONB(preferencesJSON)
 
 	if err := s.repo.UpdateUser(user); err != nil {
 		return err
