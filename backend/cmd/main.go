@@ -224,13 +224,26 @@ func migrateDatabase(db *gorm.DB) error {
 	}
 	log.Println("Users table created successfully")
 
-	// Migrate Chat model with AutoMigrate (it's simpler)
-	log.Println("Migrating chats table...")
-	if err := db.AutoMigrate(&chat.Chat{}); err != nil {
-		log.Printf("Failed to migrate chats: %v\n", err)
-		return fmt.Errorf("failed to migrate chats: %w", err)
+	// Manual SQL migration for chats table
+	log.Println("Creating chats table...")
+	createChatsSQL := `
+	CREATE TABLE IF NOT EXISTS chats (
+		id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+		user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+		title VARCHAR(255) DEFAULT 'New Chat',
+		model VARCHAR(50) DEFAULT 'gpt-4o',
+		created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
+		updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
+		deleted_at TIMESTAMPTZ
+	);
+	CREATE INDEX IF NOT EXISTS idx_chats_user_id ON chats(user_id);
+	CREATE INDEX IF NOT EXISTS idx_chats_deleted_at ON chats(deleted_at);
+	`
+	if err := db.Exec(createChatsSQL).Error; err != nil {
+		log.Printf("Failed to create chats table: %v\n", err)
+		return fmt.Errorf("failed to create chats table: %w", err)
 	}
-	log.Println("Chats table migrated successfully")
+	log.Println("Chats table created successfully")
 
 	if err := ensureRefreshTokensTable(db); err != nil {
 		return fmt.Errorf("failed to ensure refresh_tokens table: %w", err)
