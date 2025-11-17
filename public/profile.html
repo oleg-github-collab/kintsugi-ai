@@ -112,6 +112,52 @@
                     <button onclick="updateProfile()" class="btn btn-primary interactive" style="margin-top: 1.5rem; padding: 1rem 2rem;" data-i18n="common.saveChanges">💾 SAVE CHANGES</button>
                 </div>
 
+                <!-- Appearance Settings -->
+                <div class="border-3 border-purple scanlines" style="padding: 2rem; margin-bottom: 2rem; background: rgba(128,0,255,0.05);">
+                    <h2 class="text-purple text-neon" style="font-size: 2rem; margin-bottom: 1.5rem;">[ APPEARANCE ]</h2>
+
+                    <div style="margin-bottom: 1.5rem;">
+                        <label class="text-purple" style="display: block; margin-bottom: 1rem; font-weight: bold; font-size: 1.2rem;">🎨 THEME</label>
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem;">
+                            <!-- Cyberpunk Theme -->
+                            <div id="theme-cyberpunk-card" class="theme-card border-3 border-cyan interactive" style="padding: 1.5rem; background: rgba(0,255,255,0.05); cursor: pointer; transition: all 0.3s ease;" onclick="switchTheme('cyberpunk')">
+                                <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
+                                    <div style="font-size: 2.5rem;">⚡</div>
+                                    <div>
+                                        <h3 class="text-cyan" style="font-size: 1.5rem; margin-bottom: 0.3rem;">CYBERPUNK</h3>
+                                        <p style="color: #aaa; font-size: 0.9rem;">Neon, Dark, Futuristic</p>
+                                    </div>
+                                </div>
+                                <div style="display: flex; gap: 0.5rem; margin-bottom: 1rem;">
+                                    <div style="width: 30px; height: 30px; background: #0ff; border-radius: 4px; box-shadow: 0 0 10px #0ff;"></div>
+                                    <div style="width: 30px; height: 30px; background: #f0f; border-radius: 4px; box-shadow: 0 0 10px #f0f;"></div>
+                                    <div style="width: 30px; height: 30px; background: #ff0; border-radius: 4px; box-shadow: 0 0 10px #ff0;"></div>
+                                    <div style="width: 30px; height: 30px; background: #0f0; border-radius: 4px; box-shadow: 0 0 10px #0f0;"></div>
+                                </div>
+                                <div id="theme-cyberpunk-badge" class="text-cyan" style="font-weight: bold; display: none;">✓ ACTIVE</div>
+                            </div>
+
+                            <!-- Clean Theme -->
+                            <div id="theme-clean-card" class="theme-card border-3 border-gold interactive" style="padding: 1.5rem; background: rgba(240,255,0,0.05); cursor: pointer; transition: all 0.3s ease;" onclick="switchTheme('clean')">
+                                <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
+                                    <div style="font-size: 2.5rem;">☀️</div>
+                                    <div>
+                                        <h3 class="text-gold" style="font-size: 1.5rem; margin-bottom: 0.3rem;">CLEAN</h3>
+                                        <p style="color: #aaa; font-size: 0.9rem;">Light, Professional, Minimal</p>
+                                    </div>
+                                </div>
+                                <div style="display: flex; gap: 0.5rem; margin-bottom: 1rem;">
+                                    <div style="width: 30px; height: 30px; background: #FFFFFF; border: 2px solid #333; border-radius: 4px;"></div>
+                                    <div style="width: 30px; height: 30px; background: #6B7A4F; border-radius: 4px;"></div>
+                                    <div style="width: 30px; height: 30px; background: #C9A961; border-radius: 4px;"></div>
+                                    <div style="width: 30px; height: 30px; background: #5F8E76; border-radius: 4px;"></div>
+                                </div>
+                                <div id="theme-clean-badge" class="text-gold" style="font-weight: bold; display: none;">✓ ACTIVE</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Security -->
                 <div class="border-3 border-pink scanlines" style="padding: 2rem; margin-bottom: 2rem; background: rgba(255,0,255,0.05);">
                     <h2 class="text-pink text-neon" style="font-size: 2rem; margin-bottom: 1.5rem;" data-i18n="profile.security">[ SECURITY ]</h2>
@@ -350,7 +396,95 @@
             alert('Stripe integration coming soon! Contact support to upgrade.');
         };
 
+        // Theme Switcher Function
+        window.switchTheme = function(theme) {
+            // Save to localStorage
+            localStorage.setItem('kintsugi-theme', theme);
+
+            // Apply theme
+            if (theme === 'clean') {
+                document.documentElement.setAttribute('data-theme', 'clean');
+                document.body.classList.remove('crt-effect');
+
+                // Hide matrix canvas
+                const matrixCanvas = document.getElementById('matrix-canvas');
+                if (matrixCanvas) matrixCanvas.style.display = 'none';
+
+                // Hide cursor effects
+                document.querySelectorAll('.cursor-invert, .cursor-cross').forEach(el => el.style.display = 'none');
+
+                // Update badges
+                document.getElementById('theme-cyberpunk-badge').style.display = 'none';
+                document.getElementById('theme-clean-badge').style.display = 'block';
+
+                // Update card highlighting
+                document.getElementById('theme-cyberpunk-card').style.transform = 'scale(1)';
+                document.getElementById('theme-cyberpunk-card').style.boxShadow = '';
+                document.getElementById('theme-clean-card').style.transform = 'scale(1.05)';
+                document.getElementById('theme-clean-card').style.boxShadow = '0 8px 24px rgba(201, 169, 97, 0.4)';
+            } else {
+                document.documentElement.removeAttribute('data-theme');
+                document.body.classList.add('crt-effect');
+
+                // Show matrix canvas
+                const matrixCanvas = document.getElementById('matrix-canvas');
+                if (matrixCanvas) matrixCanvas.style.display = 'block';
+
+                // Show cursor effects
+                document.querySelectorAll('.cursor-invert, .cursor-cross').forEach(el => el.style.display = 'block');
+
+                // Update badges
+                document.getElementById('theme-cyberpunk-badge').style.display = 'block';
+                document.getElementById('theme-clean-badge').style.display = 'none';
+
+                // Update card highlighting
+                document.getElementById('theme-cyberpunk-card').style.transform = 'scale(1.05)';
+                document.getElementById('theme-cyberpunk-card').style.boxShadow = '0 8px 24px rgba(0, 255, 255, 0.4)';
+                document.getElementById('theme-clean-card').style.transform = 'scale(1)';
+                document.getElementById('theme-clean-card').style.boxShadow = '';
+            }
+
+            // Show success notification
+            const notification = document.createElement('div');
+            notification.className = 'theme-notification';
+            notification.textContent = `✓ ${theme === 'clean' ? 'Clean' : 'Cyberpunk'} theme activated!`;
+            notification.style.cssText = `
+                position: fixed;
+                top: 100px;
+                right: 20px;
+                padding: 1rem 1.5rem;
+                background: ${theme === 'clean' ? '#FFFFFF' : 'rgba(10, 10, 10, 0.95)'};
+                border: 2px solid ${theme === 'clean' ? '#6B7A4F' : '#0ff'};
+                border-radius: 12px;
+                color: ${theme === 'clean' ? '#1A1918' : '#0ff'};
+                font-weight: bold;
+                z-index: 10000;
+                animation: slideIn 0.3s ease-out;
+            `;
+            document.body.appendChild(notification);
+
+            setTimeout(() => {
+                notification.style.animation = 'slideOut 0.3s ease-out';
+                setTimeout(() => notification.remove(), 300);
+            }, 2000);
+        };
+
+        // Initialize theme on page load
+        function initTheme() {
+            const savedTheme = localStorage.getItem('kintsugi-theme') || 'cyberpunk';
+            if (savedTheme === 'clean') {
+                document.getElementById('theme-clean-badge').style.display = 'block';
+                document.getElementById('theme-clean-card').style.transform = 'scale(1.05)';
+                document.getElementById('theme-clean-card').style.boxShadow = '0 8px 24px rgba(201, 169, 97, 0.4)';
+            } else {
+                document.getElementById('theme-cyberpunk-badge').style.display = 'block';
+                document.getElementById('theme-cyberpunk-card').style.transform = 'scale(1.05)';
+                document.getElementById('theme-cyberpunk-card').style.boxShadow = '0 8px 24px rgba(0, 255, 255, 0.4)';
+            }
+        }
+
         loadProfile();
+        initTheme();
     </script>
     <script src="/js/theme-manager.js"></script>
     <script src="/js/cookie-consent.js"></script>
