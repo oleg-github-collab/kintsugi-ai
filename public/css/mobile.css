@@ -79,6 +79,26 @@ html.mobile-nav-open {
 
 .mobile-menu-toggle {
     display: none;
+    background: transparent;
+    border: 2px solid var(--cyber-cyan);
+    color: var(--cyber-cyan);
+    font-size: 1.5rem;
+    padding: 0.5rem 0.75rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    line-height: 1;
+}
+
+.mobile-menu-toggle:hover {
+    background: rgba(0, 255, 255, 0.1);
+    box-shadow: 0 0 15px rgba(0, 255, 255, 0.3);
+}
+
+@media (max-width: 768px) {
+    .mobile-menu-toggle {
+        display: block;
+    }
 }
 
 .hero-cta-group {
@@ -109,26 +129,35 @@ html.mobile-nav-open {
 .mobile-nav-overlay {
     position: fixed;
     inset: 0;
-    background: rgba(0, 0, 0, 0.95);
-    display: none;
-    align-items: flex-start;
-    justify-content: flex-end;
+    background: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(10px);
+    opacity: 0;
+    visibility: hidden;
     z-index: 1200;
-    padding: 1rem;
-    transition: opacity 0.3s ease;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
 }
 
 .mobile-nav-overlay.open {
-    display: flex;
+    opacity: 1;
+    visibility: visible;
 }
 
 .mobile-nav-panel {
-    width: min(320px, 100%);
-    background: rgba(5, 5, 5, 0.95);
-    border-radius: 24px;
-    border: 2px solid rgba(0, 255, 255, 0.4);
-    padding: 1rem;
-    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8);
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: min(300px, 80%);
+    background: rgba(10, 10, 10, 0.98);
+    border-left: 3px solid var(--cyber-cyan);
+    padding: 1.5rem 1rem;
+    box-shadow: -10px 0 50px rgba(0, 0, 0, 0.9);
+    transform: translateX(100%);
+    transition: transform 0.3s ease;
+}
+
+.mobile-nav-overlay.open .mobile-nav-panel {
+    transform: translateX(0);
 }
 
 .mobile-nav-panel-header {
@@ -185,25 +214,32 @@ html.mobile-nav-open {
         left: 0;
         right: 0;
         z-index: 100;
+        background: rgba(10, 10, 10, 0.95);
+        backdrop-filter: blur(10px);
+        border-bottom: 2px solid rgba(0, 255, 255, 0.3);
     }
 
     .nav-container {
-        flex-direction: column;
-        gap: 1rem;
-        padding: 1rem;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0.75rem 1rem;
     }
 
     .nav-links {
-        flex-direction: column;
-        gap: 0.5rem;
-        width: 100%;
+        display: none !important;
     }
 
-    .nav-links a {
-        width: 100%;
-        text-align: center;
-        padding: 0.75rem;
-        border: 2px solid var(--cyber-cyan);
+    #language-switcher-container {
+        margin-left: 0 !important;
+    }
+
+    .mobile-shell {
+        padding-top: 70px;
+    }
+
+    .site-marquee {
+        margin-top: 60px;
     }
 
     /* Hero Section */

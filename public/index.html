@@ -30,6 +30,9 @@
     <nav class="scanlines">
         <div class="nav-container">
             <a href="/" class="nav-logo text-rainbow">⟡ KINTSUGI AI ⟡</a>
+            <button class="mobile-menu-toggle" onclick="toggleMobileMenu()" aria-label="Menu">
+                ☰
+            </button>
             <div class="nav-links">
                 <a href="/" class="nav-link" data-i18n="nav.home">HOME</a>
                 <a href="/login.html" class="btn btn-secondary" style="margin: 0; padding: 0.5rem 1rem;" data-i18n="nav.login">LOG_IN</a>
@@ -38,6 +41,21 @@
             <div id="language-switcher-container" style="margin-left: auto;"></div>
         </div>
     </nav>
+
+    <!-- Mobile Menu Overlay -->
+    <div class="mobile-nav-overlay" id="mobile-menu" onclick="closeMobileMenuOnOverlay(event)">
+        <div class="mobile-nav-panel">
+            <div class="mobile-nav-panel-header">
+                <span>MENU</span>
+                <button class="mobile-nav-close" onclick="toggleMobileMenu()">&times;</button>
+            </div>
+            <div class="mobile-nav-panel-links">
+                <a href="/" data-i18n="nav.home">HOME</a>
+                <a href="/login.html" data-i18n="nav.login">LOGIN</a>
+                <a href="/register.html" data-i18n="nav.signup">SIGN UP</a>
+            </div>
+        </div>
+    </div>
 
     <div class="site-marquee">
         <div class="marquee-track">
@@ -407,6 +425,26 @@
                 });
             }
         });
+
+        // Mobile menu functions
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobile-menu');
+            const html = document.documentElement;
+
+            if (menu.classList.contains('open')) {
+                menu.classList.remove('open');
+                html.classList.remove('mobile-nav-open');
+            } else {
+                menu.classList.add('open');
+                html.classList.add('mobile-nav-open');
+            }
+        }
+
+        function closeMobileMenuOnOverlay(event) {
+            if (event.target.id === 'mobile-menu') {
+                toggleMobileMenu();
+            }
+        }
     </script>
 </body>
 </html>

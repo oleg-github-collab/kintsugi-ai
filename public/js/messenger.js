@@ -1205,6 +1205,7 @@ window.startConversation = async function(userId, userName = 'New Contact') {
 
             // Reload conversations to get fresh data from server
             await loadConversations();
+            addDirectConversationPreview(conversation.id, userName);
 
             // Select the newly created conversation after a small delay
             if (conversationId) {
