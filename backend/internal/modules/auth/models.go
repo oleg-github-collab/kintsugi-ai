@@ -51,9 +51,9 @@ type User struct {
 	TokensUsed       int64          `gorm:"default:0" json:"tokens_used"`
 	TokensLimit      int64          `gorm:"default:20000" json:"tokens_limit"`
 	ResetAt          time.Time      `gorm:"default:CURRENT_TIMESTAMP" json:"reset_at"`
-	StripeCustomerID string    `gorm:"type:varchar(255)" json:"stripe_customer_id,omitempty"`
-	Preferences      JSONB     `gorm:"-:migration" json:"preferences"`
-	CreatedAt        time.Time `gorm:"default:CURRENT_TIMESTAMP" json:"created_at"`
+	StripeCustomerID string         `gorm:"type:varchar(255)" json:"stripe_customer_id,omitempty"`
+	Preferences      JSONB          `gorm:"type:jsonb;default:'{}'" json:"preferences"`
+	CreatedAt        time.Time      `gorm:"default:CURRENT_TIMESTAMP" json:"created_at"`
 	UpdatedAt        time.Time      `gorm:"default:CURRENT_TIMESTAMP" json:"updated_at"`
 	DeletedAt        gorm.DeletedAt `gorm:"index" json:"-"`
 }
