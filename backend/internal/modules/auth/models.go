@@ -1,43 +1,11 @@
 package auth
 
 import (
-	"database/sql/driver"
-	"errors"
 	"time"
 
 	"github.com/google/uuid"
 	"gorm.io/gorm"
 )
-
-// JSONB is a custom type for PostgreSQL JSONB fields
-type JSONB []byte
-
-// Value implements the driver.Valuer interface
-func (j JSONB) Value() (driver.Value, error) {
-	if j == nil || len(j) == 0 {
-		return []byte("{}"), nil
-	}
-	return []byte(j), nil
-}
-
-// Scan implements the sql.Scanner interface
-func (j *JSONB) Scan(value interface{}) error {
-	if value == nil {
-		*j = []byte("{}")
-		return nil
-	}
-
-	switch v := value.(type) {
-	case []byte:
-		*j = v
-		return nil
-	case string:
-		*j = []byte(v)
-		return nil
-	default:
-		return errors.New("incompatible type for JSONB")
-	}
-}
 
 type User struct {
 	ID               uuid.UUID      `gorm:"type:uuid;primary_key;default:gen_random_uuid()" json:"id"`
