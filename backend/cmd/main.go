@@ -195,24 +195,42 @@ func migrateDatabase(db *gorm.DB) error {
 	// Tables should persist between restarts. Only drop manually when needed.
 	// If you need to reset the database, run: docker-compose down -v
 
-	// Migrate models one by one for better error handling
-	models := []interface{}{
-		&auth.User{},
-		&chat.Chat{},
+	// Manual SQL migration for users table (more reliable than AutoMigrate with custom types)
+	log.Println("Creating users table...")
+	createUsersSQL := `
+	CREATE TABLE IF NOT EXISTS users (
+		id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+		username VARCHAR(50) UNIQUE NOT NULL,
+		email VARCHAR(255) UNIQUE NOT NULL,
+		password_hash VARCHAR(255) NOT NULL,
+		bio TEXT,
+		avatar_url VARCHAR(500),
+		subscription_tier VARCHAR(20) DEFAULT 'basic',
+		role VARCHAR(20) DEFAULT 'user',
+		tokens_used BIGINT DEFAULT 0,
+		tokens_limit BIGINT DEFAULT 20000,
+		reset_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
+		stripe_customer_id VARCHAR(255),
+		preferences TEXT DEFAULT '{}',
+		created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
+		updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
+		deleted_at TIMESTAMPTZ
+	);
+	CREATE INDEX IF NOT EXISTS idx_users_deleted_at ON users(deleted_at);
+	`
+	if err := db.Exec(createUsersSQL).Error; err != nil {
+		log.Printf("Failed to create users table: %v\n", err)
+		return fmt.Errorf("failed to create users table: %w", err)
 	}
+	log.Println("Users table created successfully")
 
-	for _, model := range models {
-		if err := db.AutoMigrate(model); err != nil {
-			log.Printf("Failed to migrate %T: %v\n", model, err)
-			return fmt.Errorf("failed to migrate %T: %w", model, err)
-		}
-		log.Printf("Successfully migrated %T\n", model)
-
-		if _, ok := model.(*auth.User); ok {
-			log.Println("Adding preferences column to users table...")
-			db.Exec("ALTER TABLE users ADD COLUMN IF NOT EXISTS preferences JSONB DEFAULT '{}'::jsonb")
-		}
+	// Migrate Chat model with AutoMigrate (it's simpler)
+	log.Println("Migrating chats table...")
+	if err := db.AutoMigrate(&chat.Chat{}); err != nil {
+		log.Printf("Failed to migrate chats: %v\n", err)
+		return fmt.Errorf("failed to migrate chats: %w", err)
 	}
+	log.Println("Chats table migrated successfully")
 
 	if err := ensureRefreshTokensTable(db); err != nil {
 		return fmt.Errorf("failed to ensure refresh_tokens table: %w", err)
