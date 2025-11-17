@@ -1,0 +1,422 @@
+/* Kintsugi AI Messenger - Clean Theme Styles */
+
+/* ============================================
+   MESSENGER CONTAINER
+   ============================================ */
+
+[data-theme="clean"] .messenger-container {
+    background: #FFFFFF;
+    border: none;
+}
+
+/* ============================================
+   SIDEBAR
+   ============================================ */
+
+[data-theme="clean"] .conversations-sidebar {
+    border: 2px solid var(--neutral-300);
+    border-right: none;
+    background-color: #FFFFFF;
+}
+
+[data-theme="clean"] .sidebar-header {
+    border-bottom: 2px solid var(--neutral-200);
+    background: #F5F5F5;
+    box-shadow: none;
+}
+
+[data-theme="clean"] .sidebar-header h2 {
+    color: var(--text-primary) !important;
+    text-shadow: none !important;
+}
+
+/* ============================================
+   STORIES
+   ============================================ */
+
+[data-theme="clean"] .stories-container {
+    border-bottom: 2px solid var(--neutral-200);
+    background: #FFFFFF;
+}
+
+[data-theme="clean"] .story-avatar {
+    border: 3px solid var(--color-primary);
+    background: linear-gradient(135deg, var(--primary-olive-400), var(--primary-olive-500));
+    box-shadow: 0 2px 8px rgba(107, 122, 79, 0.3);
+    animation: none;
+    color: #FFFFFF;
+}
+
+[data-theme="clean"] .story-avatar:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(107, 122, 79, 0.4);
+}
+
+[data-theme="clean"] .story-name {
+    color: var(--text-secondary);
+}
+
+/* ============================================
+   SEARCH BOX
+   ============================================ */
+
+[data-theme="clean"] .search-box {
+    border-bottom: 2px solid var(--neutral-200);
+    background: #FFFFFF;
+}
+
+[data-theme="clean"] .search-box input {
+    border: 2px solid var(--neutral-300) !important;
+    background: #FFFFFF !important;
+    color: var(--text-primary) !important;
+}
+
+[data-theme="clean"] .search-box input:focus {
+    border-color: var(--color-primary) !important;
+    box-shadow: 0 0 0 3px rgba(107, 122, 79, 0.1) !important;
+}
+
+/* ============================================
+   CONVERSATION LIST
+   ============================================ */
+
+[data-theme="clean"] .conversation-item {
+    border-bottom: 1px solid var(--neutral-200);
+    background: #FFFFFF;
+}
+
+[data-theme="clean"] .conversation-item:hover {
+    background: #F5F5F5;
+}
+
+[data-theme="clean"] .conversation-item.active {
+    background: var(--primary-olive-50);
+    border-left: 4px solid var(--color-primary);
+}
+
+[data-theme="clean"] .conversation-avatar {
+    background: linear-gradient(135deg, var(--primary-olive-400), var(--primary-olive-500));
+    color: #FFFFFF;
+}
+
+[data-theme="clean"] .conversation-name {
+    color: var(--text-primary) !important;
+    font-weight: var(--font-weight-semibold);
+}
+
+[data-theme="clean"] .conversation-preview {
+    color: var(--text-secondary) !important;
+}
+
+[data-theme="clean"] .conversation-time {
+    color: var(--text-tertiary) !important;
+}
+
+[data-theme="clean"] .unread-badge {
+    background: var(--color-primary);
+    color: #FFFFFF;
+}
+
+/* ============================================
+   CHAT MAIN
+   ============================================ */
+
+[data-theme="clean"] .chat-main {
+    border: 2px solid var(--neutral-300);
+    background: #FFFFFF;
+}
+
+[data-theme="clean"] .chat-header {
+    border-bottom: 2px solid var(--neutral-200) !important;
+    background: #F5F5F5;
+}
+
+[data-theme="clean"] .chat-header .conversation-name {
+    color: var(--text-primary) !important;
+}
+
+[data-theme="clean"] .chat-header .conversation-time {
+    color: var(--text-secondary) !important;
+}
+
+/* ============================================
+   MESSAGES
+   ============================================ */
+
+[data-theme="clean"] .messages-container {
+    background: #FFFFFF;
+}
+
+[data-theme="clean"] .message {
+    border: none;
+    background: transparent;
+}
+
+[data-theme="clean"] .message.sent .message-bubble {
+    background: var(--color-primary);
+    color: #FFFFFF;
+    border: none;
+}
+
+[data-theme="clean"] .message.received .message-bubble {
+    background: #F5F5F5;
+    color: var(--text-primary);
+    border: 2px solid var(--neutral-200);
+}
+
+[data-theme="clean"] .message-bubble {
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+[data-theme="clean"] .message-time {
+    color: var(--text-tertiary) !important;
+}
+
+[data-theme="clean"] .message-status {
+    color: var(--color-primary) !important;
+}
+
+/* ============================================
+   MESSAGE REACTIONS
+   ============================================ */
+
+[data-theme="clean"] .message-reactions {
+    background: #FFFFFF;
+    border: 1px solid var(--neutral-200);
+}
+
+[data-theme="clean"] .reaction-item {
+    background: #F5F5F5;
+    border: 1px solid var(--neutral-300);
+}
+
+[data-theme="clean"] .reaction-item:hover {
+    background: var(--primary-olive-50);
+    border-color: var(--color-primary);
+}
+
+/* ============================================
+   MESSAGE INPUT
+   ============================================ */
+
+[data-theme="clean"] .message-input-container {
+    border-top: 2px solid var(--neutral-200);
+    background: #F5F5F5;
+}
+
+[data-theme="clean"] .message-input {
+    border: 2px solid var(--neutral-300) !important;
+    background: #FFFFFF !important;
+    color: var(--text-primary) !important;
+}
+
+[data-theme="clean"] .message-input:focus {
+    border-color: var(--color-primary) !important;
+    box-shadow: 0 0 0 3px rgba(107, 122, 79, 0.1) !important;
+}
+
+/* ============================================
+   BUTTONS
+   ============================================ */
+
+[data-theme="clean"] .messenger-container .btn-primary {
+    background: var(--color-primary);
+    color: #FFFFFF;
+    border: none;
+}
+
+[data-theme="clean"] .messenger-container .btn-primary:hover {
+    background: var(--color-primary-hover);
+    transform: translateY(-1px);
+}
+
+[data-theme="clean"] .messenger-container .btn-secondary {
+    background: #FFFFFF;
+    color: var(--text-primary);
+    border: 2px solid var(--neutral-300);
+}
+
+[data-theme="clean"] .messenger-container .btn-secondary:hover {
+    background: #F5F5F5;
+    border-color: var(--color-primary);
+}
+
+/* ============================================
+   MODALS
+   ============================================ */
+
+[data-theme="clean"] .kintsugi-modal {
+    background: rgba(0, 0, 0, 0.5);
+}
+
+[data-theme="clean"] .kintsugi-modal-card {
+    background: #FFFFFF;
+    border: 2px solid var(--neutral-300);
+    border-radius: 12px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+}
+
+[data-theme="clean"] .modal-header {
+    border-bottom: 2px solid var(--neutral-200);
+    background: #F5F5F5;
+}
+
+[data-theme="clean"] .modal-title {
+    color: var(--text-primary) !important;
+}
+
+[data-theme="clean"] .modal-subtitle {
+    color: var(--text-secondary) !important;
+}
+
+/* ============================================
+   NOTIFICATIONS
+   ============================================ */
+
+[data-theme="clean"] .kintsugi-notification {
+    background: #FFFFFF !important;
+    border: 2px solid var(--color-primary) !important;
+    color: var(--text-primary) !important;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15) !important;
+}
+
+[data-theme="clean"] .kintsugi-notification-success {
+    border-color: var(--accent-success) !important;
+}
+
+[data-theme="clean"] .kintsugi-notification-error {
+    border-color: var(--accent-error) !important;
+}
+
+[data-theme="clean"] .kintsugi-notification-warning {
+    border-color: var(--accent-warning) !important;
+}
+
+/* ============================================
+   CONTACT CARDS
+   ============================================ */
+
+[data-theme="clean"] .contact-card {
+    border-bottom: 1px solid var(--neutral-200) !important;
+    background: #FFFFFF;
+}
+
+[data-theme="clean"] .contact-card:hover {
+    background: #F5F5F5 !important;
+}
+
+[data-theme="clean"] .contact-card strong {
+    color: var(--text-primary) !important;
+}
+
+[data-theme="clean"] .contact-card div[style*="color: #999"] {
+    color: var(--text-secondary) !important;
+}
+
+/* ============================================
+   SETTINGS
+   ============================================ */
+
+[data-theme="clean"] .settings-toggle {
+    border-bottom: 1px solid var(--neutral-200);
+    color: var(--text-primary);
+}
+
+[data-theme="clean"] .toggle-pill {
+    background: var(--neutral-300);
+    color: var(--text-primary);
+}
+
+[data-theme="clean"] .toggle-pill.on {
+    background: var(--color-primary);
+    color: #FFFFFF;
+}
+
+/* ============================================
+   NOTIFICATION CENTER
+   ============================================ */
+
+[data-theme="clean"] .notification-card {
+    border-bottom: 1px solid var(--neutral-200);
+    background: #FFFFFF;
+}
+
+[data-theme="clean"] .notification-card.unread {
+    background: var(--primary-olive-50);
+    border-left: 4px solid var(--color-primary);
+}
+
+[data-theme="clean"] .notification-card:hover {
+    background: #F5F5F5;
+}
+
+[data-theme="clean"] .notification-title {
+    color: var(--text-primary);
+    font-weight: var(--font-weight-semibold);
+}
+
+[data-theme="clean"] .notification-description {
+    color: var(--text-secondary);
+}
+
+[data-theme="clean"] .notification-time {
+    color: var(--text-tertiary);
+}
+
+/* ============================================
+   MOBILE SPECIFIC
+   ============================================ */
+
+@media (max-width: 768px) {
+    [data-theme="clean"] .messenger-container {
+        grid-template-columns: 1fr;
+    }
+
+    [data-theme="clean"] .conversations-sidebar {
+        border-right: 2px solid var(--neutral-300);
+    }
+}
+
+/* ============================================
+   CODE BLOCKS IN MESSAGES
+   ============================================ */
+
+[data-theme="clean"] .message code {
+    background: #F5F5F5;
+    color: var(--text-primary);
+    border: 1px solid var(--neutral-200);
+}
+
+[data-theme="clean"] .message pre {
+    background: #F5F5F5;
+    border: 2px solid var(--neutral-200);
+}
+
+[data-theme="clean"] .message pre code {
+    color: var(--text-primary);
+}
+
+/* ============================================
+   SCROLLBARS
+   ============================================ */
+
+[data-theme="clean"] .conversation-list::-webkit-scrollbar,
+[data-theme="clean"] .messages-container::-webkit-scrollbar {
+    width: 8px;
+}
+
+[data-theme="clean"] .conversation-list::-webkit-scrollbar-track,
+[data-theme="clean"] .messages-container::-webkit-scrollbar-track {
+    background: #F5F5F5;
+}
+
+[data-theme="clean"] .conversation-list::-webkit-scrollbar-thumb,
+[data-theme="clean"] .messages-container::-webkit-scrollbar-thumb {
+    background: var(--neutral-400);
+    border-radius: 4px;
+}
+
+[data-theme="clean"] .conversation-list::-webkit-scrollbar-thumb:hover,
+[data-theme="clean"] .messages-container::-webkit-scrollbar-thumb:hover {
+    background: var(--color-primary);
+}
