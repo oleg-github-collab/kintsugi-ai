@@ -57,13 +57,13 @@
     --text-on-primary: #FFFFFF;
     --text-on-dark: var(--neutral-50);
 
-    /* Background Colors */
+    /* Background Colors - PURE WHITE */
     --bg-primary: #FFFFFF;
-    --bg-secondary: var(--neutral-50);
-    --bg-tertiary: var(--neutral-100);
+    --bg-secondary: #FFFFFF;
+    --bg-tertiary: #FAFAFA;
     --bg-elevated: #FFFFFF;
     --bg-overlay: rgba(26, 26, 26, 0.6);
-    --bg-surface: var(--neutral-50);
+    --bg-surface: #FFFFFF;
 
     /* Border Colors */
     --border-light: var(--neutral-200);
@@ -759,12 +759,12 @@
 [data-theme="clean"] .stat-grid > div,
 [data-theme="clean"] .feature-card,
 [data-theme="clean"] .pricing-card {
-    background: linear-gradient(to bottom, #FFFFFF, var(--neutral-50));
-    border: 1.5px solid var(--border-light);
+    background: #FFFFFF;
+    border: 2px solid var(--neutral-300);
     border-radius: 12px;
     padding: var(--space-xl);
     transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
-    box-shadow: var(--shadow-sm), inset 0 1px 0 rgba(255, 255, 255, 0.8);
+    box-shadow: var(--shadow-lg);
     position: relative;
     overflow: hidden;
 }
@@ -820,18 +820,17 @@
 
 /* Feature cards - Divine Premium Exquisite Styling */
 [data-theme="clean"] .feature-grid > div {
-    background: linear-gradient(135deg, #FFFFFF 0%, var(--neutral-50) 100%);
-    border: 2px solid var(--neutral-200);
+    background: #FFFFFF;
+    border: 2px solid var(--neutral-300);
     border-radius: 18px;
     padding: clamp(2rem, 4vw, 2.75rem);
     transition: all 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
-    box-shadow: var(--shadow-md), inset 0 1px 0 rgba(255, 255, 255, 0.9);
+    box-shadow: var(--shadow-lg);
     position: relative;
     overflow: hidden;
     text-align: center;
     max-width: 380px;
     width: 100%;
-    backdrop-filter: blur(12px);
 }
 
 /* Divine radial gradient overlay */
@@ -979,12 +978,12 @@
 
 /* Workflow cards - Divine Refined Design */
 [data-theme="clean"] .workflow-grid > article {
-    background: linear-gradient(to bottom, #FFFFFF, var(--neutral-50));
-    border: 1.5px solid var(--border-light);
+    background: #FFFFFF;
+    border: 2px solid var(--neutral-300);
     border-radius: 12px;
     padding: clamp(1.5rem, 3vw, 2rem);
     transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
-    box-shadow: var(--shadow-sm), inset 0 1px 0 rgba(255, 255, 255, 0.7);
+    box-shadow: var(--shadow-lg);
     position: relative;
     overflow: hidden;
 }
@@ -1056,7 +1055,7 @@
 
 [data-theme="clean"] section {
     padding: clamp(3rem, 8vw, 5rem) 0;
-    background: var(--bg-primary) !important;
+    background: #FFFFFF !important;
     width: 100%;
     position: relative;
 }
@@ -1073,12 +1072,12 @@
 
 /* Alternating section backgrounds for visual rhythm */
 [data-theme="clean"] section:nth-child(even) {
-    background: var(--bg-primary) !important;
+    background: #FFFFFF !important;
 }
 
 [data-theme="clean"] .workflow-section,
 [data-theme="clean"] #features {
-    background: var(--bg-primary) !important;
+    background: #FFFFFF !important;
 }
 
 /* Ensure consistent spacing between sections */
@@ -1213,7 +1212,7 @@
 [data-theme="clean"] .hero-stats,
 [data-theme="clean"] #features,
 [data-theme="clean"] #pricing {
-    background: var(--bg-primary) !important;
+    background: #FFFFFF !important;
 }
 
 [data-theme="clean"] .cta-section {
@@ -1232,11 +1231,11 @@
 }
 
 [data-theme="clean"] .cta-panel {
-    background: linear-gradient(135deg, #FFFFFF 0%, var(--neutral-50) 100%);
-    border: 2px solid var(--border-light);
+    background: #FFFFFF;
+    border: 2px solid var(--neutral-300);
     border-radius: 20px;
     padding: clamp(2rem, 4vw, 3rem);
-    box-shadow: var(--shadow-xl), inset 0 1px 0 rgba(255, 255, 255, 1);
+    box-shadow: var(--shadow-xl);
     display: flex;
     align-items: center;
     justify-content: space-between;
