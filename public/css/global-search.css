@@ -12,6 +12,7 @@
     justify-content: center;
     padding-top: 10vh;
     animation: fadeIn 0.2s ease-out;
+    cursor: pointer;
 }
 
 .search-modal-overlay {
@@ -28,6 +29,7 @@
     position: relative;
     width: 90%;
     max-width: 700px;
+    cursor: auto;
     max-height: 80vh;
     background: var(--digital-black);
     display: flex;
