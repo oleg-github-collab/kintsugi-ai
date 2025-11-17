@@ -283,7 +283,10 @@ function addAIContact() {
     const div = document.createElement('div');
     div.className = 'conversation-item interactive';
     div.style.borderLeft = '4px solid var(--kintsugi-gold)';
-    div.onclick = () => selectConversation('ai-assistant');
+    div.dataset.conversationId = 'ai-assistant';
+    div.addEventListener('click', (e) => {
+        selectConversation('ai-assistant', e.currentTarget);
+    });
     div.innerHTML = `
         <div style="display: flex; align-items: center;">
             <div class="conversation-avatar" style="background: linear-gradient(135deg, var(--kintsugi-gold), var(--neon-orange));">🤖</div>
@@ -348,7 +351,14 @@ function renderConversations(convs) {
 async function selectConversation(convId, triggerEl = null) {
     currentConversationId = convId;
     const conv = conversations[convId];
-    isAIChat = conv.isAI || false;
+
+    // Check if conversation exists
+    if (!conv && convId !== 'ai-assistant') {
+        console.error('Conversation not found:', convId);
+        return;
+    }
+
+    isAIChat = (convId === 'ai-assistant') || (conv && conv.isAI);
 
     // Update active state
     document.querySelectorAll('.conversation-item').forEach(el => {
@@ -376,12 +386,12 @@ async function selectConversation(convId, triggerEl = null) {
         if (callButtons) {
             callButtons.style.display = 'none';
         }
-    } else {
+    } else if (conv) {
         document.getElementById('chat-header').innerHTML = `
             <div class="conversation-avatar">${getInitials(conv.name)}</div>
             <div style="flex: 1;">
                 <div class="conversation-name text-gold" style="font-size: 1.25rem;">${conv.name}</div>
-                <div class="conversation-time">${conv.participants_count} participants</div>
+                <div class="conversation-time">${conv.participants_count || 2} participants</div>
             </div>
         `;
         // Show call buttons for non-AI chats
@@ -1186,14 +1196,38 @@ window.startConversation = async function(userId, userName = 'New Contact') {
         });
 
         if (response.ok) {
-            const data = await response.json();
+            const conversation = await response.json();
+            const conversationId = conversation.id;
+
+            console.log('Created conversation:', conversation);
+
             closeUserSearch();
-            loadConversations();
-            addDirectConversationPreview(data.conversation.id, userName);
-            selectConversation(data.conversation.id);
+
+            // Reload conversations to get fresh data from server
+            await loadConversations();
+
+            // Select the newly created conversation after a small delay
+            if (conversationId) {
+                setTimeout(() => {
+                    const convElement = document.querySelector(`.conversation-item[data-conversation-id="${conversationId}"]`);
+                    if (convElement) {
+                        convElement.click();
+                    } else {
+                        console.warn('Conversation element not found, trying selectConversation directly');
+                        selectConversation(conversationId);
+                    }
+                }, 500);
+            }
+
+            console.log('✅ Conversation started successfully!');
+        } else {
+            const error = await response.json();
+            console.error('Failed to start conversation:', error);
+            alert(`Failed to start conversation: ${error.error || 'Unknown error'}`);
         }
     } catch (error) {
         console.error('Failed to start conversation:', error);
+        alert('Network error. Please try again.');
     }
 };
 
