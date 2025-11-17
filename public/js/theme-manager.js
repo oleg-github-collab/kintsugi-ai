@@ -155,8 +155,14 @@ class ThemeManager {
     }
 }
 
-// Initialize theme manager
-window.themeManager = new ThemeManager();
+// Initialize theme manager when DOM is ready
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => {
+        window.themeManager = new ThemeManager();
+    });
+} else {
+    window.themeManager = new ThemeManager();
+}
 
 // Add CSS for theme switcher
 const style = document.createElement('style');
