@@ -326,7 +326,10 @@ function renderConversations(convs) {
         conversations[conv.id] = conv;
         const div = document.createElement('div');
         div.className = 'conversation-item interactive';
-        div.onclick = () => selectConversation(conv.id);
+        div.dataset.conversationId = conv.id;
+        div.addEventListener('click', (e) => {
+            selectConversation(conv.id, e.currentTarget);
+        });
         div.innerHTML = `
             <div style="display: flex; align-items: center;">
                 <div class="conversation-avatar">${getInitials(conv.name)}</div>
@@ -342,7 +345,7 @@ function renderConversations(convs) {
 }
 
 // Select conversation
-async function selectConversation(convId) {
+async function selectConversation(convId, triggerEl = null) {
     currentConversationId = convId;
     const conv = conversations[convId];
     isAIChat = conv.isAI || false;
@@ -351,7 +354,8 @@ async function selectConversation(convId) {
     document.querySelectorAll('.conversation-item').forEach(el => {
         el.classList.remove('active');
     });
-    event.currentTarget.classList.add('active');
+    const activeElement = triggerEl || document.querySelector(`.conversation-item[data-conversation-id="${convId}"]`);
+    activeElement?.classList.add('active');
 
     // Update header
     if (isAIChat) {
@@ -1158,16 +1162,16 @@ function renderUserSearchResults(users) {
                 </div>
                 <span class="result-meta">ID: ${user.id.slice(0, 6)}</span>
             </div>
-            <div class="result-actions">
-                <button onclick="startConversation('${user.id}')" class="btn btn-primary interactive" style="padding: 0.5rem 1rem;">📬 START CHAT</button>
-                <button onclick="copyInviteLink('${user.id}', '${user.username}')" class="btn btn-secondary interactive" style="padding: 0.5rem 1rem;">🔗 COPY</button>
-            </div>
+        <div class="result-actions">
+            <button onclick="startConversation('${user.id}', '${user.username.replace(/'/g, "\\'")}')" class="btn btn-primary interactive" style="padding: 0.5rem 1rem;">📬 START CHAT</button>
+            <button onclick="copyInviteLink('${user.id}', '${user.username}')" class="btn btn-secondary interactive" style="padding: 0.5rem 1rem;">🔗 COPY</button>
+        </div>
         `;
         container.appendChild(div);
     });
 }
 
-window.startConversation = async function(userId) {
+window.startConversation = async function(userId, userName = 'New Contact') {
     try {
         const response = await fetch(`${API_URL}/messenger/conversations`, {
             method: 'POST',
@@ -1185,12 +1189,25 @@ window.startConversation = async function(userId) {
             const data = await response.json();
             closeUserSearch();
             loadConversations();
+            addDirectConversationPreview(data.conversation.id, userName);
             selectConversation(data.conversation.id);
         }
     } catch (error) {
         console.error('Failed to start conversation:', error);
     }
 };
+
+function addDirectConversationPreview(conversationId, name) {
+    if (!conversations[conversationId]) {
+        conversations[conversationId] = {
+            id: conversationId,
+            name: name,
+            last_message: 'New conversation',
+            updated_at: new Date().toISOString()
+        };
+        renderConversations(Object.values(conversations));
+    }
+}
 
 // Invite links
 window.generateInviteLink = async function() {
