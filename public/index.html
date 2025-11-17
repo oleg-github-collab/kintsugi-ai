@@ -79,8 +79,9 @@
             <canvas id="hero-matrix-canvas" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; opacity: 0.3;"></canvas>
 
             <div class="section-banner section-banner-right">
-                <span class="section-banner-text">~ HERO ~ //</span>
-                <span class="section-banner-symbol">&#10095;</span>
+                <div class="marquee-track">
+                    <span class="section-banner-text">~ HERO ~ // ◆ ALL-IN-ONE AI PLATFORM ◆ ~ HERO ~ // ◆ CHAT • MESSENGER • TRANSLATION ◆ ~ HERO ~ // ◆ POWERED BY KINTSUGI ◆</span>
+                </div>
             </div>
             <div class="container" style="position: relative; z-index: 10;">
                 <div class="home-hero">
@@ -134,8 +135,9 @@
         </section>
 
         <div class="section-banner section-banner-left">
-            <span class="section-banner-text" data-i18n="section.workflowTicker">~ WORKFLOW ~ <></span>
-            <span class="section-banner-symbol">&#10094;</span>
+            <div class="marquee-track">
+                <span class="section-banner-text">~ WORKFLOW ~ <> ◆ SECURE CHAT ◆ COLLABORATION ◆ TRANSLATION ◆ MONITORING ~ WORKFLOW ~ <> ◆ TAILOR YOUR WORKSPACE ◆</span>
+            </div>
         </div>
         <section class="workflow-section">
             <div class="container">
@@ -165,8 +167,9 @@
         </section>
 
         <div class="section-banner section-banner-right">
-            <span class="section-banner-text" data-i18n="section.statsTicker">~ STATS ~ [ ]</span>
-            <span class="section-banner-symbol">&#10095;</span>
+            <div class="marquee-track">
+                <span class="section-banner-text">~ STATS ~ [ ] ◆ REALTIME ◆ SECURE ◆ PLATFORM READY ~ STATS ~ [ ] ◆ STREAMING RESPONSES ◆ TOKEN TRACKING ◆</span>
+            </div>
         </div>
         <section class="hero-stats">
             <div class="stat-grid">
@@ -190,8 +193,9 @@
         </section>
 
         <div class="section-banner section-banner-right">
-            <span class="section-banner-text" data-i18n="section.featuresTicker">~ FEATURES ~ //</span>
-            <span class="section-banner-symbol">&#10095;</span>
+            <div class="marquee-track">
+                <span class="section-banner-text">~ FEATURES ~ // ◆ AI CHAT ◆ MESSENGER ◆ TRANSLATION ~ FEATURES ~ // ◆ VIDEO/AUDIO ◆ STORIES ◆ REACTIONS ◆</span>
+            </div>
         </div>
         <!-- Features Section -->
         <section id="features" style="background: linear-gradient(180deg, #0A0A0A 0%, #1A0A1A 50%, #0A0A0A 100%); position: relative;">
@@ -256,8 +260,9 @@
         </section>
 
         <div class="section-banner section-banner-left">
-            <span class="section-banner-text" data-i18n="section.pricingTicker">~ PRICING ~ {;}</span>
-            <span class="section-banner-symbol">&#10094;</span>
+            <div class="marquee-track">
+                <span class="section-banner-text">~ PRICING ~ {;} ◆ BASIC FREE ◆ PREMIUM STARTER ◆ PREMIUM PRO ◆ PREMIUM ULTRA ~ PRICING ~ {;} ◆ UNLIMITED PLAN ◆</span>
+            </div>
         </div>
         <!-- Pricing Section -->
         <section id="pricing" style="background: radial-gradient(circle at 20% 50%, rgba(0, 255, 255, 0.05) 0%, transparent 50%), radial-gradient(circle at 80% 50%, rgba(240, 255, 0, 0.05) 0%, transparent 50%), #0A0A0A;">
@@ -336,8 +341,9 @@
     </main>
 
     <div class="section-banner section-banner-left mt-8">
-        <span class="section-banner-text" data-i18n="section.ctaTicker">~ CTA ~ >>></span>
-        <span class="section-banner-symbol">&#10094;</span>
+        <div class="marquee-track">
+            <span class="section-banner-text">~ CTA ~ >>> ◆ READY TO BUILD? ◆ SIGN UP NOW ◆ START YOUR JOURNEY ~ CTA ~ >>> ◆ JOIN KINTSUGI AI ◆</span>
+        </div>
     </div>
     <section class="cta-section">
         <div class="container">
@@ -446,6 +452,30 @@
             if (event.target.id === 'mobile-menu') {
                 toggleMobileMenu();
             }
+        }
+
+        // Seamless marquee init
+        function initSeamlessMarquee() {
+            const marquees = document.querySelectorAll('.site-marquee, .section-banner');
+
+            marquees.forEach(marquee => {
+                const track = marquee.querySelector('.marquee-track');
+                if (!track) return;
+
+                // Clone the content to create seamless loop
+                const content = track.innerHTML;
+                track.innerHTML = content + content;
+
+                // Start animation
+                track.classList.add('animated');
+            });
+        }
+
+        // Initialize on load
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initSeamlessMarquee);
+        } else {
+            initSeamlessMarquee();
         }
     </script>
 </body>

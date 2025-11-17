@@ -650,39 +650,42 @@ section {
         }
 
 .section-banner {
+    width: 100%;
+    overflow: hidden;
+    background: rgba(0, 0, 0, 0.7);
+    border-top: 2px solid rgba(255, 255, 255, 0.15);
+    border-bottom: 2px solid rgba(255, 255, 255, 0.15);
+    padding: 0.75rem 0;
+    margin-bottom: 1.5rem;
+    position: relative;
+}
+
+.section-banner-right {
+    background: linear-gradient(90deg, rgba(0, 255, 255, 0.08), rgba(255, 0, 255, 0.05));
+}
+
+.section-banner-left {
+    background: linear-gradient(90deg, rgba(255, 0, 255, 0.05), rgba(0, 255, 255, 0.08));
+}
+
+.section-banner .marquee-track {
     display: flex;
-    gap: 0.5rem;
-            align-items: center;
-            font-family: "Courier New", monospace;
-            text-transform: uppercase;
-            letter-spacing: 0.2em;
-            font-size: 0.85rem;
-            padding: 0.35rem 1rem;
-            background: rgba(0, 0, 0, 0.7);
-            border: 2px solid rgba(255, 255, 255, 0.15);
-            border-radius: 999px;
-            margin-bottom: 1.5rem;
-            animation: banner-marquee 18s linear infinite;
-        }
+    gap: 3rem;
+    white-space: nowrap;
+    will-change: transform;
+}
 
-        .section-banner-right {
-            justify-content: flex-end;
-            transform: rotate(-4deg);
-        }
+.section-banner .marquee-track.animated {
+    animation: seamless-marquee 25s linear infinite;
+}
 
-        .section-banner-left {
-            justify-content: flex-start;
-            transform: rotate(4deg);
-        }
-
-        .section-banner-text {
-            color: #FFF;
-        }
-
-.section-banner-symbol {
-    color: var(--cyber-cyan);
-    font-size: 1rem;
-    font-weight: bold;
+.section-banner-text {
+    color: #FFF;
+    font-family: "Courier New", monospace;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    font-size: 0.85rem;
+    text-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
 }
 
 .site-marquee {
@@ -691,28 +694,39 @@ section {
     background: linear-gradient(120deg, rgba(240,255,0,0.15), rgba(0,255,255,0.1));
     padding: 0.5rem 0;
     border-bottom: 3px solid var(--kintsugi-gold);
+    position: relative;
 }
 
 .marquee-track {
-    display: inline-flex;
+    display: flex;
     gap: 3rem;
     font-family: "Courier New", monospace;
     text-transform: uppercase;
     font-size: 0.85rem;
     font-weight: 700;
     color: #fff;
-    animation: marquee-text 20s linear infinite;
+    white-space: nowrap;
+    will-change: transform;
+}
+
+.marquee-track.animated {
+    animation: seamless-marquee 30s linear infinite;
 }
 
 .marquee-track span {
     display: inline-flex;
     align-items: center;
     gap: 0.4rem;
+    flex-shrink: 0;
 }
 
-@keyframes marquee-text {
-    0% { transform: translateX(0); }
-    100% { transform: translateX(-50%); }
+@keyframes seamless-marquee {
+    0% {
+        transform: translateX(0);
+    }
+    100% {
+        transform: translateX(-50%);
+    }
 }
 
         @keyframes banner-marquee {
@@ -878,8 +892,11 @@ section {
     }
 
     .section-banner {
+        padding: 0.5rem 0;
+    }
+
+    .section-banner-text {
         font-size: 0.7rem;
-        padding: 0.25rem 0.75rem;
     }
 }
 
