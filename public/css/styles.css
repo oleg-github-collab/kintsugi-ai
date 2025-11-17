@@ -337,7 +337,8 @@ nav.hidden {
 .container {
     max-width: 1200px;
     margin: 0 auto;
-    padding: 0 1.5rem;
+    padding: 0 2rem;
+    width: 100%;
 }
 
 .border-3 { border-width: 3px; border-style: solid; }
@@ -459,6 +460,8 @@ section {
     min-height: 100vh;
     display: flex;
     align-items: center;
+    justify-content: center;
+    width: 100%;
 }
 
 .hidden {
@@ -575,6 +578,7 @@ section {
 /* Desktop homepage enhancements */
 .home-hero {
     padding: 4rem 0;
+    width: 100%;
 }
 
 .hero-grid {
@@ -582,6 +586,9 @@ section {
     grid-template-columns: repeat(2, minmax(320px, 1fr));
     gap: 3rem;
     align-items: center;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 2rem;
 }
 
 .hero-title {
@@ -755,6 +762,7 @@ section {
     padding: 3rem 0;
     max-width: 1200px;
     margin: 0 auto;
+    width: 100%;
 }
 
 .stat-grid {
@@ -762,6 +770,7 @@ section {
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
     gap: 2rem;
     text-align: center;
+    padding: 0 2rem;
 }
 
 .stat-grid div {
@@ -798,6 +807,8 @@ section {
     gap: 2rem;
     max-width: 1200px;
     margin: 0 auto;
+    width: 100%;
+    padding: 0 2rem;
 }
 
 .feature-card {
@@ -813,12 +824,17 @@ section {
 
 .workflow-section {
     padding: 3.5rem 0;
+    width: 100%;
 }
 
 .workflow-grid {
     display: grid;
     grid-template-columns: repeat(4, minmax(220px, 1fr));
     gap: 1.5rem;
+    max-width: 1200px;
+    margin: 0 auto;
+    width: 100%;
+    padding: 0 2rem;
 }
 
 @media (max-width: 1280px) {
@@ -903,6 +919,7 @@ section {
 .cta-section {
     background: linear-gradient(120deg, rgba(240, 255, 0, 0.1), rgba(0, 255, 255, 0.08));
     padding: 2.5rem 0;
+    width: 100%;
 }
 
 .cta-panel {
@@ -916,6 +933,8 @@ section {
     align-items: center;
     gap: 1.5rem;
     flex-wrap: wrap;
+    max-width: 1200px;
+    margin: 0 auto;
 }
 
 .cta-panel h3 {
