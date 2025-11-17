@@ -28,7 +28,8 @@ const (
 func NewService(repo *Repository, db *gorm.DB) *Service {
 	apiKey := os.Getenv("OPENAI_API_KEY")
 	if apiKey == "" {
-		panic("OPENAI_API_KEY environment variable is required")
+		log.Println("Warning: OPENAI_API_KEY not set - chat functionality will be limited")
+		apiKey = "sk-dummy-key-for-development" // Allow server to start without real API key
 	}
 
 	return &Service{
