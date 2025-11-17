@@ -191,25 +191,9 @@ func initDatabase() *gorm.DB {
 func migrateDatabase(db *gorm.DB) error {
 	log.Println("Running database migrations...")
 
-	// Drop incompatible tables if they exist (for clean migration)
-	log.Println("Dropping old incompatible tables...")
-	db.Exec("DROP TABLE IF EXISTS users CASCADE")
-	db.Exec("DROP TABLE IF EXISTS refresh_tokens CASCADE")
-	db.Exec("DROP TABLE IF EXISTS chats CASCADE")
-	db.Exec("DROP TABLE IF EXISTS messages CASCADE")
-	db.Exec("DROP TABLE IF EXISTS conversations CASCADE")
-	db.Exec("DROP TABLE IF EXISTS participants CASCADE")
-	db.Exec("DROP TABLE IF EXISTS conversation_messages CASCADE")
-	db.Exec("DROP TABLE IF EXISTS reactions CASCADE")
-	db.Exec("DROP TABLE IF EXISTS read_receipts CASCADE")
-	db.Exec("DROP TABLE IF EXISTS stories CASCADE")
-	db.Exec("DROP TABLE IF EXISTS story_views CASCADE")
-	db.Exec("DROP TABLE IF EXISTS invite_codes CASCADE")
-	db.Exec("DROP TABLE IF EXISTS group_invites CASCADE")
-	db.Exec("DROP TABLE IF EXISTS translations CASCADE")
-	db.Exec("DROP TABLE IF EXISTS subscriptions CASCADE")
-	db.Exec("DROP TABLE IF EXISTS payments CASCADE")
-	log.Println("Old tables dropped successfully")
+	// REMOVED: Drop tables on every startup - this was causing data loss!
+	// Tables should persist between restarts. Only drop manually when needed.
+	// If you need to reset the database, run: docker-compose down -v
 
 	// Migrate models one by one for better error handling
 	models := []interface{}{
