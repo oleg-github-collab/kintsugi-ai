@@ -55,15 +55,7 @@ class ThemeManager {
         html.removeAttribute('data-theme');
         body.classList.remove('theme-transitioning');
 
-        // Add transition class for smooth change
-        if (animate) {
-            body.classList.add('theme-transitioning');
-            setTimeout(() => {
-                body.classList.remove('theme-transitioning');
-            }, 300);
-        }
-
-        // Apply new theme
+        // Instant theme switch - no animation to prevent flickering
         if (themeName === 'clean') {
             html.setAttribute('data-theme', 'clean');
         }
@@ -295,12 +287,9 @@ style.textContent = `
         }
     }
 
-    /* Transition effect */
-    body.theme-transitioning * {
-        transition: background-color 0.35s cubic-bezier(0.4, 0, 0.2, 1),
-                    border-color 0.35s cubic-bezier(0.4, 0, 0.2, 1),
-                    color 0.35s cubic-bezier(0.4, 0, 0.2, 1),
-                    box-shadow 0.35s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    /* Smooth instant theme switching - no flickering */
+    body.theme-transitioning {
+        /* Remove global transition that causes flickering */
     }
 `;
 document.head.appendChild(style);
