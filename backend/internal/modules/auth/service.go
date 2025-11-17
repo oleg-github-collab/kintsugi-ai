@@ -61,7 +61,7 @@ func (s *Service) Register(req *RegisterRequest) (*AuthResponse, error) {
 		TokensLimit:      20000,
 		TokensUsed:       0,
 		ResetAt:          time.Now().Add(6 * time.Hour),
-		Preferences:      JSONB("{}"),
+		Preferences:      "{}",
 	}
 
 	if err := s.repo.CreateUser(user); err != nil {

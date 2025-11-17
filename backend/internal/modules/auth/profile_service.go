@@ -82,7 +82,7 @@ func (s *Service) GetPreferences(userID uuid.UUID) (map[string]interface{}, erro
 	}
 
 	var preferences map[string]interface{}
-	if err := json.Unmarshal(user.Preferences, &preferences); err != nil {
+	if err := json.Unmarshal([]byte(user.Preferences), &preferences); err != nil {
 		return make(map[string]interface{}), nil
 	}
 
@@ -101,7 +101,7 @@ func (s *Service) UpdatePreferences(userID uuid.UUID, preferences map[string]int
 		return errors.New("failed to marshal preferences")
 	}
 
-	user.Preferences = JSONB(preferencesJSON)
+	user.Preferences = string(preferencesJSON)
 
 	if err := s.repo.UpdateUser(user); err != nil {
 		return err
