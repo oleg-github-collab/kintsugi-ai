@@ -1141,7 +1141,7 @@
 }
 
 [data-theme="clean"] .hero-section {
-    background: linear-gradient(135deg, var(--primary-olive-50) 0%, var(--bg-primary) 40%, var(--accent-warm) 100%) !important;
+    background: #F5F5F5 !important;
     padding: clamp(4rem, 10vw, 6.5rem) 0;
     min-height: 65vh;
     display: flex;
@@ -1151,27 +1151,11 @@
 }
 
 [data-theme="clean"] .hero-section::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    right: 0;
-    width: 50%;
-    height: 100%;
-    background: radial-gradient(ellipse at top right, var(--primary-olive-100), transparent 70%);
-    opacity: 0.6;
-    pointer-events: none;
+    display: none;
 }
 
 [data-theme="clean"] .hero-section::after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 40%;
-    height: 60%;
-    background: radial-gradient(ellipse at bottom left, var(--accent-cream), transparent 65%);
-    opacity: 0.5;
-    pointer-events: none;
+    display: none;
 }
 
 [data-theme="clean"] .hero-section .container {
@@ -1216,18 +1200,13 @@
 }
 
 [data-theme="clean"] .cta-section {
-    background: linear-gradient(135deg, var(--accent-warm) 0%, var(--primary-olive-50) 100%) !important;
+    background: #F5F5F5 !important;
     padding: clamp(3rem, 7vw, 5rem) 0;
     position: relative;
 }
 
 [data-theme="clean"] .cta-section::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: radial-gradient(circle at center, var(--accent-cream), transparent 70%);
-    opacity: 0.5;
-    pointer-events: none;
+    display: none;
 }
 
 [data-theme="clean"] .cta-panel {
@@ -1463,9 +1442,9 @@
 
 /* Footer */
 [data-theme="clean"] footer {
-    background: var(--neutral-900);
-    border-top: 1px solid var(--neutral-800);
-    color: var(--neutral-100);
+    background: #2D2C2A;
+    border-top: 1px solid var(--neutral-700);
+    color: #FFFFFF;
     padding: var(--space-2xl) 0;
 }
 
@@ -1474,7 +1453,7 @@
 [data-theme="clean"] footer p,
 [data-theme="clean"] footer span,
 [data-theme="clean"] footer a {
-    color: var(--neutral-100) !important;
+    color: #FFFFFF !important;
 }
 
 [data-theme="clean"] footer a:hover {
