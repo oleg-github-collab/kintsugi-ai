@@ -639,9 +639,51 @@ section {
     color: #ccc;
 }
 
-.hero-window-body p {
-    margin: 0.35rem 0;
-}
+        .hero-window-body p {
+            margin: 0.35rem 0;
+        }
+
+        .section-banner {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+            font-family: "Courier New", monospace;
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            font-size: 0.85rem;
+            padding: 0.35rem 1rem;
+            background: rgba(0, 0, 0, 0.7);
+            border: 2px solid rgba(255, 255, 255, 0.15);
+            border-radius: 999px;
+            margin-bottom: 1.5rem;
+            animation: banner-marquee 18s linear infinite;
+        }
+
+        .section-banner-right {
+            justify-content: flex-end;
+            transform: rotate(-4deg);
+        }
+
+        .section-banner-left {
+            justify-content: flex-start;
+            transform: rotate(4deg);
+        }
+
+        .section-banner-text {
+            color: #FFF;
+        }
+
+        .section-banner-symbol {
+            color: var(--cyber-cyan);
+            font-size: 1rem;
+            font-weight: bold;
+        }
+
+        @keyframes banner-marquee {
+            0% { opacity: 0.7; }
+            50% { opacity: 1; }
+            100% { opacity: 0.7; }
+        }
 
 .hero-metrics {
     display: flex;

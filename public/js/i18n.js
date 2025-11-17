@@ -17,6 +17,9 @@
             'nav.profile': 'PROFILE',
             'nav.settings': 'SETTINGS',
             'nav.dashboard': 'DASHBOARD',
+            'nav.chat': 'CHAT',
+            'nav.messenger': 'MESSENGER',
+            'nav.translation': 'TRANSLATION',
 
             // Common UI
             'common.back': 'BACK',
@@ -49,6 +52,12 @@
             'hero.subtitle': 'ALL-IN-ONE AI PLATFORM',
             'hero.tagline': 'Chat • Messenger • Translation',
             'hero.description': 'Unified AI platform combining advanced chat models, real-time messenger, and professional translation.',
+            'section.heroTicker': '~ HERO ~ //',
+            'section.workflowTicker': '~ WORKFLOW ~ <>',
+            'section.statsTicker': '~ STATS ~ []',
+            'section.featuresTicker': '~ FEATURES ~ //</',
+            'section.pricingTicker': '~ PRICING ~ {; }',
+            'section.ctaTicker': '~ CTA ~ >>>',
 
             // Features Section
             'features.title': 'THREE PLATFORMS IN ONE',
@@ -318,6 +327,9 @@
             'nav.profile': 'ПРОФІЛЬ',
             'nav.settings': 'НАЛАШТУВАННЯ',
             'nav.dashboard': 'ПАНЕЛЬ',
+            'nav.chat': 'ЧАТ',
+            'nav.messenger': 'МЕСЕНДЖЕР',
+            'nav.translation': 'ПЕРЕКЛАД',
 
             // Загальний UI
             'common.back': 'НАЗАД',
@@ -350,6 +362,12 @@
             'hero.subtitle': 'ПЛАТФОРМА AI ВСЕ-В-ОДНОМУ',
             'hero.tagline': 'Чат • Месенджер • Переклад',
             'hero.description': 'Єдина AI платформа, що поєднує передові моделі чату, месенджер у реальному часі та професійний переклад.',
+            'section.heroTicker': '~ HERO ~ //',
+            'section.workflowTicker': '~ WORKFLOW ~ <>',
+            'section.statsTicker': '~ STATS ~ []',
+            'section.featuresTicker': '~ FEATURES ~ //</',
+            'section.pricingTicker': '~ PRICING ~ {; }',
+            'section.ctaTicker': '~ CTA ~ >>>',
 
             // Секція Можливостей
             'features.title': 'ТРИ ПЛАТФОРМИ В ОДНІЙ',
@@ -619,6 +637,9 @@
             'nav.profile': 'PERFIL',
             'nav.settings': 'CONFIGURACIÓN',
             'nav.dashboard': 'PANEL',
+            'nav.chat': 'CHAT',
+            'nav.messenger': 'MENSAJERO',
+            'nav.translation': 'TRADUCCIÓN',
 
             // UI común
             'common.back': 'ATRÁS',
@@ -647,10 +668,26 @@
             'common.saveChanges': 'GUARDAR CAMBIOS',
             'common.comingSoon': 'PRÓXIMAMENTE',
 
+            // Sección de Estadísticas
+            'stats.realtimeTitle': 'Tiempo Real',
+            'stats.realtimeDesc': 'Respuestas instantáneas en streaming en chat, mensajero y traducción.',
+            'stats.secureTitle': 'Seguro',
+            'stats.secureDesc': 'Seguimiento de uso de tokens, ventanas de actualización y almacenamiento cifrado.',
+            'stats.supportTitle': 'Soporte Humano',
+            'stats.supportDesc': 'Nuestro equipo proporciona asistencia personalizada para creadores y equipos.',
+            'stats.platformTitle': 'Plataforma Lista',
+            'stats.platformDesc': 'Funciona en escritorio, tablet y dispositivos móviles con controles consistentes.',
+
             // Sección Hero
             'hero.subtitle': 'PLATAFORMA AI TODO EN UNO',
             'hero.tagline': 'Chat • Mensajero • Traducción',
             'hero.description': 'Plataforma AI unificada que combina modelos de chat avanzados, mensajería en tiempo real y traducción profesional.',
+            'section.heroTicker': '~ HERO ~ //',
+            'section.workflowTicker': '~ WORKFLOW ~ <>',
+            'section.statsTicker': '~ STATS ~ []',
+            'section.featuresTicker': '~ FEATURES ~ //</',
+            'section.pricingTicker': '~ PRICING ~ {; }',
+            'section.ctaTicker': '~ CTA ~ >>>',
 
             // Sección de Características
             'features.title': 'TRES PLATAFORMAS EN UNA',
@@ -900,6 +937,9 @@
             'nav.profile': 'PROFIL',
             'nav.settings': 'PARAMÈTRES',
             'nav.dashboard': 'TABLEAU DE BORD',
+            'nav.chat': 'CHAT',
+            'nav.messenger': 'MESSAGERIE',
+            'nav.translation': 'TRADUCTION',
 
             // UI commune
             'common.back': 'RETOUR',
@@ -928,10 +968,26 @@
             'common.saveChanges': 'ENREGISTRER LES MODIFICATIONS',
             'common.comingSoon': 'PROCHAINEMENT',
 
+            // Section Statistiques
+            'stats.realtimeTitle': 'Temps Réel',
+            'stats.realtimeDesc': 'Réponses instantanées en streaming dans le chat, la messagerie et la traduction.',
+            'stats.secureTitle': 'Sécurisé',
+            'stats.secureDesc': 'Suivi de l\'utilisation des jetons, fenêtres d\'actualisation et stockage chiffré.',
+            'stats.supportTitle': 'Support Humain',
+            'stats.supportDesc': 'Notre équipe fournit une assistance personnalisée pour les créateurs et les équipes.',
+            'stats.platformTitle': 'Plateforme Prête',
+            'stats.platformDesc': 'Fonctionne sur ordinateur, tablette et appareils mobiles avec des contrôles cohérents.',
+
             // Section Hero
             'hero.subtitle': 'PLATEFORME IA TOUT-EN-UN',
             'hero.tagline': 'Chat • Messagerie • Traduction',
             'hero.description': 'Plateforme IA unifiée combinant des modèles de chat avancés, une messagerie en temps réel et une traduction professionnelle.',
+            'section.heroTicker': '~ HERO ~ //',
+            'section.workflowTicker': '~ WORKFLOW ~ <>',
+            'section.statsTicker': '~ STATS ~ []',
+            'section.featuresTicker': '~ FEATURES ~ //</',
+            'section.pricingTicker': '~ PRICING ~ {; }',
+            'section.ctaTicker': '~ CTA ~ >>>',
 
             // Section Fonctionnalités
             'features.title': 'TROIS PLATEFORMES EN UNE',
@@ -1181,6 +1237,9 @@
             'nav.profile': 'PROFIL',
             'nav.settings': 'EINSTELLUNGEN',
             'nav.dashboard': 'DASHBOARD',
+            'nav.chat': 'CHAT',
+            'nav.messenger': 'MESSENGER',
+            'nav.translation': 'ÜBERSETZUNG',
 
             // Allgemeine UI
             'common.back': 'ZURÜCK',
@@ -1209,10 +1268,26 @@
             'common.saveChanges': 'ÄNDERUNGEN SPEICHERN',
             'common.comingSoon': 'DEMNÄCHST',
 
+            // Statistikbereich
+            'stats.realtimeTitle': 'Echtzeit',
+            'stats.realtimeDesc': 'Sofortige Streaming-Antworten in Chat, Messenger und Übersetzung.',
+            'stats.secureTitle': 'Sicher',
+            'stats.secureDesc': 'Token-Nutzungsverfolgung, Aktualisierungsfenster und verschlüsselte Speicherung.',
+            'stats.supportTitle': 'Menschlicher Support',
+            'stats.supportDesc': 'Unser Team bietet persönliche Unterstützung für Kreative und Teams.',
+            'stats.platformTitle': 'Plattform Bereit',
+            'stats.platformDesc': 'Funktioniert auf Desktop, Tablet und mobilen Geräten mit konsistenten Bedienelementen.',
+
             // Hero-Bereich
             'hero.subtitle': 'ALLES-IN-EINEM KI-PLATTFORM',
             'hero.tagline': 'Chat • Messenger • Übersetzung',
             'hero.description': 'Einheitliche KI-Plattform, die fortschrittliche Chat-Modelle, Echtzeit-Messenger und professionelle Übersetzung kombiniert.',
+            'section.heroTicker': '~ HERO ~ //',
+            'section.workflowTicker': '~ WORKFLOW ~ <>',
+            'section.statsTicker': '~ STATS ~ []',
+            'section.featuresTicker': '~ FEATURES ~ //</',
+            'section.pricingTicker': '~ PRICING ~ {; }',
+            'section.ctaTicker': '~ CTA ~ >>>',
 
             // Funktionsbereich
             'features.title': 'DREI PLATTFORMEN IN EINER',
