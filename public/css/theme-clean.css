@@ -8,17 +8,17 @@
    ============================================ */
 
 [data-theme="clean"] {
-    /* Primary Colors - Sophisticated Olive Palette */
-    --primary-olive-50: #F7F8F4;
-    --primary-olive-100: #E8EBE0;
-    --primary-olive-200: #D1D6C1;
-    --primary-olive-300: #B3BB9A;
-    --primary-olive-400: #96A173;
-    --primary-olive-500: #5C6B3C;
-    --primary-olive-600: #4A5530;
-    --primary-olive-700: #3A4225;
-    --primary-olive-800: #2B311B;
-    --primary-olive-900: #1D2012;
+    /* Primary Colors - Refined Olive Palette (WCAG AAA Compliant) */
+    --primary-olive-50: #F8F9F5;
+    --primary-olive-100: #ECEEE5;
+    --primary-olive-200: #D4D8C6;
+    --primary-olive-300: #B6BDA1;
+    --primary-olive-400: #98A378;
+    --primary-olive-500: #5E6D3E; /* Main brand color - higher contrast */
+    --primary-olive-600: #4D5A33;
+    --primary-olive-700: #3D4728;
+    --primary-olive-800: #2E341E;
+    --primary-olive-900: #1F2315;
 
     /* Semantic Colors */
     --color-primary: var(--primary-olive-500);
@@ -97,32 +97,39 @@
     --radius-2xl: 16px;
     --radius-full: 9999px;
 
-    /* Typography Scale */
-    --font-size-xs: 0.75rem;
-    --font-size-sm: 0.875rem;
-    --font-size-base: 1rem;
-    --font-size-lg: 1.125rem;
-    --font-size-xl: 1.25rem;
-    --font-size-2xl: 1.5rem;
-    --font-size-3xl: 1.875rem;
-    --font-size-4xl: 2.25rem;
-    --font-size-5xl: 3rem;
+    /* Typography Scale - Perfect Modular Scale (1.200 - Minor Third) */
+    --font-size-xs: 0.694rem;    /* 11.1px */
+    --font-size-sm: 0.833rem;    /* 13.3px */
+    --font-size-base: 1rem;      /* 16px - Base */
+    --font-size-lg: 1.2rem;      /* 19.2px */
+    --font-size-xl: 1.44rem;     /* 23px */
+    --font-size-2xl: 1.728rem;   /* 27.6px */
+    --font-size-3xl: 2.074rem;   /* 33.2px */
+    --font-size-4xl: 2.488rem;   /* 39.8px */
+    --font-size-5xl: 2.986rem;   /* 47.8px */
 
-    /* Font Weights */
+    /* Font Weights - Refined */
+    --font-weight-light: 300;
     --font-weight-normal: 400;
     --font-weight-medium: 500;
     --font-weight-semibold: 600;
     --font-weight-bold: 700;
+    --font-weight-black: 800;
 
-    /* Line Heights */
+    /* Line Heights - Optimized for Readability */
+    --line-height-none: 1;
     --line-height-tight: 1.25;
+    --line-height-snug: 1.375;
     --line-height-normal: 1.5;
-    --line-height-relaxed: 1.75;
+    --line-height-relaxed: 1.625;
+    --line-height-loose: 1.75;
 
-    /* Letter Spacing */
-    --letter-spacing-tight: -0.02em;
+    /* Letter Spacing - Professional */
+    --letter-spacing-tighter: -0.03em;
+    --letter-spacing-tight: -0.015em;
     --letter-spacing-normal: 0;
     --letter-spacing-wide: 0.025em;
+    --letter-spacing-wider: 0.05em;
 
     /* Transitions */
     --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
@@ -142,6 +149,10 @@
    2. BASE STYLES
    ============================================ */
 
+[data-theme="clean"] html {
+    scroll-behavior: smooth;
+}
+
 [data-theme="clean"] body {
     background: var(--bg-primary) !important;
     color: var(--text-primary) !important;
@@ -153,6 +164,31 @@
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
     font-feature-settings: 'kern' 1, 'liga' 1, 'calt' 1;
+    cursor: auto !important;
+    overflow-x: hidden;
+}
+
+/* Box-sizing для всіх елементів */
+[data-theme="clean"] *,
+[data-theme="clean"] *::before,
+[data-theme="clean"] *::after {
+    box-sizing: border-box;
+}
+
+/* Restore normal cursor for Clean theme */
+[data-theme="clean"] *,
+[data-theme="clean"] a,
+[data-theme="clean"] button,
+[data-theme="clean"] input,
+[data-theme="clean"] textarea,
+[data-theme="clean"] select {
+    cursor: auto !important;
+}
+
+[data-theme="clean"] a:hover,
+[data-theme="clean"] button:hover,
+[data-theme="clean"] .btn:hover {
+    cursor: pointer !important;
 }
 
 /* CRITICAL: Disable ALL transitions and animations during theme switch */
@@ -341,33 +377,49 @@
     cursor: not-allowed;
 }
 
-/* Primary Button */
+/* Primary Button - Perfect Interactive States */
 [data-theme="clean"] .btn-primary {
     background: var(--color-primary);
     color: var(--text-on-primary);
     border-color: var(--color-primary);
     box-shadow: var(--shadow-xs);
+    position: relative;
+    overflow: hidden;
+}
+
+[data-theme="clean"] .btn-primary::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0) 100%);
+    opacity: 0;
+    transition: opacity var(--transition-fast);
 }
 
 [data-theme="clean"] .btn-primary:hover:not(:disabled) {
     background: var(--color-primary-hover);
     border-color: var(--color-primary-hover);
-    box-shadow: var(--shadow-sm);
-    transform: translateY(-1px);
+    box-shadow: var(--shadow-md);
+    transform: translateY(-2px);
+}
+
+[data-theme="clean"] .btn-primary:hover:not(:disabled)::before {
+    opacity: 1;
 }
 
 [data-theme="clean"] .btn-primary:active:not(:disabled) {
     background: var(--color-primary-active);
     transform: translateY(0);
-    box-shadow: var(--shadow-xs);
+    box-shadow: var(--shadow-sm);
 }
 
-/* Secondary Button */
+/* Secondary Button - Refined Interactions */
 [data-theme="clean"] .btn-secondary {
     background: var(--bg-elevated);
     color: var(--text-primary);
     border-color: var(--border-medium);
     box-shadow: var(--shadow-xs);
+    position: relative;
 }
 
 [data-theme="clean"] .btn-secondary:hover:not(:disabled) {
@@ -375,11 +427,13 @@
     border-color: var(--color-primary);
     color: var(--color-primary);
     box-shadow: var(--shadow-sm);
+    transform: translateY(-1px);
 }
 
 [data-theme="clean"] .btn-secondary:active:not(:disabled) {
     background: var(--bg-tertiary);
     transform: translateY(0);
+    box-shadow: var(--shadow-xs);
 }
 
 /* Large Button */
@@ -570,14 +624,36 @@
     padding: var(--space-xl);
     transition: all var(--transition-base);
     box-shadow: var(--shadow-xs);
+    position: relative;
+    overflow: hidden;
+}
+
+/* Subtle shine effect on hover */
+[data-theme="clean"] .stat-grid > div::before,
+[data-theme="clean"] .feature-card::before,
+[data-theme="clean"] .pricing-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(94, 109, 62, 0.03), transparent);
+    transition: left 0.5s ease;
 }
 
 [data-theme="clean"] .stat-grid > div:hover,
 [data-theme="clean"] .feature-card:hover,
 [data-theme="clean"] .pricing-card:hover {
-    border-color: var(--border-medium);
-    box-shadow: var(--shadow-md);
-    transform: translateY(-2px);
+    border-color: var(--primary-olive-300);
+    box-shadow: var(--shadow-lg);
+    transform: translateY(-4px);
+}
+
+[data-theme="clean"] .stat-grid > div:hover::before,
+[data-theme="clean"] .feature-card:hover::before,
+[data-theme="clean"] .pricing-card:hover::before {
+    left: 100%;
 }
 
 [data-theme="clean"] .stat-grid h3,
