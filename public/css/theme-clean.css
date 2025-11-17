@@ -160,7 +160,6 @@
 [data-theme="clean"] .cursor-invert,
 [data-theme="clean"] .cursor-cross,
 [data-theme="clean"] .particle,
-[data-theme="clean"] .scanlines,
 [data-theme="clean"] .crt-effect::before,
 [data-theme="clean"] .crt-effect::after,
 [data-theme="clean"] .site-marquee,
@@ -168,6 +167,12 @@
 [data-theme="clean"] .striped,
 [data-theme="clean"] .mobile-bottom-nav,
 [data-theme="clean"] #hero-matrix-canvas {
+    display: none !important;
+}
+
+/* Remove scanline effect but keep the element visible */
+[data-theme="clean"] .scanlines::before,
+[data-theme="clean"] .scanlines::after {
     display: none !important;
 }
 
@@ -261,6 +266,24 @@
 
 [data-theme="clean"] .hero-badge {
     display: none !important;
+}
+
+/* Hero Title - Make visible and styled */
+[data-theme="clean"] .hero-title {
+    color: var(--text-primary) !important;
+}
+
+[data-theme="clean"] .hero-title .text-gold,
+[data-theme="clean"] .hero-title .text-rainbow {
+    color: var(--color-primary) !important;
+    font-weight: var(--font-weight-bold);
+}
+
+[data-theme="clean"] .hero-tagline {
+    display: block !important;
+    color: var(--text-secondary) !important;
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-medium);
 }
 
 /* ============================================
@@ -560,12 +583,62 @@
     box-shadow: var(--shadow-lg);
 }
 
+/* Workflow cards */
+[data-theme="clean"] .workflow-grid > article {
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius-lg);
+    padding: var(--space-xl);
+    transition: all var(--transition-base);
+    box-shadow: var(--shadow-xs);
+}
+
+[data-theme="clean"] .workflow-grid > article:hover {
+    border-color: var(--border-medium);
+    box-shadow: var(--shadow-md);
+    transform: translateY(-2px);
+}
+
+[data-theme="clean"] .workflow-grid h3 {
+    color: var(--color-primary);
+    font-size: var(--font-size-xl);
+    margin-bottom: var(--space-sm);
+}
+
+[data-theme="clean"] .workflow-grid p {
+    color: var(--text-secondary);
+}
+
+/* Lists */
+[data-theme="clean"] ul,
+[data-theme="clean"] ol {
+    color: var(--text-secondary);
+}
+
+[data-theme="clean"] li {
+    margin-bottom: var(--space-xs);
+}
+
+/* Badges and labels - remove cyber styling */
+[data-theme="clean"] .border-3,
+[data-theme="clean"] .bg-pink-10,
+[data-theme="clean"] .bg-cyan-10 {
+    background: var(--primary-olive-50) !important;
+    border: 1px solid var(--color-primary) !important;
+    color: var(--color-primary) !important;
+    border-radius: var(--radius-md);
+    padding: var(--space-sm) var(--space-md);
+    font-weight: var(--font-weight-semibold);
+    text-transform: none;
+}
+
 /* ============================================
    8. LAYOUT SECTIONS
    ============================================ */
 
 [data-theme="clean"] section {
     padding: var(--space-3xl) 0;
+    background: var(--bg-primary) !important;
 }
 
 [data-theme="clean"] .container {
@@ -575,12 +648,19 @@
 }
 
 [data-theme="clean"] .hero-section {
-    background: linear-gradient(to bottom, var(--bg-secondary), var(--bg-primary));
+    background: linear-gradient(to bottom, var(--bg-secondary), var(--bg-primary)) !important;
     padding: var(--space-3xl) 0;
 }
 
+[data-theme="clean"] .workflow-section,
+[data-theme="clean"] .hero-stats,
+[data-theme="clean"] #features,
+[data-theme="clean"] #pricing {
+    background: var(--bg-primary) !important;
+}
+
 [data-theme="clean"] .cta-section {
-    background: var(--accent-warm);
+    background: var(--accent-warm) !important;
     padding: var(--space-3xl) 0;
 }
 
@@ -590,6 +670,33 @@
     border-radius: var(--radius-2xl);
     padding: var(--space-2xl);
     box-shadow: var(--shadow-lg);
+}
+
+/* Grid Layouts */
+[data-theme="clean"] .hero-grid,
+[data-theme="clean"] .workflow-grid,
+[data-theme="clean"] .stat-grid,
+[data-theme="clean"] .feature-grid,
+[data-theme="clean"] .pricing-grid {
+    display: grid;
+    gap: var(--space-xl);
+}
+
+[data-theme="clean"] .stat-grid {
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+}
+
+[data-theme="clean"] .feature-grid {
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+}
+
+/* Remove inline styles that conflict */
+[data-theme="clean"] #features > div[style*="background"] {
+    background: none !important;
+}
+
+[data-theme="clean"] section[style*="background"] {
+    background: var(--bg-primary) !important;
 }
 
 /* ============================================
